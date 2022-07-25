@@ -4,6 +4,7 @@ import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
 import Project from './components/Project';
+import Login from './components/Login';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -42,6 +43,11 @@ export const App = () => {
                 <Typography>Project</Typography>
               </Link>
             </Button>
+            <Button color="inherit">
+              <Link to="/login">
+                <Typography>Login</Typography>
+              </Link>
+            </Button>
           </Toolbar>
         </AppBar>
         <Routes>
@@ -49,6 +55,7 @@ export const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/project" element={<Project />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Box>
     </Router>

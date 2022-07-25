@@ -41,13 +41,30 @@
   justify-content: center;
 }
 
-.video-player-container {
-  background-color: white;
+.title-container {
+  margin: 10px;
+}
+
+.video-container {
+  color: white;
+  background-color: #282c34;
   margin: 1rem;
 }
 
+.video-info-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-content: space-around;
+  padding: 8px 15px;
+}
+
+.video-player-container {
+  padding: 0.1rem;
+}
+
 .video-player {
-  margin: 0.5rem;
+  margin: 0.1rem;
 }
 
 @keyframes App-logo-spin {

@@ -3,8 +3,10 @@ import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
 import Project from './components/Project';
+import Login from './components/Login';
 import { render, screen } from '@testing-library/react';
 import { App } from './App';
+import { act } from '@testing-library/react';
 
 // test('renders welcome text', () => {
 //   render(<App />);
@@ -14,10 +16,6 @@ import { App } from './App';
 
 test('renders App', () => {
   render(<App />);
-});
-
-test('renders Project', () => {
-  render(<Project />);
 });
 
 test('renders Home', () => {
@@ -30,4 +28,14 @@ test('renders Dashboard', () => {
 
 test('renders About', () => {
   render(<About />);
+});
+
+test('renders Login', () => {
+  render(<Login />);
+});
+
+test('renders Project', () => {
+  act(() => {
+    <Project />;
+  });
 });
