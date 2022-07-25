@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography } from '@mui/material';
 import {
   CognitoUserPool,
   CognitoUserAttribute,
+  CognitoUser,
 } from 'amazon-cognito-identity-js';
 
 interface formData {
@@ -21,15 +22,20 @@ const Login = () => {
     confirmPassword: '',
     phone: '',
   });
+  const [confirmCode, setConfirmCode] = useState<string>('');
 
   const { name, email, password, confirmPassword, phone } = formData;
 
-  const onChange = (
+  const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    console.log(e.target.id);
-    console.log(e.target.value);
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const onChangeCode = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setConfirmCode(e.target.value);
   };
 
   const poolData = {
@@ -55,21 +61,49 @@ const Login = () => {
   attributeList.push(attributeEmail);
   attributeList.push(attributePhoneNumber);
 
-  const testSignUp = () => {
-    userPool.signUp(
-      email,
-      password,
-      attributeList,
-      attributeList,
-      (err: any, result: any) => {
-        if (err) {
-          alert(err.message || JSON.stringify(err));
-          return;
+  const signUp = async () => {
+    try {
+      await userPool.signUp(
+        email,
+        password,
+        attributeList,
+        attributeList,
+        (err, result) => {
+          if (err) {
+            alert(err.message || JSON.stringify(err));
+            return;
+          }
+          const cognitoUser = result!.user;
+          console.log(cognitoUser);
+          setFormData({
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            phone: '',
+          });
         }
-        const cognitoUser = result.user;
-        console.log('user name is ' + cognitoUser.getUsername());
+      );
+    } catch {
+      throw new Error('User did not get registered');
+    }
+  };
+
+  const userData = {
+    Username: 'leonard.shen@gmail.com',
+    Pool: userPool,
+  };
+
+  const cognitoUser = new CognitoUser(userData);
+
+  const sendConfirm = () => {
+    cognitoUser.confirmRegistration(confirmCode, true, (err, result) => {
+      if (err) {
+        alert(err.message || JSON.stringify(err));
+        return;
       }
-    );
+      console.log('call result: ' + result);
+    });
   };
 
   return (
@@ -84,53 +118,72 @@ const Login = () => {
         autoComplete="off"
       >
         <Box className="title-container">
-          <Typography variant="h5">Login</Typography>
+          <Typography variant="h6">Register</Typography>
         </Box>
-        <Box className="section">
-          <TextField
-            required
-            id="name"
-            label="Username"
-            value={name}
-            onChange={(e) => onChange(e)}
-          />
-          <TextField
-            required
-            id="email"
-            label="E-mail"
-            value={email}
-            onChange={(e) => onChange(e)}
-          />
-          <TextField
-            required
-            id="password"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => onChange(e)}
-          />
-          <TextField
-            required
-            id="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            autoComplete="confirm-password"
-            value={confirmPassword}
-            onChange={(e) => onChange(e)}
-          />
-          <TextField
-            required
-            id="phone"
-            label="Phone Number"
-            value={phone}
-            onChange={(e) => onChange(e)}
-          />
-        </Box>
-      </Box>
-      <Box className="section">
-        <Button variant="contained" onClick={testSignUp}>
+        <TextField
+          required
+          id="name"
+          label="Username"
+          value={name}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <TextField
+          required
+          id="email"
+          label="E-mail"
+          value={email}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <TextField
+          required
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <TextField
+          required
+          id="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          autoComplete="confirm-password"
+          value={confirmPassword}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <TextField
+          required
+          id="phone"
+          label="Phone Number"
+          value={phone}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <Button variant="contained" onClick={signUp}>
           Register
+        </Button>
+      </Box>
+      <Box
+        className="section"
+        component="form"
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <Box className="title-container">
+          <Typography variant="h6">Confirm Registration</Typography>
+        </Box>
+        <TextField
+          required
+          id="confirmationCode"
+          label="Confirmation Code"
+          value={confirmCode}
+          onChange={(e) => onChangeCode(e)}
+        />
+        <Button variant="contained" onClick={sendConfirm}>
+          Confirm
         </Button>
       </Box>
     </Box>
