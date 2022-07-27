@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectUser } from '../features/user/userSlice';
+import { selectUser, loginUser } from '../features/user/userSlice';
 import {
   CognitoUserAttribute,
   CognitoUser,
   AuthenticationDetails,
+  CognitoUserSession,
 } from 'amazon-cognito-identity-js';
 
 import {
@@ -38,6 +39,7 @@ const Login = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [confirmData, setConfirmData] = useState(initialConfirmData);
   const [register, setRegister] = useState(true);
+  const [confirmSent, setConfirmSent] = useState(false);
 
   const { name, email, password, confirmPassword, phone } = formData;
   const { confirmEmail, confirmCode } = confirmData;
@@ -72,15 +74,35 @@ const Login = () => {
   attributeList.push(attributeEmail);
   attributeList.push(attributePhoneNumber);
 
+  const signUpHandler = async () => {
+    try {
+      await userSignUp(email, password, attributeList);
+      setConfirmSent(true);
+    } catch (error) {
+      throw new Error('Did not sign up');
+    }
+  };
+
   //DATA FOR COGNITO USER AUTHENTICATION
   const userData = {
-    Username: confirmEmail,
+    Username: email ? email : confirmEmail,
     Pool: userPool,
   };
 
   const cognitoUser = new CognitoUser(userData);
 
-  //DATA FOR COGNITO LOGIN & OBTAIN TOKEN
+  const sendConfirmHandler = async () => {
+    try {
+      await sendConfirm(cognitoUser, confirmCode);
+      setConfirmData(initialConfirmData);
+      setConfirmSent(false);
+      setFormData(initialFormData);
+    } catch (error) {
+      throw new Error('Did not send confirm code');
+    }
+  };
+
+  //HANDLER FOR COGNITO USER LOGIN & OBTAIN TOKEN
   const loginUserData = {
     Username: email,
     Pool: userPool,
@@ -94,7 +116,16 @@ const Login = () => {
   const loginCognitoUser = new CognitoUser(loginUserData);
   const authenticationDetails = new AuthenticationDetails(authenticationData);
 
-  //loginUserHandler -> dispatch
+  const loginUserHandler = async () => {
+    try {
+      const result = await userLogin(loginCognitoUser, authenticationDetails);
+      const email = result.getIdToken().payload.email;
+      const token = result.getAccessToken().getJwtToken();
+      dispatch(loginUser({ email, token }));
+    } catch (error) {
+      throw new Error('Did not login');
+    }
+  };
 
   //UI RENDERS
   return (
@@ -119,71 +150,80 @@ const Login = () => {
             {register ? 'Register' : 'Login'}
           </Typography>
         </Box>
-        {register ? (
-          <TextField
-            required
-            id="name"
-            label="Username"
-            value={name}
-            onChange={(e) => onChangeForm(e)}
-          />
+        {!confirmSent ? (
+          register ? (
+            <Box className="section">
+              <TextField
+                required
+                id="name"
+                label="Username"
+                value={name}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <TextField
+                required
+                id="email"
+                label="E-mail"
+                value={email}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <TextField
+                required
+                id="phone"
+                label="Phone Number"
+                placeholder="+1"
+                helperText={'Please use +1 at the beginning'}
+                value={phone}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <TextField
+                required
+                id="password"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <TextField
+                required
+                id="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                autoComplete="confirm-password"
+                value={confirmPassword}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <Button variant="contained" onClick={signUpHandler}>
+                Register
+              </Button>
+            </Box>
+          ) : (
+            <Box className="section">
+              <TextField
+                required
+                id="email"
+                label="E-mail"
+                value={email}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <TextField
+                required
+                id="password"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <Button variant="contained" onClick={loginUserHandler}>
+                Login
+              </Button>
+            </Box>
+          )
         ) : null}
-        <TextField
-          required
-          id="email"
-          label="E-mail"
-          value={email}
-          onChange={(e) => onChangeForm(e)}
-        />
-        <TextField
-          required
-          id="password"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => onChangeForm(e)}
-        />
-        {register ? (
-          <TextField
-            required
-            id="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            autoComplete="confirm-password"
-            value={confirmPassword}
-            onChange={(e) => onChangeForm(e)}
-          />
-        ) : null}
-        {register ? (
-          <TextField
-            required
-            id="phone"
-            label="Phone Number"
-            value={phone}
-            onChange={(e) => onChangeForm(e)}
-          />
-        ) : null}
-
-        {register ? (
-          <Button
-            variant="contained"
-            onClick={() =>
-              userSignUp(email, password, attributeList, setFormData)
-            }
-          >
-            Register
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={() => userLogin(loginCognitoUser, authenticationDetails)}
-          >
-            Login
-          </Button>
-        )}
       </Box>
-      {register ? (
+      {confirmSent ? (
         <Box
           className="section"
           component="form"
@@ -200,7 +240,7 @@ const Login = () => {
             required
             id="confirmEmail"
             label="E-mail"
-            value={confirmEmail}
+            value={email ? email : confirmEmail}
             onChange={(e) => onChangeCode(e)}
           />
           <TextField
@@ -210,10 +250,7 @@ const Login = () => {
             value={confirmCode}
             onChange={(e) => onChangeCode(e)}
           />
-          <Button
-            variant="contained"
-            onClick={() => sendConfirm(cognitoUser, confirmCode)}
-          >
+          <Button variant="contained" onClick={sendConfirmHandler}>
             Confirm
           </Button>
         </Box>
