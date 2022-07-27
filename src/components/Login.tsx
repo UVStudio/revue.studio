@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { selectUser } from '../features/user/userSlice';
 import {
-  CognitoUserPool,
   CognitoUserAttribute,
   CognitoUser,
   AuthenticationDetails,
 } from 'amazon-cognito-identity-js';
-import { poolData } from '../constants/poolData';
-import * as AWS from 'aws-sdk/global';
 
-interface formData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phone: string;
-}
+import {
+  userPool,
+  attributeList,
+  userSignUp,
+  sendConfirm,
+  userLogin,
+} from '../features/user/userAPI';
 
-const defaultFormData = {
+const initialFormData = {
   name: '',
   email: '',
   password: '',
@@ -25,13 +24,23 @@ const defaultFormData = {
   phone: '',
 };
 
+const initialConfirmData = {
+  confirmEmail: '',
+  confirmCode: '',
+};
+
 const Login = () => {
+  //GLOBAL STATE
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
+
   //OBTAIN USER FORM INPUTS
-  const [formData, setFormData] = useState<formData>(defaultFormData);
-  const [confirmCode, setConfirmCode] = useState<string>('');
-  const [register, setRegister] = useState<boolean>(true);
+  const [formData, setFormData] = useState(initialFormData);
+  const [confirmData, setConfirmData] = useState(initialConfirmData);
+  const [register, setRegister] = useState(true);
 
   const { name, email, password, confirmPassword, phone } = formData;
+  const { confirmEmail, confirmCode } = confirmData;
 
   //FORM CHANGE HANDLERS
   const onChangeForm = (
@@ -43,14 +52,10 @@ const Login = () => {
   const onChangeCode = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setConfirmCode(e.target.value);
+    setConfirmData({ ...confirmData, [e.target.id]: e.target.value });
   };
 
-  //COGNITO USER POOL USER REGISTRATION DATA
-  const userPool = new CognitoUserPool(poolData);
-
-  const attributeList: CognitoUserAttribute[] = [];
-
+  //DATA COGNITO USER POOL USER REGISTRATION DATA & SIGN UP
   const dataEmail = {
     Name: 'email',
     Value: email,
@@ -60,105 +65,38 @@ const Login = () => {
     Name: 'phone_number',
     Value: phone,
   };
+
   const attributeEmail = new CognitoUserAttribute(dataEmail);
   const attributePhoneNumber = new CognitoUserAttribute(dataPhoneNumber);
 
   attributeList.push(attributeEmail);
   attributeList.push(attributePhoneNumber);
 
-  //COGNITO USER POOL SIGN UP
-  const signUp = async () => {
-    try {
-      await userPool.signUp(
-        email,
-        password,
-        attributeList,
-        attributeList,
-        (err, result) => {
-          if (err) {
-            alert(err.message || JSON.stringify(err));
-            return;
-          }
-          const cognitoUser = result!.user;
-          console.log('cognito user: ', cognitoUser);
-          setFormData(defaultFormData);
-        }
-      );
-    } catch {
-      throw new Error('User did not get registered');
-    }
-  };
-
-  //COGNITO USER AUTHENTICATION
+  //DATA FOR COGNITO USER AUTHENTICATION
   const userData = {
-    Username: 'leonard.shen@gmail.com',
+    Username: confirmEmail,
     Pool: userPool,
   };
 
   const cognitoUser = new CognitoUser(userData);
 
-  const sendConfirm = () => {
-    cognitoUser.confirmRegistration(confirmCode, true, (err, result) => {
-      if (err) {
-        alert(err.message || JSON.stringify(err));
-        return;
-      }
-      console.log('call result: ' + result);
-    });
+  //DATA FOR COGNITO LOGIN & OBTAIN TOKEN
+  const loginUserData = {
+    Username: email,
+    Pool: userPool,
   };
 
-  //COGNITO LOGIN & OBTAIN TOKEN
-  const login = async () => {
-    try {
-      const authenticationData = {
-        Username: email,
-        Password: password,
-      };
-
-      const authenticationDetails = new AuthenticationDetails(
-        authenticationData
-      );
-
-      cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function (result) {
-          const accessToken = result.getAccessToken().getJwtToken();
-
-          //POTENTIAL: Region needs to be set if not already set previously elsewhere.
-          AWS.config.region = poolData.Region;
-
-          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: poolData.IdentityPoolId, // your identity pool id here
-            Logins: {
-              // Change the key below according to the specific region your user pool is in.
-              'cognito-idp.us-east-1.amazonaws.com/us-east-1_CXLp3WVpF': result
-                .getIdToken()
-                .getJwtToken(),
-            },
-          });
-
-          //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-          (AWS.config.credentials as AWS.CognitoIdentityCredentials).refresh(
-            (error) => {
-              if (error) {
-                console.error(error);
-              } else {
-                // Instantiate aws sdk service objects now that the credentials have been updated.
-                // example: const s3 = new AWS.S3();
-                console.log('Successfully logged! Access Token: ', accessToken);
-              }
-            }
-          );
-        },
-
-        onFailure: function (err) {
-          alert(err.message || JSON.stringify(err));
-        },
-      });
-    } catch {
-      throw new Error('Could not login user');
-    }
+  const authenticationData = {
+    Username: email,
+    Password: password,
   };
 
+  const loginCognitoUser = new CognitoUser(loginUserData);
+  const authenticationDetails = new AuthenticationDetails(authenticationData);
+
+  //loginUserHandler -> dispatch
+
+  //UI RENDERS
   return (
     <Box>
       <Box
@@ -228,11 +166,19 @@ const Login = () => {
         ) : null}
 
         {register ? (
-          <Button variant="contained" onClick={signUp}>
+          <Button
+            variant="contained"
+            onClick={() =>
+              userSignUp(email, password, attributeList, setFormData)
+            }
+          >
             Register
           </Button>
         ) : (
-          <Button variant="contained" onClick={login}>
+          <Button
+            variant="contained"
+            onClick={() => userLogin(loginCognitoUser, authenticationDetails)}
+          >
             Login
           </Button>
         )}
@@ -252,12 +198,22 @@ const Login = () => {
           </Box>
           <TextField
             required
-            id="confirmationCode"
+            id="confirmEmail"
+            label="E-mail"
+            value={confirmEmail}
+            onChange={(e) => onChangeCode(e)}
+          />
+          <TextField
+            required
+            id="confirmCode"
             label="Confirmation Code"
             value={confirmCode}
             onChange={(e) => onChangeCode(e)}
           />
-          <Button variant="contained" onClick={sendConfirm}>
+          <Button
+            variant="contained"
+            onClick={() => sendConfirm(cognitoUser, confirmCode)}
+          >
             Confirm
           </Button>
         </Box>
