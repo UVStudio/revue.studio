@@ -1,11 +1,14 @@
 import React from 'react';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { selectUser } from './features/user/userSlice';
+import { useAppSelector } from './app/hooks';
 import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
 import Project from './components/Project';
 import Login from './components/Login';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +18,8 @@ import Button from '@mui/material/Button';
 import logo from './assets/logo.svg';
 
 export const App = () => {
+  const userState = useAppSelector(selectUser);
+
   return (
     <Router>
       <Box sx={{ flexGrow: 1 }}>
@@ -28,26 +33,43 @@ export const App = () => {
             <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
               Revue.Studio
             </Typography>
-            <Button color="inherit">
-              <Link to="/about">
-                <Typography>About</Typography>
-              </Link>
-            </Button>
-            <Button color="inherit">
-              <Link to="/dashboard">
-                <Typography>Dashboard</Typography>
-              </Link>
-            </Button>
-            <Button color="inherit">
-              <Link to="/project">
-                <Typography>Project</Typography>
-              </Link>
-            </Button>
-            <Button color="inherit">
-              <Link to="/login">
-                <Typography>Login</Typography>
-              </Link>
-            </Button>
+            {userState.email ? (
+              <Box>
+                <Button color="inherit">
+                  <Link to="/about">
+                    <Typography>About</Typography>
+                  </Link>
+                </Button>
+                <Button color="inherit">
+                  <Link to="/dashboard">
+                    <Typography>Dashboard</Typography>
+                  </Link>
+                </Button>
+                <Button color="inherit">
+                  <Link to="/project">
+                    <Typography>Project</Typography>
+                  </Link>
+                </Button>
+              </Box>
+            ) : (
+              <Box>
+                <Button color="inherit">
+                  <Link to="/about">
+                    <Typography>About</Typography>
+                  </Link>
+                </Button>
+                <Button color="inherit">
+                  <Link to="/project">
+                    <Typography>Project</Typography>
+                  </Link>
+                </Button>
+                <Button color="inherit">
+                  <Link to="/login">
+                    <Typography>Login</Typography>
+                  </Link>
+                </Button>
+              </Box>
+            )}
           </Toolbar>
         </AppBar>
         <Routes>

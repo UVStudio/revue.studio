@@ -18,18 +18,23 @@ const initialState = {
   token: '',
 } as UserState;
 
+//does createReducer removes the need for 2 different payload calls?
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    loginUser: (state, action: PayloadAction<UserState>) => {
+    loginUserState: (state, action: PayloadAction<UserState>) => {
       state.email = action.payload.email;
       state.token = action.payload.token;
+    },
+    logoutUserState: (state) => {
+      state.email = '';
+      state.token = '';
     },
   },
 });
 
-export const { loginUser } = userSlice.actions;
+export const { loginUserState, logoutUserState } = userSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -38,11 +43,11 @@ export const selectUser = (state: RootState) => state.user;
 
 export default userSlice.reducer;
 
-// const loginUserAction = createAction<UserState>('user/loginUser');
+// const loginUserStateAction = createAction<UserState>('user/loginUserState');
 
 // const userReducer = createReducer(initialState, (builder) => {
 //   builder
-//     .addCase(loginUserAction, (state, action) => {
+//     .addCase(loginUserStateAction, (state, action) => {
 //       state = action.payload;
 //     })
 //     .addDefaultCase((state, action) => {});

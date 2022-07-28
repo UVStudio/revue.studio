@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectUser, loginUser } from '../features/user/userSlice';
+import { selectUser, loginUserState } from '../features/user/userSlice';
 import {
   CognitoUserAttribute,
   CognitoUser,
   AuthenticationDetails,
-  CognitoUserSession,
 } from 'amazon-cognito-identity-js';
 
 import {
@@ -14,7 +13,8 @@ import {
   attributeList,
   userSignUp,
   sendConfirm,
-  userLogin,
+  cognitoUserLogin,
+  getCognitoUserAttributes,
 } from '../features/user/userAPI';
 
 const initialFormData = {
@@ -32,7 +32,7 @@ const initialConfirmData = {
 
 const Login = () => {
   //GLOBAL STATE
-  const user = useAppSelector(selectUser);
+  const userState = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   //OBTAIN USER FORM INPUTS
@@ -103,7 +103,7 @@ const Login = () => {
   };
 
   //HANDLER FOR COGNITO USER LOGIN & OBTAIN TOKEN
-  const loginUserData = {
+  const loginUserStateData = {
     Username: email,
     Pool: userPool,
   };
@@ -113,15 +113,18 @@ const Login = () => {
     Password: password,
   };
 
-  const loginCognitoUser = new CognitoUser(loginUserData);
+  const loginCognitoUser = new CognitoUser(loginUserStateData);
   const authenticationDetails = new AuthenticationDetails(authenticationData);
 
   const loginUserHandler = async () => {
     try {
-      const result = await userLogin(loginCognitoUser, authenticationDetails);
+      const result = await cognitoUserLogin(
+        loginCognitoUser,
+        authenticationDetails
+      );
       const email = result.getIdToken().payload.email;
       const token = result.getAccessToken().getJwtToken();
-      dispatch(loginUser({ email, token }));
+      dispatch(loginUserState({ email, token }));
     } catch (error) {
       throw new Error('Did not login');
     }
@@ -140,6 +143,9 @@ const Login = () => {
         autoComplete="off"
       >
         <Box>
+          <Button onClick={() => getCognitoUserAttributes()}>
+            Get User Attributes
+          </Button>
           <Button onClick={() => setRegister(false)}>
             I already have an account
           </Button>

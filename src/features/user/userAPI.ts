@@ -11,14 +11,6 @@ import * as AWS from 'aws-sdk/global';
 export const userPool = new CognitoUserPool(poolData);
 export const attributeList: CognitoUserAttribute[] = [];
 
-const initialFormData = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  phone: '',
-};
-
 //COGNITO USER POOL USER REGISTRATION DATA & SIGN UP
 export const userSignUp = (
   email: string,
@@ -61,7 +53,7 @@ export const sendConfirm = (cognitoUser: CognitoUser, confirmCode: string) => {
 };
 
 //COGNITO LOGIN AND GET SESSION TOKEN
-export const userLogin = (
+export const cognitoUserLogin = (
   cognitoUser: CognitoUser,
   authenticationDetails: AuthenticationDetails
 ) => {
@@ -89,7 +81,7 @@ export const userLogin = (
             } else {
               // Instantiate aws sdk service objects now that the credentials have been updated.
               // example: const s3 = new AWS.S3();
-              console.log(result);
+              console.log('user authenticated: ', result);
               resolve(result);
             }
           }
@@ -102,4 +94,68 @@ export const userLogin = (
       },
     });
   });
+};
+
+//GET COGNITO USER SESSION
+
+//GET AUTHENTICATED COGNITO USER ATTRIBUTES
+export const getCognitoUserAttributes = () => {
+  const cognitoUser = userPool.getCurrentUser();
+
+  if (cognitoUser != null) {
+    cognitoUser.getSession((err: Error | null, session: CognitoUserSession) => {
+      if (err) {
+        alert(err.message || JSON.stringify(err));
+        return;
+      }
+      if (session) {
+        console.log('session validity: ' + session.isValid());
+      }
+
+      cognitoUser.getUserAttributes((err, result) => {
+        if (err) {
+          alert(err.message || JSON.stringify(err));
+          return;
+        }
+        for (let i = 0; i < result!.length; i++) {
+          console.log(
+            'attribute ' +
+              result![i].getName() +
+              ' has value ' +
+              result![i].getValue()
+          );
+        }
+      });
+    });
+  } else {
+    return console.log('No user is currently authenticated.');
+  }
+};
+
+//COGNITO LOGOUT
+export const cognitoUserLogout = () => {
+  const cognitoUser = userPool.getCurrentUser();
+  if (cognitoUser != null) {
+    cognitoUser.getSession((err: Error | null, session: CognitoUserSession) => {
+      if (err) {
+        alert(err.message || JSON.stringify(err));
+        return;
+      }
+      if (session) {
+        console.log('session validity: ' + session.isValid());
+      }
+
+      console.log('cog user: ', cognitoUser);
+      cognitoUser.globalSignOut({
+        onSuccess: (msg: string) => {
+          alert(msg || JSON.stringify(msg));
+        },
+        onFailure: (err: Error) => {
+          alert(err.message || JSON.stringify(err));
+        },
+      });
+    });
+  } else {
+    return console.log('No user is currently logged in nor authenticated.');
+  }
 };
