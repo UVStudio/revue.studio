@@ -5,7 +5,7 @@ import { selectUser, logoutUserState } from '../features/user/userSlice';
 import { cognitoUserLogout } from '../features/user/userAPI';
 import { poolData } from '../constants/poolData';
 
-import { CognitoUserPool, CognitoUser } from 'amazon-cognito-identity-js';
+import { CognitoUserPool } from 'amazon-cognito-identity-js';
 
 export const userPool = new CognitoUserPool(poolData);
 
@@ -17,8 +17,6 @@ const Dashboard = () => {
     cognitoUserLogout();
     dispatch(logoutUserState());
   };
-
-  console.log(userState);
 
   return (
     <Box className="section">

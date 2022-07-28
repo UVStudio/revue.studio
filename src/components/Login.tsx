@@ -7,15 +7,14 @@ import {
   CognitoUser,
   AuthenticationDetails,
 } from 'amazon-cognito-identity-js';
-
 import {
   userPool,
   attributeList,
   userSignUp,
   sendConfirm,
   cognitoUserLogin,
-  getCognitoUserAttributes,
 } from '../features/user/userAPI';
+import { useNavigate } from 'react-router-dom';
 
 const initialFormData = {
   name: '',
@@ -31,11 +30,7 @@ const initialConfirmData = {
 };
 
 const Login = () => {
-  //GLOBAL STATE
-  const userState = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
-
-  //OBTAIN USER FORM INPUTS
+  //OBTAIN USER FORM INPUTS & COMPONENT HOOKS
   const [formData, setFormData] = useState(initialFormData);
   const [confirmData, setConfirmData] = useState(initialConfirmData);
   const [register, setRegister] = useState(true);
@@ -43,6 +38,13 @@ const Login = () => {
 
   const { name, email, password, confirmPassword, phone } = formData;
   const { confirmEmail, confirmCode } = confirmData;
+
+  //GLOBAL STATE
+  const userState = useAppSelector(selectUser);
+
+  //STATE AND NAV HOOKS
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   //FORM CHANGE HANDLERS
   const onChangeForm = (
@@ -125,6 +127,7 @@ const Login = () => {
       const email = result.getIdToken().payload.email;
       const token = result.getAccessToken().getJwtToken();
       dispatch(loginUserState({ email, token }));
+      navigate('../Dashboard', { replace: true });
     } catch (error) {
       throw new Error('Did not login');
     }
@@ -133,134 +136,140 @@ const Login = () => {
   //UI RENDERS
   return (
     <Box>
-      <Box
-        className="section"
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
+      {userState.email ? (
         <Box>
-          <Button onClick={() => getCognitoUserAttributes()}>
-            Get User Attributes
-          </Button>
-          <Button onClick={() => setRegister(false)}>
-            I already have an account
-          </Button>
-          /<Button onClick={() => setRegister(true)}>I am a new user</Button>
+          <Typography>You are logged in as {userState.email}</Typography>
         </Box>
-        <Box className="title-container">
-          <Typography variant="h6">
-            {register ? 'Register' : 'Login'}
-          </Typography>
-        </Box>
-        {!confirmSent ? (
-          register ? (
-            <Box className="section">
-              <TextField
-                required
-                id="name"
-                label="Username"
-                value={name}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <TextField
-                required
-                id="email"
-                label="E-mail"
-                value={email}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <TextField
-                required
-                id="phone"
-                label="Phone Number"
-                placeholder="+1"
-                helperText={'Please use +1 at the beginning'}
-                value={phone}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <TextField
-                required
-                id="password"
-                label="Password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <TextField
-                required
-                id="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                autoComplete="confirm-password"
-                value={confirmPassword}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <Button variant="contained" onClick={signUpHandler}>
-                Register
+      ) : (
+        <Box>
+          <Box
+            className="section"
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '25ch' },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <Box>
+              <Button onClick={() => setRegister(false)}>
+                I already have an account
               </Button>
+              /
+              <Button onClick={() => setRegister(true)}>I am a new user</Button>
             </Box>
-          ) : (
-            <Box className="section">
-              <TextField
-                required
-                id="email"
-                label="E-mail"
-                value={email}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <TextField
-                required
-                id="password"
-                label="Password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => onChangeForm(e)}
-              />
-              <Button variant="contained" onClick={loginUserHandler}>
-                Login
-              </Button>
+            <Box className="title-container">
+              <Typography variant="h6">
+                {register ? 'Register' : 'Login'}
+              </Typography>
             </Box>
-          )
-        ) : null}
-      </Box>
-      {confirmSent ? (
-        <Box
-          className="section"
-          component="form"
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <Box className="title-container">
-            <Typography variant="h6">Confirm Registration</Typography>
+            {!confirmSent ? (
+              register ? (
+                <Box className="section">
+                  <TextField
+                    required
+                    id="name"
+                    label="Username"
+                    value={name}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <TextField
+                    required
+                    id="email"
+                    label="E-mail"
+                    value={email}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <TextField
+                    required
+                    id="phone"
+                    label="Phone Number"
+                    placeholder="+1"
+                    helperText={'Please use +1 at the beginning'}
+                    value={phone}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <TextField
+                    required
+                    id="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <TextField
+                    required
+                    id="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    autoComplete="confirm-password"
+                    value={confirmPassword}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <Button variant="contained" onClick={signUpHandler}>
+                    Register
+                  </Button>
+                </Box>
+              ) : (
+                <Box className="section">
+                  <TextField
+                    required
+                    id="email"
+                    label="E-mail"
+                    value={email}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <TextField
+                    required
+                    id="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                  <Button variant="contained" onClick={loginUserHandler}>
+                    Login
+                  </Button>
+                </Box>
+              )
+            ) : null}
           </Box>
-          <TextField
-            required
-            id="confirmEmail"
-            label="E-mail"
-            value={email ? email : confirmEmail}
-            onChange={(e) => onChangeCode(e)}
-          />
-          <TextField
-            required
-            id="confirmCode"
-            label="Confirmation Code"
-            value={confirmCode}
-            onChange={(e) => onChangeCode(e)}
-          />
-          <Button variant="contained" onClick={sendConfirmHandler}>
-            Confirm
-          </Button>
+          {confirmSent ? (
+            <Box
+              className="section"
+              component="form"
+              sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <Box className="title-container">
+                <Typography variant="h6">Confirm Registration</Typography>
+              </Box>
+              <TextField
+                required
+                id="confirmEmail"
+                label="E-mail"
+                value={email ? email : confirmEmail}
+                onChange={(e) => onChangeCode(e)}
+              />
+              <TextField
+                required
+                id="confirmCode"
+                label="Confirmation Code"
+                value={confirmCode}
+                onChange={(e) => onChangeCode(e)}
+              />
+              <Button variant="contained" onClick={sendConfirmHandler}>
+                Confirm
+              </Button>
+            </Box>
+          ) : null}
         </Box>
-      ) : null}
+      )}
     </Box>
   );
 };
