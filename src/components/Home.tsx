@@ -19,7 +19,7 @@ const Home = () => {
         />
       </Box>
       <Box className="section">
-        <Box className="full-length-copy ">
+        <Box className="full-length-copy-container">
           <Typography>
             For the serious video production professionals, Revue.Studio will
             help you decrease your cloud storage and transfer costs by

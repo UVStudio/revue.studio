@@ -31,6 +31,10 @@ export const userSlice = createSlice({
       state.email = '';
       state.token = '';
     },
+    // getUserState: (state, action: PayloadAction<UserState>) => {
+    //   state.email = action.payload.email;
+    //   state.token = action.payload.token;
+    // },
   },
 });
 
@@ -42,13 +46,3 @@ export const { loginUserState, logoutUserState } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;
 
 export default userSlice.reducer;
-
-// const loginUserStateAction = createAction<UserState>('user/loginUserState');
-
-// const userReducer = createReducer(initialState, (builder) => {
-//   builder
-//     .addCase(loginUserStateAction, (state, action) => {
-//       state = action.payload;
-//     })
-//     .addDefaultCase((state, action) => {});
-// });

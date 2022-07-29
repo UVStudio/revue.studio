@@ -96,8 +96,6 @@ export const cognitoUserLogin = (
   });
 };
 
-//GET COGNITO USER SESSION
-
 //GET AUTHENTICATED COGNITO USER ATTRIBUTES
 export const getCognitoUserAttributes = () => {
   const cognitoUser = userPool.getCurrentUser();
@@ -132,6 +130,15 @@ export const getCognitoUserAttributes = () => {
   }
 };
 
+//COGNITO CURRENT AUTH USER
+export const getCognitoUser = () => {
+  const cognitoUser = userPool.getCurrentUser();
+  if (!cognitoUser) {
+    return false;
+  }
+  return cognitoUser;
+};
+
 //COGNITO LOGOUT
 export const cognitoUserLogout = () => {
   const cognitoUser = userPool.getCurrentUser();
@@ -145,7 +152,6 @@ export const cognitoUserLogout = () => {
         console.log('session validity: ' + session.isValid());
       }
 
-      console.log('cog user: ', cognitoUser);
       cognitoUser.globalSignOut({
         onSuccess: (msg: string) => {
           alert(msg || JSON.stringify(msg));
