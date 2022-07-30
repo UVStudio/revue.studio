@@ -82,6 +82,12 @@ export const cognitoUserLogin = (
               // Instantiate aws sdk service objects now that the credentials have been updated.
               // example: const s3 = new AWS.S3();
               console.log('user authenticated: ', result);
+              const email = result.getIdToken().payload.email;
+              const token = result.getAccessToken().getJwtToken();
+              localStorage.setItem(
+                'userData',
+                JSON.stringify({ email, token })
+              );
               resolve(result);
             }
           }
@@ -130,15 +136,6 @@ export const getCognitoUserAttributes = () => {
   }
 };
 
-//COGNITO CURRENT AUTH USER
-export const getCognitoUser = () => {
-  const cognitoUser = userPool.getCurrentUser();
-  if (!cognitoUser) {
-    return false;
-  }
-  return cognitoUser;
-};
-
 //COGNITO LOGOUT
 export const cognitoUserLogout = () => {
   const cognitoUser = userPool.getCurrentUser();
@@ -155,6 +152,7 @@ export const cognitoUserLogout = () => {
       cognitoUser.globalSignOut({
         onSuccess: (msg: string) => {
           alert(msg || JSON.stringify(msg));
+          localStorage.clear();
         },
         onFailure: (err: Error) => {
           alert(err.message || JSON.stringify(err));

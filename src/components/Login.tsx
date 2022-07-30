@@ -126,13 +126,6 @@ const Login = () => {
       );
       const email = result.getIdToken().payload.email;
       const token = result.getAccessToken().getJwtToken();
-      localStorage.setItem(
-        'userData',
-        JSON.stringify({
-          email,
-          token,
-        })
-      );
       dispatch(loginUserState({ email, token }));
       navigate('../Dashboard', { replace: true });
     } catch (error) {

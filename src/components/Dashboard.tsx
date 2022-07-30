@@ -15,12 +15,10 @@ export const userPool = new CognitoUserPool(poolData);
 const Dashboard = () => {
   const userState = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
-  console.log('dash - localStorage: ', localStorage.userData);
 
   const userLogoutHandler = async () => {
     cognitoUserLogout();
     dispatch(logoutUserState());
-    localStorage.clear();
   };
 
   const getUserAttrHandler = () => {
