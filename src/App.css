@@ -1,3 +1,7 @@
+a:link {
+  text-decoration: none;
+}
+
 .App {
   text-align: center;
 }
@@ -9,6 +13,11 @@
 .AppBar-logo {
   height: 8vmin;
   pointer-events: none;
+}
+
+.AppBar-type {
+  color: white;
+  text-decoration: none;
 }
 
 

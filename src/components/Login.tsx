@@ -33,7 +33,7 @@ const Login = () => {
   //OBTAIN USER FORM INPUTS & COMPONENT HOOKS
   const [formData, setFormData] = useState(initialFormData);
   const [confirmData, setConfirmData] = useState(initialConfirmData);
-  const [register, setRegister] = useState(true);
+  const [register, setRegister] = useState(false);
   const [confirmSent, setConfirmSent] = useState(false);
 
   const { name, email, password, confirmPassword, phone } = formData;

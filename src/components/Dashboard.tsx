@@ -21,8 +21,9 @@ const Dashboard = () => {
     dispatch(logoutUserState());
   };
 
-  const getUserAttrHandler = () => {
-    getCognitoUserAttributes();
+  const getUserAttrHandler = async () => {
+    const value = await getCognitoUserAttributes();
+    console.log('value: ', value);
   };
 
   return (

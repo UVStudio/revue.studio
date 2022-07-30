@@ -104,36 +104,33 @@ export const cognitoUserLogin = (
 
 //GET AUTHENTICATED COGNITO USER ATTRIBUTES
 export const getCognitoUserAttributes = () => {
-  const cognitoUser = userPool.getCurrentUser();
+  return new Promise((resolve, reject) => {
+    const cognitoUser = userPool.getCurrentUser();
 
-  if (cognitoUser != null) {
-    cognitoUser.getSession((err: Error | null, session: CognitoUserSession) => {
-      if (err) {
-        alert(err.message || JSON.stringify(err));
-        return;
-      }
-      if (session) {
-        console.log('session validity: ' + session.isValid());
-      }
+    if (cognitoUser != null) {
+      cognitoUser.getSession(
+        (err: Error | null, session: CognitoUserSession) => {
+          if (err) {
+            alert(err.message || JSON.stringify(err));
+            return;
+          }
+          if (session) {
+            console.log('session validity: ' + session.isValid());
+          }
 
-      cognitoUser.getUserAttributes((err, result) => {
-        if (err) {
-          alert(err.message || JSON.stringify(err));
-          return;
+          cognitoUser.getUserAttributes((err, result) => {
+            if (err) {
+              alert(err.message || JSON.stringify(err));
+              return;
+            }
+            resolve(result);
+          });
         }
-        for (let i = 0; i < result!.length; i++) {
-          console.log(
-            'attribute ' +
-              result![i].getName() +
-              ' has value ' +
-              result![i].getValue()
-          );
-        }
-      });
-    });
-  } else {
-    return console.log('No user is currently authenticated.');
-  }
+      );
+    } else {
+      return console.log('No user is currently authenticated.');
+    }
+  });
 };
 
 //COGNITO LOGOUT
@@ -163,3 +160,12 @@ export const cognitoUserLogout = () => {
     return console.log('No user is currently logged in nor authenticated.');
   }
 };
+
+// for (let i = 0; i < result!.length; i++) {
+//   console.log(
+//     'attribute ' +
+//       result![i].getName() +
+//       ' has value ' +
+//       result![i].getValue()
+//   );
+// }
