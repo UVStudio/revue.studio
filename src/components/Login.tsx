@@ -6,6 +6,7 @@ import {
   CognitoUserAttribute,
   CognitoUser,
   AuthenticationDetails,
+  ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import {
   userPool,
@@ -78,7 +79,12 @@ const Login = () => {
 
   const signUpHandler = async () => {
     try {
-      await userSignUp(email, password, attributeList);
+      const result: ISignUpResult | undefined = await userSignUp(
+        email,
+        password,
+        attributeList
+      );
+      console.log('result: ', result);
       setConfirmSent(true);
     } catch (error) {
       throw new Error('Did not sign up');
@@ -124,9 +130,10 @@ const Login = () => {
         loginCognitoUser,
         authenticationDetails
       );
+      const id = result.getAccessToken().payload.sub;
       const email = result.getIdToken().payload.email;
       const token = result.getAccessToken().getJwtToken();
-      dispatch(loginUserState({ email, token }));
+      dispatch(loginUserState({ id, email, token }));
       navigate('../Dashboard', { replace: true });
     } catch (error) {
       throw new Error('Did not login');

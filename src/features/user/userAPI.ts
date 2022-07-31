@@ -4,12 +4,15 @@ import {
   CognitoUser,
   AuthenticationDetails,
   CognitoUserSession,
+  ISignUpResult,
 } from 'amazon-cognito-identity-js';
+import axios from 'axios';
 import { poolData } from '../../constants/poolData';
 import * as AWS from 'aws-sdk/global';
 
 export const userPool = new CognitoUserPool(poolData);
 export const attributeList: CognitoUserAttribute[] = [];
+export const awsUserAPI = 'lhuqkznck2.execute-api.us-east-1.amazonaws.com';
 
 //COGNITO USER POOL USER REGISTRATION DATA & SIGN UP
 export const userSignUp = (
@@ -17,7 +20,7 @@ export const userSignUp = (
   password: string,
   attributeList: CognitoUserAttribute[]
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<ISignUpResult | undefined>((resolve, reject) => {
     userPool.signUp(
       email,
       password,
@@ -35,6 +38,31 @@ export const userSignUp = (
       }
     );
   });
+};
+
+//DYNAMODB USER CREATION
+export const dynamoDBEditUserName = async (
+  id: string,
+  email: string,
+  name: string
+) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  const body = JSON.stringify({
+    id,
+    email,
+    name,
+  });
+  console.log('body: ', body);
+  try {
+    const data = await axios.put(`https://${awsUserAPI}/users`, body, config);
+    console.log('edited user: ', data);
+  } catch (error) {
+    throw new Error('Could not update your name');
+  }
 };
 
 //COGNITO USER AUTHENTICATION
@@ -82,11 +110,12 @@ export const cognitoUserLogin = (
               // Instantiate aws sdk service objects now that the credentials have been updated.
               // example: const s3 = new AWS.S3();
               console.log('user authenticated: ', result);
+              const id = result.getAccessToken().payload.sub;
               const email = result.getIdToken().payload.email;
               const token = result.getAccessToken().getJwtToken();
               localStorage.setItem(
                 'userData',
-                JSON.stringify({ email, token })
+                JSON.stringify({ id, email, token })
               );
               resolve(result);
             }

@@ -9,11 +9,13 @@ import {
 import { RootState, AppThunk } from '../../app/store';
 
 interface UserState {
+  id: string;
   email: string;
   token: string;
 }
 
 const initialState = {
+  id: '',
   email: '',
   token: '',
 } as UserState;
@@ -24,10 +26,12 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginUserState: (state, action: PayloadAction<UserState>) => {
+      state.id = action.payload.id;
       state.email = action.payload.email;
       state.token = action.payload.token;
     },
     logoutUserState: (state) => {
+      state.id = '';
       state.email = '';
       state.token = '';
     },

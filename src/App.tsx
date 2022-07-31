@@ -4,6 +4,12 @@ import { loginUserState } from './features/user/userSlice';
 import Navbar from './components/Navbar';
 import { useAppDispatch } from './app/hooks';
 
+export interface userDataLocalStorage {
+  id: string;
+  email: string;
+  token: string;
+}
+
 export const App = () => {
   //GLOBAL STATE
   //const userState = useAppSelector(selectUser);
@@ -12,10 +18,13 @@ export const App = () => {
 
   useEffect(() => {
     if (localStorage.userData) {
-      const parsedData = JSON.parse(localStorage.userData);
+      const parsedData: userDataLocalStorage = JSON.parse(
+        localStorage.userData
+      );
+      const id = parsedData.id;
       const email = parsedData.email;
       const token = parsedData.token;
-      dispatch(loginUserState({ email, token }));
+      dispatch(loginUserState({ id, email, token }));
     }
   }, [dispatch]);
 
