@@ -8,8 +8,16 @@ const initialFormData = {
 };
 
 export interface uploadFileObject {
+  id: string;
   fileName: string;
   fileUrl: string;
+}
+
+export interface UploadProjectObject {
+  projectId: string;
+  projectName: string;
+  projectDescription: string;
+  uploads: uploadFileObject[];
 }
 
 const AddProject = () => {
@@ -17,7 +25,6 @@ const AddProject = () => {
   const [fileName, setFileName] = useState('');
   const [formData, setFormData] = useState(initialFormData);
   const [uploads, setUploads] = useState<uploadFileObject[]>([]);
-  const [numOfUploadFields, setNumOfUploadFields] = useState(1);
 
   const { projectName, projectDescription } = formData;
 
@@ -28,16 +35,20 @@ const AddProject = () => {
           return str.slice(i + 1, str.length);
         }
       }
-      return 'file path is invalid';
+      return str;
     }
-
-    setNumOfUploadFields(numOfUploadFields + 1);
     setUploads([
       ...uploads,
-      { fileName: slicePathToName(e.target.value), fileUrl: e.target.value },
+      {
+        id: Date.now().toString(),
+        fileName: slicePathToName(e.target.value),
+        fileUrl: e.target.value,
+      },
     ]);
     setFileUrl(e.target.value);
   };
+
+  console.log('uploads: ', uploads);
 
   useEffect(() => {
     for (let i = fileUrl.length; i > 0; i--) {
@@ -54,9 +65,7 @@ const AddProject = () => {
   };
 
   const removeVideoHandler = (fileName: string) => {
-    console.log('elem: ', fileName);
     setUploads(uploads.filter((upload) => upload.fileName !== fileName));
-    //setUploads([...uploads])
   };
 
   return (
