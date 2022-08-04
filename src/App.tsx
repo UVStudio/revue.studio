@@ -18,9 +18,9 @@ export const App = () => {
 
   useEffect(() => {
     if (localStorage.userData) {
-      const parsedData: userDataLocalStorage = JSON.parse(
-        localStorage.userData
-      );
+      const result: string | null = localStorage.getItem('userData');
+      const parsedData: userDataLocalStorage = JSON.parse(result!);
+
       const id = parsedData.id;
       const email = parsedData.email;
       const token = parsedData.token;

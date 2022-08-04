@@ -6,8 +6,9 @@ import { useAppSelector } from '../app/hooks';
 import Home from './Home';
 import About from './About';
 import Dashboard from './Dashboard';
-import Project from './Project';
+import Projects from './Projects';
 import Login from './Login';
+import AddProject from './AddProject';
 
 import AppBar from '@mui/material/AppBar';
 import Menu from '@mui/material/Menu';
@@ -32,8 +33,8 @@ export const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const authPages = ['About', 'Dashboard', 'Project'];
-  const unAuthPages = ['About', 'Project', 'Login'];
+  const authPages = ['About', 'Dashboard', 'Projects'];
+  const unAuthPages = ['About', 'Projects', 'Login'];
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -162,8 +163,9 @@ export const Navbar = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/project" element={<Project />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/addProject" element={<AddProject />} />
       </Routes>
     </Box>
   );

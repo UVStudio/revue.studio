@@ -2,11 +2,10 @@ import React from 'react';
 import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
-import Project from './components/Project';
+import Projects from './components/Projects';
 import Login from './components/Login';
-import { render, screen } from '@testing-library/react';
-import { App } from './App';
 import { act } from '@testing-library/react';
+import { App } from './App';
 
 // test('renders welcome text', () => {
 //   render(<App />);
@@ -14,36 +13,20 @@ import { act } from '@testing-library/react';
 //   expect(linkElement).toBeInTheDocument();
 // });
 
-test('renders App', () => {
+// write a test to make sure localStorage.userdata.id is same as userState.id
+
+test('renders components of the app', () => {
   act(() => {
     <App />;
-  });
-});
-
-test('renders Home', () => {
-  act(() => {
     <Home />;
-  });
-});
-
-test('renders Dashboard', () => {
-  act(() => {
     <Dashboard />;
-  });
-});
-
-test('renders About', () => {
-  act(() => {
     <About />;
+    <Login />;
+    <Projects />;
   });
 });
 
-// test('renders Login', () => {
-//   render(<Login />);
-// });
-
-test('renders Project', () => {
-  act(() => {
-    <Project />;
-  });
+test('defines localStorage.getItem', () => {
+  const mockGetItem = jest.fn(localStorage.getItem);
+  expect(mockGetItem).toBeDefined();
 });

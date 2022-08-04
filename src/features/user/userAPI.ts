@@ -189,12 +189,3 @@ export const cognitoUserLogout = () => {
     return console.log('No user is currently logged in nor authenticated.');
   }
 };
-
-// for (let i = 0; i < result!.length; i++) {
-//   console.log(
-//     'attribute ' +
-//       result![i].getName() +
-//       ' has value ' +
-//       result![i].getValue()
-//   );
-// }
