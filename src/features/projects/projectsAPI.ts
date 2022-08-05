@@ -1,7 +1,35 @@
+import axios from 'axios';
 import * as AWS from 'aws-sdk/global';
 
-console.log('hallo');
+export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 
-// upload file procedure
-// 1, upload to filename.ext to S3 with URL as userId/Math.rand()+filename.ext
-// 2, S3 upload completes triggers lambda https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example.html
+//DYNAMODB PROJECT CREATION
+export const dynamoDBAddProjectName = async (
+  projectId: string,
+  userId: string,
+  projectName: string,
+  projectDescription: string
+) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  const body = JSON.stringify({
+    projectId,
+    userId,
+    projectName,
+    projectDescription,
+  });
+  console.log('body: ', body);
+  try {
+    const data = await axios.put(
+      `https://${awsProjectsAPI}/projects/${userId}`,
+      body,
+      config
+    );
+    console.log('project data: ', data);
+  } catch (error) {
+    throw new Error('Could not create Project');
+  }
+};

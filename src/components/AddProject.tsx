@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
+import { useAppSelector } from '../app/hooks';
+import { selectUser } from '../features/user/userSlice';
+import { dynamoDBAddProjectName } from '../features/projects/projectsAPI';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 
 const initialFormData = {
@@ -7,24 +10,29 @@ const initialFormData = {
   projectDescription: '',
 };
 
-export interface uploadFileObject {
+export interface UploadFileObject {
   id: string;
   fileName: string;
   fileUrl: string;
 }
 
 export interface UploadProjectObject {
+  userId: string;
   projectId: string;
   projectName: string;
   projectDescription: string;
-  uploads: uploadFileObject[];
+  uploads: UploadFileObject[];
 }
 
 const AddProject = () => {
+  //GLOBAL STATE
+  const userState = useAppSelector(selectUser);
+
+  //OBTAIN PROJECT FORM INPUTS & COMPONENT HOOKS
   const [fileUrl, setFileUrl] = useState('');
   const [fileName, setFileName] = useState('');
   const [formData, setFormData] = useState(initialFormData);
-  const [uploads, setUploads] = useState<uploadFileObject[]>([]);
+  const [uploads, setUploads] = useState<UploadFileObject[]>([]);
 
   const { projectName, projectDescription } = formData;
 
@@ -48,8 +56,6 @@ const AddProject = () => {
     setFileUrl(e.target.value);
   };
 
-  console.log('uploads: ', uploads);
-
   useEffect(() => {
     for (let i = fileUrl.length; i > 0; i--) {
       if (fileUrl[i] === '\\') {
@@ -68,6 +74,28 @@ const AddProject = () => {
     setUploads(uploads.filter((upload) => upload.fileName !== fileName));
   };
 
+  const createProjectObject = () => {
+    const newProjectObject: UploadProjectObject = {
+      userId: userState.id,
+      projectId: Date.now().toString(),
+      projectName,
+      projectDescription,
+      uploads,
+    };
+    console.log('newProjectObject: ', newProjectObject);
+    dynamoDBAddProjectName(
+      newProjectObject.userId,
+      newProjectObject.projectId,
+      projectName,
+      projectDescription
+    );
+  };
+
+  //1, create Project in DynamoDB, populate newProjectObject
+  //2, hit API Gateway to activate Lambda to create preSignedURL to upload to S3
+  //3, upload file(s) to S3 using preSignedURL(s)
+  //4, add S3 link(s) to DynamoDB's project rows
+
   return (
     <Box className="section">
       <Typography variant="h6">Add Project</Typography>
@@ -80,7 +108,7 @@ const AddProject = () => {
       >
         <TextField
           required
-          id="project-name"
+          id="projectName"
           label="Project Name"
           value={projectName}
           onChange={(e) => onChangeForm(e)}
@@ -88,7 +116,7 @@ const AddProject = () => {
         <TextField
           fullWidth
           multiline
-          id="project-name"
+          id="projectDescription"
           label="Project Description"
           value={projectDescription}
           onChange={(e) => onChangeForm(e)}
@@ -122,7 +150,9 @@ const AddProject = () => {
         </Box>
       </Box>
       <Box className="section" marginTop={'20px'}>
-        <Button variant="contained">Upload Videos to Project</Button>
+        <Button variant="contained" onClick={createProjectObject}>
+          Upload Videos to Project
+        </Button>
       </Box>
     </Box>
   );
