@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactPlayer from 'react-player/lazy';
-import axios from 'axios';
 import { Box, Button, Typography } from '@mui/material';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, logoutUserState } from '../features/user/userSlice';
 import {
   selectProjects,
-  getProjectsList,
   Project,
+  removeProjectsList,
 } from '../features/projects/projectsSlice';
 import {
   cognitoUserLogout,
@@ -17,6 +16,7 @@ import {
 } from '../features/user/userAPI';
 import { poolData } from '../constants/poolData';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
+import { useNavigate } from 'react-router-dom';
 
 export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 export const userPool = new CognitoUserPool(poolData);
@@ -28,31 +28,14 @@ const Dashboard = () => {
 
   //STATE AND NAV HOOKS
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  //need new DDB table: primary key userId, sort key: id
-  useEffect(() => {
-    const config = {
-      headers: {
-        'content-type': 'application/json',
-      },
-    };
-    const getProjectsByUserId = async () => {
-      const response = await axios.get(
-        `https://${awsProjectsAPI}/projects/${userState.id}`,
-        config
-      );
-      dispatch(getProjectsList(response.data.Items));
-    };
-    if (userState.id) {
-      getProjectsByUserId();
-    }
-  }, [userState.id, dispatch]);
-
-  console.log('proj list state: ', projectsState.projects);
-
-  const userLogoutHandler = async () => {
+  const userLogoutHandler = () => {
+    localStorage.clear();
     cognitoUserLogout();
     dispatch(logoutUserState());
+    dispatch(removeProjectsList());
+    navigate('../', { replace: true });
   };
 
   const downloadHandler = (
@@ -100,7 +83,6 @@ const Dashboard = () => {
           );
         })}
       </Box>
-
       <Box className="video-container">
         <Box className="video-info-container">
           <Typography>Video Name</Typography>

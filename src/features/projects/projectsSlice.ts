@@ -1,12 +1,5 @@
-import {
-  createReducer,
-  createAction,
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  AnyAction,
-} from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 
 export interface Project {
   id: string;
@@ -30,10 +23,13 @@ export const projectsSlice = createSlice({
     getProjectsList: (state, action: PayloadAction<Project[]>) => {
       state.projects = action.payload;
     },
+    removeProjectsList: (state) => {
+      state.projects = [];
+    },
   },
 });
 
-export const { getProjectsList } = projectsSlice.actions;
+export const { getProjectsList, removeProjectsList } = projectsSlice.actions;
 export const selectProjects = (state: RootState) => state.projects;
 
 export default projectsSlice.reducer;

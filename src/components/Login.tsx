@@ -16,7 +16,6 @@ import {
   cognitoUserLogin,
 } from '../features/user/userAPI';
 import { useNavigate } from 'react-router-dom';
-import { getProjectsList } from '../features/projects/projectsSlice';
 
 const initialFormData = {
   name: '',

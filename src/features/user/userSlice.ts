@@ -1,12 +1,5 @@
-import {
-  createReducer,
-  createAction,
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  AnyAction,
-} from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 
 interface UserState {
   id: string;

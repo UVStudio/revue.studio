@@ -178,7 +178,6 @@ export const cognitoUserLogout = () => {
       cognitoUser.globalSignOut({
         onSuccess: (msg: string) => {
           alert(msg || JSON.stringify(msg));
-          localStorage.clear();
         },
         onFailure: (err: Error) => {
           alert(err.message || JSON.stringify(err));
