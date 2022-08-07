@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
-import { dynamoDBAddProjectName } from '../features/projects/projectsAPI';
+import { dynamoDBAddProject } from '../features/projects/projectsAPI';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 
 const initialFormData = {
@@ -75,20 +75,9 @@ const AddProject = () => {
   };
 
   const createProjectObject = () => {
-    const newProjectObject: UploadProjectObject = {
-      userId: userState.id,
-      projectId: Date.now().toString(),
-      projectName,
-      projectDescription,
-      uploads,
-    };
-    console.log('newProjectObject: ', newProjectObject);
-    dynamoDBAddProjectName(
-      newProjectObject.userId,
-      newProjectObject.projectId,
-      projectName,
-      projectDescription
-    );
+    const projectId = Date.now().toString();
+    const userId = userState.id;
+    dynamoDBAddProject(projectId, userId, projectName, projectDescription);
   };
 
   //1, create Project in DynamoDB, populate newProjectObject

@@ -35,10 +35,6 @@ export const userSlice = createSlice({
       state.email = '';
       state.token = '';
     },
-    // getUserState: (state, action: PayloadAction<UserState>) => {
-    //   state.email = action.payload.email;
-    //   state.token = action.payload.token;
-    // },
   },
 });
 

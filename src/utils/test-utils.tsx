@@ -22,8 +22,11 @@ export function renderWithProviders(
     preloadedState = {
       user: {
         id: '',
-        email: 'loading email...',
+        email: '',
         token: '',
+      },
+      projects: {
+        projects: [],
       },
     },
     // Automatically create a store instance if no store was passed in

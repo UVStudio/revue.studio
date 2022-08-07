@@ -6,14 +6,17 @@ import {
   Action,
 } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlice';
+import projectsReducer from '../features/projects/projectsSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  projects: projectsReducer,
 });
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    projects: projectsReducer,
   },
 });
 
