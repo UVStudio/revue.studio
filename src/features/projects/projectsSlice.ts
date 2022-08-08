@@ -6,6 +6,7 @@ export interface Project {
   userId: string;
   projectName: string;
   projectDescription: string;
+  timeStamp: string;
 }
 
 export interface ProjectsArray {

@@ -16,7 +16,7 @@ import {
 } from '../features/user/userAPI';
 import { poolData } from '../constants/poolData';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 export const userPool = new CognitoUserPool(poolData);
@@ -54,12 +54,12 @@ const Dashboard = () => {
     await getCognitoUserAttributes();
   };
 
-  const toProjectDetailsHandler = (str: string) => {
-    console.log('clicked');
-    navigate(`../projectDetails/${str}`, { replace: false });
+  const toProjectDetailsHandler = (project: Project) => {
+    navigate(`../projectDetails/${project.id}`, {
+      replace: false,
+      state: project,
+    });
   };
-
-  console.log('projects state: ', projectsState);
 
   return (
     <Box className="section">
@@ -89,7 +89,7 @@ const Dashboard = () => {
             <Box
               key={project.id}
               className="add-video-row"
-              onClick={() => toProjectDetailsHandler(project.id)}
+              onClick={() => toProjectDetailsHandler(project)}
             >
               <Typography className="ad-video-row-text">
                 {project.projectName}

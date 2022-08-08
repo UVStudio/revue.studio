@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { dynamoDBAddProject } from '../features/projects/projectsAPI';
@@ -21,6 +22,7 @@ export interface UploadProjectObject {
   projectId: string;
   projectName: string;
   projectDescription: string;
+  timeStamp: string;
   uploads: UploadFileObject[];
 }
 
@@ -37,14 +39,14 @@ const AddProject = () => {
   const { projectName, projectDescription } = formData;
 
   const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    function slicePathToName(str: string): string {
+    const slicePathToName = (str: string): string => {
       for (let i = str.length; i > 0; i--) {
         if (str[i] === '\\') {
           return str.slice(i + 1, str.length);
         }
       }
       return str;
-    }
+    };
     setUploads([
       ...uploads,
       {
@@ -75,9 +77,28 @@ const AddProject = () => {
   };
 
   const createProjectObject = () => {
-    const projectId = Date.now().toString();
+    const projectId = uuidv4();
+    const timeStamp = Date.now().toString();
     const userId = userState.id;
-    dynamoDBAddProject(projectId, userId, projectName, projectDescription);
+    try {
+      if (projectName || projectDescription === '') {
+        throw new Error('Please fill out form');
+      }
+      dynamoDBAddProject(
+        projectId,
+        userId,
+        projectName,
+        projectDescription,
+        timeStamp
+      );
+      setFormData(initialFormData);
+      setUploads([]);
+      console.log('formData: ', formData);
+      console.log('uploads: ', uploads);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.log(err.message);
+    }
   };
 
   //1, create Project in DynamoDB, populate newProjectObject

@@ -4,6 +4,7 @@ import About from './components/About';
 import Dashboard from './components/Dashboard';
 import Projects from './components/Projects';
 import Login from './components/Login';
+import AddProjects from './components/AddProject';
 import { act } from '@testing-library/react';
 import { App } from './App';
 
@@ -23,6 +24,7 @@ test('renders components of the app', () => {
     <About />;
     <Login />;
     <Projects />;
+    <AddProjects />;
   });
 });
 

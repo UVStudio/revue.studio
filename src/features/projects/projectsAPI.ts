@@ -8,7 +8,8 @@ export const dynamoDBAddProject = async (
   projectId: string,
   userId: string,
   projectName: string,
-  projectDescription: string
+  projectDescription: string,
+  timeStamp: string
 ) => {
   const config = {
     headers: {
@@ -20,6 +21,7 @@ export const dynamoDBAddProject = async (
     userId,
     projectName,
     projectDescription,
+    timeStamp,
   });
   console.log('body: ', body);
   try {
