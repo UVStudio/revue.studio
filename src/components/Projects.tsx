@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
-const Project = () => {
+const Projects = () => {
   const navigate = useNavigate();
 
   const downloadHandler = (
@@ -92,4 +92,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Projects;

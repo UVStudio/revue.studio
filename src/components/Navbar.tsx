@@ -9,6 +9,7 @@ import Dashboard from './Dashboard';
 import Projects from './Projects';
 import Login from './Login';
 import AddProject from './AddProject';
+import ProjectDetails from './ProjectDetails';
 
 import AppBar from '@mui/material/AppBar';
 import Menu from '@mui/material/Menu';
@@ -163,6 +164,7 @@ export const Navbar = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/projectDetails/:projectId" element={<ProjectDetails />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/login" element={<Login />} />
         <Route path="/addProject" element={<AddProject />} />
