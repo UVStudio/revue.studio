@@ -86,7 +86,7 @@ a:link {
   margin: 1vw 5vw;
 }
 
-.add-video-row {
+.add-project-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -98,12 +98,12 @@ a:link {
   padding: 7px;
 }
 
-.add-video-row:hover{
+.add-project-row:hover{
   cursor: pointer;
 }
 
 
-.add-video-row-text {
+.add-project-row-text {
   margin: 5px;
 }
 

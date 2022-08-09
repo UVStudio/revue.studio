@@ -88,10 +88,10 @@ const Dashboard = () => {
           return (
             <Box
               key={project.id}
-              className="add-video-row"
+              className="add-project-row"
               onClick={() => toProjectDetailsHandler(project)}
             >
-              <Typography className="ad-video-row-text">
+              <Typography className="add-project-row-text">
                 {project.projectName}
               </Typography>
             </Box>

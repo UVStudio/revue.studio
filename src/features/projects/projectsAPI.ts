@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import * as AWS from 'aws-sdk/global';
 
 export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 

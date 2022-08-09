@@ -37,7 +37,7 @@ const Login = () => {
   const [register, setRegister] = useState(false);
   const [confirmSent, setConfirmSent] = useState(false);
 
-  const { name, email, password, confirmPassword, phone } = formData;
+  const { email, password, confirmPassword, phone } = formData;
   const { confirmEmail, confirmCode } = confirmData;
 
   //GLOBAL STATE
@@ -173,13 +173,13 @@ const Login = () => {
             {!confirmSent ? (
               register ? (
                 <Box className="section">
-                  <TextField
+                  {/* <TextField
                     required
                     id="name"
                     label="Username"
                     value={name}
                     onChange={(e) => onChangeForm(e)}
-                  />
+                  /> */}
                   <TextField
                     required
                     id="email"

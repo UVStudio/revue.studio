@@ -24,9 +24,9 @@ const Projects = () => {
   return (
     <Box className="App">
       <Box className="section">
-        <Box className="section">
+        <Box className="section" marginTop={'20px'}>
           <Button variant="contained" onClick={toNewProjectHandler}>
-            Add Project
+            New Project
           </Button>
         </Box>
         <Box className="video-container">
