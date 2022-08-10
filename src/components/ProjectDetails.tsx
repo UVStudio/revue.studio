@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { Project } from '../features/projects/projectsSlice';
+import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
+import ReactPlayer from 'react-player/lazy';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 
 export interface UploadFileObject {
@@ -23,6 +26,15 @@ export interface UploadProjectObject {
   uploads: UploadFileObject[];
 }
 
+export interface VideoObject {
+  userId: string;
+  projectId: string;
+  fileName: string;
+  fileUrl: string;
+  s3Url: string;
+  timeStamp: string;
+}
+
 const ProjectDetails = () => {
   //PARAMS FROM NAVIGATE
   const projectState = useLocation().state as Project;
@@ -34,8 +46,9 @@ const ProjectDetails = () => {
   const [fileUrl, setFileUrl] = useState('');
   const [fileName, setFileName] = useState('');
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
+  const [videos, setVideos] = useState<VideoObject[]>([]);
 
-  const s3Url = 'https://revue-studio-users.s3.amazonaws.com';
+  const awsS3Url = 'https://revue-studio-users.s3.amazonaws.com';
 
   const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slicePathToName = (str: string): string => {
@@ -54,7 +67,7 @@ const ProjectDetails = () => {
         projectId: projectState.id,
         fileName: slicePathToName(e.target.value),
         fileUrl: e.target.value,
-        s3Url: `${s3Url}/${userState.id}/${
+        s3Url: `${awsS3Url}/${userState.id}/${
           projectState.id
         }/${Date.now().toString()}-${slicePathToName(e.target.value)}`,
       },
@@ -70,12 +83,28 @@ const ProjectDetails = () => {
     }
   }, [fileUrl, fileName]);
 
+  useEffect(() => {
+    async function fetchData() {
+      const response = await dynamoDBGetVideosByProjectId(projectState.id);
+      console.log('videos: ', response.data.Items);
+      setVideos(response.data.Items);
+    }
+    fetchData();
+  }, [projectState.id]);
+
   const uploadVideosHandler = () => {
     console.log('uploads obj: ', uploads);
   };
 
   const removeVideoHandler = (fileName: string) => {
     setUploads(uploads.filter((upload) => upload.fileName !== fileName));
+  };
+
+  const downloadHandler = (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ): void => {
+    e.preventDefault();
+    console.log('download');
   };
 
   return (
@@ -118,6 +147,35 @@ const ProjectDetails = () => {
             Upload Videos to Project
           </Button>
         </Box>
+      </Box>
+      <Box className="section">
+        {videos.map((video) => {
+          return (
+            <Box key={video.timeStamp}>
+              <Box className="video-container">
+                <Box className="video-info-container">
+                  <Typography>{video.fileName}</Typography>
+                  <Link
+                    to={`${awsS3Url}/${video.s3Url}`}
+                    target="_blank"
+                    download
+                  >
+                    <FileDownloadOutlinedIcon onClick={downloadHandler} />
+                  </Link>
+                </Box>
+                <Box className="video-player-container">
+                  <Box className="video-player">
+                    <ReactPlayer
+                      controls={true}
+                      light={true}
+                      url={`${awsS3Url}/${video.s3Url}`}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          );
+        })}
       </Box>
     </Box>
   );

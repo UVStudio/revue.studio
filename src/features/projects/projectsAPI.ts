@@ -35,7 +35,7 @@ export const dynamoDBAddProject = async (
   }
 };
 
-//GET PROJECTS BY USERID - not used at this moment
+//GET PROJECTS BY USERID
 export const dynamoDBGetProjectsByUserId = async (userId: string) => {
   const config = {
     headers: {

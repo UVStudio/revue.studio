@@ -37,8 +37,6 @@ const AddProject = () => {
   useEffect(() => {
     // setProjectId(uuidv4());
     for (const project of projectsState.projects) {
-      console.log('each project: ', project);
-      console.log('projectId: ', projectId);
       if (project.id === projectId) {
         navigate(`../projectDetails/${projectId}`, {
           replace: false,
@@ -76,8 +74,6 @@ const AddProject = () => {
       console.log(err.message);
     }
   };
-
-  console.log('project state: ', projectsState);
 
   return (
     <Box className="section">
