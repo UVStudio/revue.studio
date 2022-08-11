@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import Video from './Video';
+import UploadsList from './UploadsList';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { Project } from '../features/projects/projectsSlice';
+import { awsS3Url } from '../constants/awsLinks';
 import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
-import { timeStampConverter } from '../utils/timeConversion';
-import ReactPlayer from 'react-player/lazy';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 
 export interface UploadFileObject {
   id: string;
@@ -16,15 +15,6 @@ export interface UploadFileObject {
   fileName: string;
   fileUrl: string;
   s3Url: string;
-}
-
-export interface UploadProjectObject {
-  userId: string;
-  projectId: string;
-  projectName: string;
-  projectDescription: string;
-  timeStamp: string;
-  uploads: UploadFileObject[];
 }
 
 export interface VideoObject {
@@ -48,8 +38,6 @@ const ProjectDetails = () => {
   const [fileName, setFileName] = useState('');
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
   const [videos, setVideos] = useState<VideoObject[]>([]);
-
-  const awsS3Url = 'https://revue-studio-users.s3.amazonaws.com';
 
   const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slicePathToName = (str: string): string => {
@@ -97,16 +85,6 @@ const ProjectDetails = () => {
     console.log('uploads obj: ', uploads);
   };
 
-  const removeVideoHandler = (fileName: string) => {
-    setUploads(uploads.filter((upload) => upload.fileName !== fileName));
-  };
-
-  const downloadHandler = (
-    e: React.MouseEvent<SVGSVGElement, MouseEvent>
-  ): void => {
-    e.preventDefault();
-  };
-
   return (
     <Box>
       <Box className="section">
@@ -134,14 +112,11 @@ const ProjectDetails = () => {
         <Box>
           {uploads.map((upload) => {
             return (
-              <Box key={upload.fileUrl} className="add-project-row">
-                <Typography className="add-project-row-text">
-                  {upload.fileName}
-                </Typography>
-                <RemoveCircleOutlineOutlinedIcon
-                  onClick={() => removeVideoHandler(upload.fileName)}
-                />
-              </Box>
+              <UploadsList
+                uploads={uploads}
+                upload={upload}
+                setUploads={setUploads}
+              />
             );
           })}
         </Box>
@@ -155,30 +130,7 @@ const ProjectDetails = () => {
         {videos.map((video) => {
           return (
             <Box key={video.timeStamp}>
-              <Box className="video-container">
-                <Box className="video-info-container">
-                  <Typography>{video.fileName}</Typography>
-                  <Typography>
-                    Uploaded: {timeStampConverter(Number(video.timeStamp))}
-                  </Typography>
-                  <Link
-                    to={`${awsS3Url}/${video.s3Url}`}
-                    target="_blank"
-                    download
-                  >
-                    <FileDownloadOutlinedIcon onClick={downloadHandler} />
-                  </Link>
-                </Box>
-                <Box className="video-player-container">
-                  <Box className="video-player">
-                    <ReactPlayer
-                      controls={true}
-                      light={false}
-                      url={`${awsS3Url}/${video.s3Url}`}
-                    />
-                  </Box>
-                </Box>
-              </Box>
+              <Video video={video} />
             </Box>
           );
         })}

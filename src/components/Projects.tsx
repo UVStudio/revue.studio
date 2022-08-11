@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
 import { Link, useNavigate } from 'react-router-dom';
-
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 const Projects = () => {

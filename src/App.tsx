@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { loginUserState } from './features/user/userSlice';
-import Navbar from './components/Navbar';
 import { useAppSelector, useAppDispatch } from './app/hooks';
+import Navbar from './components/Navbar';
+import { awsProjectsAPI } from './constants/awsLinks';
+import { loginUserState } from './features/user/userSlice';
 import { selectUser } from './features/user/userSlice';
 import { getProjectsList } from './features/projects/projectsSlice';
-
-export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 
 export interface userDataLocalStorage {
   id: string;

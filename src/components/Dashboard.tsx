@@ -18,7 +18,6 @@ import { poolData } from '../constants/poolData';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useNavigate } from 'react-router-dom';
 
-export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
 export const userPool = new CognitoUserPool(poolData);
 
 const Dashboard = () => {

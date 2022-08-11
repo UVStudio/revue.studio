@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-export const awsProjectsAPI = '912ggori07.execute-api.us-east-1.amazonaws.com';
+import { awsProjectsAPI } from '../../constants/awsLinks';
 
 //DYNAMODB PROJECT CREATION
 export const dynamoDBAddProject = async (
