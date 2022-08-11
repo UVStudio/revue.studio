@@ -5,6 +5,7 @@ import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { Project } from '../features/projects/projectsSlice';
 import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
+import { timeStampConverter } from '../utils/timeConversion';
 import ReactPlayer from 'react-player/lazy';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
@@ -84,11 +85,11 @@ const ProjectDetails = () => {
   }, [fileUrl, fileName]);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
       console.log('videos: ', response.data.Items);
-      setVideos(response.data.Items);
-    }
+      setVideos(response.data.Items.reverse());
+    };
     fetchData();
   }, [projectState.id]);
 
@@ -104,7 +105,6 @@ const ProjectDetails = () => {
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ): void => {
     e.preventDefault();
-    console.log('download');
   };
 
   return (
@@ -113,6 +113,9 @@ const ProjectDetails = () => {
         <Typography variant="h6">ProjectDetails</Typography>
         <Typography>Project Name: {projectState.projectName}</Typography>
         <Typography>Project ID: {projectState.id}</Typography>
+        <Typography>
+          Project Description: {projectState.projectDescription}
+        </Typography>
       </Box>
       <Box className="section">
         <Box marginTop={'20px'}>
@@ -155,6 +158,9 @@ const ProjectDetails = () => {
               <Box className="video-container">
                 <Box className="video-info-container">
                   <Typography>{video.fileName}</Typography>
+                  <Typography>
+                    Uploaded: {timeStampConverter(Number(video.timeStamp))}
+                  </Typography>
                   <Link
                     to={`${awsS3Url}/${video.s3Url}`}
                     target="_blank"
@@ -167,7 +173,7 @@ const ProjectDetails = () => {
                   <Box className="video-player">
                     <ReactPlayer
                       controls={true}
-                      light={true}
+                      light={false}
                       url={`${awsS3Url}/${video.s3Url}`}
                     />
                   </Box>

@@ -58,6 +58,7 @@ a:link {
 .video-container {
   color: white;
   background-color: #282c34;
+  filter: drop-shadow(5px 5px 5px rgb(196, 196, 196));
   margin: 1rem;
 }
 
@@ -67,14 +68,16 @@ a:link {
   justify-content: space-between;
   align-content: space-around;
   padding: 8px 15px;
+
 }
 
 .video-player-container {
-  padding: 0.1rem;
+  padding: 0rem;
+
 }
 
 .video-player {
-  margin: 0.1rem;
+  margin: 0rem;
 }
 
 .text-overlay {
