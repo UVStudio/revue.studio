@@ -7,13 +7,19 @@ import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { Project } from '../features/projects/projectsSlice';
 import { awsS3Url } from '../constants/awsLinks';
-import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
+import {
+  dynamoDBGetVideosByProjectId,
+  s3GetPresignedUrl,
+  s3UploadVideos,
+} from '../features/videos/videosAPI';
 
 export interface UploadFileObject {
   id: string;
   projectId: string;
   fileName: string;
   fileUrl: string;
+  file: File;
+  key: string;
   s3Url: string;
 }
 
@@ -22,6 +28,7 @@ export interface VideoObject {
   projectId: string;
   fileName: string;
   fileUrl: string;
+  file: File;
   s3Url: string;
   timeStamp: string;
 }
@@ -39,6 +46,8 @@ const ProjectDetails = () => {
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
   const [videos, setVideos] = useState<VideoObject[]>([]);
 
+  console.log('details rerenders');
+
   const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slicePathToName = (str: string): string => {
       for (let i = str.length; i > 0; i--) {
@@ -49,16 +58,22 @@ const ProjectDetails = () => {
       return str;
     };
 
+    const timeStamp = Date.now().toString();
+
     setUploads([
       ...uploads,
       {
-        id: Date.now().toString(),
+        id: timeStamp,
         projectId: projectState.id,
         fileName: slicePathToName(e.target.value),
         fileUrl: e.target.value,
+        file: e.target.files![0],
+        key: `${userState.id}/${projectState.id}/${timeStamp}-${slicePathToName(
+          e.target.value
+        )}`,
         s3Url: `${awsS3Url}/${userState.id}/${
           projectState.id
-        }/${Date.now().toString()}-${slicePathToName(e.target.value)}`,
+        }/${timeStamp}-${slicePathToName(e.target.value)}`,
       },
     ]);
     setFileUrl(e.target.value);
@@ -75,14 +90,16 @@ const ProjectDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
-      console.log('videos: ', response.data.Items);
       setVideos(response.data.Items.reverse());
     };
     fetchData();
   }, [projectState.id]);
 
-  const uploadVideosHandler = () => {
+  const uploadVideosHandler = async () => {
     console.log('uploads obj: ', uploads);
+    const presignedUrl = await s3GetPresignedUrl(uploads);
+    console.log('response: ', presignedUrl);
+    await s3UploadVideos(presignedUrl, uploads);
   };
 
   return (
@@ -113,6 +130,7 @@ const ProjectDetails = () => {
           {uploads.map((upload) => {
             return (
               <UploadsList
+                key={upload.id}
                 uploads={uploads}
                 upload={upload}
                 setUploads={setUploads}

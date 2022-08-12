@@ -18,7 +18,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const initialFormData = {
-  name: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -173,13 +172,6 @@ const Login = () => {
             {!confirmSent ? (
               register ? (
                 <Box className="section">
-                  {/* <TextField
-                    required
-                    id="name"
-                    label="Username"
-                    value={name}
-                    onChange={(e) => onChangeForm(e)}
-                  /> */}
                   <TextField
                     required
                     id="email"

@@ -1,14 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { UploadFileObject } from './ProjectDetails';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
-
-export interface UploadFileObject {
-  id: string;
-  projectId: string;
-  fileName: string;
-  fileUrl: string;
-  s3Url: string;
-}
 
 const UploadsList = ({
   upload,

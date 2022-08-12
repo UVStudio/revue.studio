@@ -3,17 +3,9 @@ import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { awsS3Url } from '../constants/awsLinks';
 import { timeStampConverter } from '../utils/timeConversion';
+import { VideoObject } from './ProjectDetails';
 import ReactPlayer from 'react-player/lazy';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-
-export interface VideoObject {
-  userId: string;
-  projectId: string;
-  fileName: string;
-  fileUrl: string;
-  s3Url: string;
-  timeStamp: string;
-}
 
 const Video = ({ video }: { video: VideoObject }): JSX.Element => {
   const downloadHandler = (
@@ -22,10 +14,19 @@ const Video = ({ video }: { video: VideoObject }): JSX.Element => {
     e.preventDefault();
   };
 
+  const shortenedFileName = (fileName: string) => {
+    for (let i = 0; i < fileName.length; i++) {
+      const element = fileName[i];
+      if (element === '-') {
+        return fileName.slice(i + 1, fileName.length);
+      }
+    }
+  };
+
   return (
     <Box className="video-container">
       <Box className="video-info-container">
-        <Typography>{video.fileName}</Typography>
+        <Typography>{shortenedFileName(video.fileName)}</Typography>
         <Typography>
           Uploaded: {timeStampConverter(Number(video.timeStamp))}
         </Typography>

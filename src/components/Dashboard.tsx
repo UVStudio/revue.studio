@@ -25,6 +25,8 @@ const Dashboard = () => {
   const userState = useAppSelector(selectUser);
   const projectsState = useAppSelector(selectProjects);
 
+  console.log('dashboard rerenders');
+
   //STATE AND NAV HOOKS
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
