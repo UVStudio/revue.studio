@@ -20,6 +20,10 @@ a:link {
   text-decoration: none;
 }
 
+.test {
+  display: block;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo, .AppBar-logo {

@@ -1,7 +1,6 @@
 import React from 'react';
-import ReactPlayer from 'react-player/lazy';
-import { Box, Button, Typography } from '@mui/material';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import DrawerComponent from './DrawerComponent';
+import { Box, Button, Typography, Drawer } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, logoutUserState } from '../features/user/userSlice';
 import {
@@ -19,6 +18,7 @@ import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useNavigate } from 'react-router-dom';
 
 export const userPool = new CognitoUserPool(poolData);
+const drawerWidth = 160;
 
 const Dashboard = () => {
   //GLOBAL STATE
@@ -39,14 +39,6 @@ const Dashboard = () => {
     navigate('../', { replace: true });
   };
 
-  const downloadHandler = (
-    e: React.MouseEvent<SVGSVGElement, MouseEvent>
-  ): void => {
-    e.preventDefault();
-    window.location.href =
-      'https://revue-video-testing.s3.amazonaws.com/squirrel1.mp4'; // it will open download of filepath
-  };
-
   const dynamoDBEditUserNameHandler = async () => {
     await dynamoDBEditUserName(userState.id, userState.email, 'Leo');
   };
@@ -63,56 +55,73 @@ const Dashboard = () => {
   };
 
   return (
-    <Box className="section">
-      <Box className="section">
-        <Typography>{userState.email}</Typography>
-        {userState.email ? (
-          <Button variant="contained" onClick={userLogoutHandler}>
-            Logout
-          </Button>
-        ) : (
-          <Typography>You are not authenticated.</Typography>
-        )}
+    <Box className="test">
+      <Box
+        component="nav"
+        sx={{
+          width: { sm: drawerWidth },
+          flexShrink: { sm: 0 },
+        }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          <DrawerComponent />
+        </Drawer>
       </Box>
-      <Box className="section">
-        <Button variant="contained" onClick={getUserAttrHandler}>
-          User Attribute
-        </Button>
-      </Box>
-      <Box className="section">
-        <Button variant="contained" onClick={dynamoDBEditUserNameHandler}>
-          Update DDB Username
-        </Button>
-      </Box>
-      <Box>
-        {projectsState.projects.map((project: Project) => {
-          return (
-            <Box
-              key={project.id}
-              className="add-project-row"
-              onClick={() => toProjectDetailsHandler(project)}
-            >
-              <Typography className="add-project-row-text">
-                {project.projectName}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Box>
-      <Box className="video-container">
-        <Box className="video-info-container">
-          <Typography>Video Name</Typography>
-          <FileDownloadOutlinedIcon onClick={(e) => downloadHandler(e)} />
+      <Box
+        className="section"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% + ${drawerWidth}px)` },
+        }}
+      >
+        <Typography variant="h5">Dashboard</Typography>
+        <Box className="section">
+          <Typography>{userState.email}</Typography>
+          {userState.email ? (
+            <Button variant="contained" onClick={userLogoutHandler}>
+              Logout
+            </Button>
+          ) : (
+            <Typography>You are not authenticated.</Typography>
+          )}
         </Box>
-        <Box className="video-player-container">
-          <Box className="video-player">
-            <ReactPlayer
-              controls={true}
-              onDuration={(dur) => console.log('duration: ', dur)}
-              light={true}
-              url="https://revue-video-testing.s3.amazonaws.com/squirrel1.mp4"
-            />
-          </Box>
+        <Box className="section">
+          <Button variant="contained" onClick={getUserAttrHandler}>
+            User Attribute
+          </Button>
+        </Box>
+        <Box className="section">
+          <Button variant="contained" onClick={dynamoDBEditUserNameHandler}>
+            Update DDB Username
+          </Button>
+        </Box>
+        <Box className="section">
+          <Typography variant="h5">Your Projects:</Typography>
+          {projectsState.projects.map((project: Project) => {
+            return (
+              <Box
+                key={project.id}
+                className="add-project-row"
+                onClick={() => toProjectDetailsHandler(project)}
+              >
+                <Typography className="add-project-row-text">
+                  {project.projectName}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
       </Box>
     </Box>
