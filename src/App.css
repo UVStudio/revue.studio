@@ -89,12 +89,8 @@ a:link {
 }
 
 .add-project-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   width: 30ch;
-  margin: 10px 0px;
+  margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;
   padding: 7px;
@@ -102,11 +98,6 @@ a:link {
 
 .add-project-row:hover{
   cursor: pointer;
-}
-
-
-.add-project-row-text {
-  margin: 5px;
 }
 
 @keyframes App-logo-spin {

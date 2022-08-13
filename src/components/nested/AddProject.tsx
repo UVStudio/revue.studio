@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectUser } from '../features/user/userSlice';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectUser } from '../../features/user/userSlice';
 import {
   selectProjects,
   getProjectsList,
-} from '../features/projects/projectsSlice';
+} from '../../features/projects/projectsSlice';
 import {
   dynamoDBAddProject,
   dynamoDBGetProjectsByUserId,
-} from '../features/projects/projectsAPI';
+} from '../../features/projects/projectsAPI';
 import { useNavigate } from 'react-router-dom';
 
 const initialFormData = {

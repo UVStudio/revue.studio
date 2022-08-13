@@ -9,8 +9,8 @@ import About from './About';
 import Dashboard from './Dashboard';
 import Projects from './Projects';
 import Login from './Login';
-import AddProject from './AddProject';
-import ProjectDetails from './ProjectDetails';
+import AddProject from './nested/AddProject';
+import ProjectDetails from './nested/ProjectDetails';
 import {
   AppBar,
   Menu,

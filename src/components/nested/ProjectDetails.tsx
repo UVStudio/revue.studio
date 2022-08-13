@@ -3,15 +3,15 @@ import { Box, Typography, Button } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Video from './Video';
 import UploadsList from './UploadsList';
-import { useAppSelector } from '../app/hooks';
-import { selectUser } from '../features/user/userSlice';
-import { Project } from '../features/projects/projectsSlice';
-import { awsS3Url } from '../constants/awsLinks';
+import { useAppSelector } from '../../app/hooks';
+import { selectUser } from '../../features/user/userSlice';
+import { Project } from '../../features/projects/projectsSlice';
+import { awsS3Url } from '../../constants/awsLinks';
 import {
   dynamoDBGetVideosByProjectId,
   s3GetPresignedUrl,
   s3UploadVideos,
-} from '../features/videos/videosAPI';
+} from '../../features/videos/videosAPI';
 
 export interface UploadFileObject {
   id: string;

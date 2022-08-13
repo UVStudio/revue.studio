@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UploadFileObject } from '../../components/ProjectDetails';
+import { UploadFileObject } from '../../components/nested/ProjectDetails';
 import { awsVideosAPI } from '../../constants/awsLinks';
 
 //GET VIDEOS BY PROJECTID
