@@ -1,6 +1,7 @@
 import React from 'react';
 import DrawerComponent from './DrawerComponent';
-import { Box, Button, Typography, Drawer } from '@mui/material';
+import { Box, Button, Typography, Drawer, IconButton } from '@mui/material';
+import { MenuOpen } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, logoutUserState } from '../features/user/userSlice';
 import {
@@ -26,6 +27,12 @@ const Dashboard = () => {
   const projectsState = useAppSelector(selectProjects);
 
   console.log('dashboard rerenders');
+
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   //STATE AND NAV HOOKS
   const dispatch = useAppDispatch();
@@ -55,7 +62,26 @@ const Dashboard = () => {
   };
 
   return (
-    <Box className="test">
+    <Box sx={{ display: 'flex' }}>
+      {/* <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar sx={{ mt: 8 }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuOpen />
+          </IconButton>
+        </Toolbar>
+      </AppBar> */}
       <Box
         component="nav"
         sx={{
@@ -64,10 +90,43 @@ const Dashboard = () => {
         }}
         aria-label="mailbox folders"
       >
+        <Drawer variant="permanent">
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{
+              pl: 3,
+              pt: 10,
+              display: { sm: 'none' },
+            }}
+          >
+            <MenuOpen />
+          </IconButton>
+        </Drawer>
+
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+        >
+          <DrawerComponent />
+        </Drawer>
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'block' },
+            display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
@@ -79,11 +138,11 @@ const Dashboard = () => {
         </Drawer>
       </Box>
       <Box
+        component="main"
         className="section"
         sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% + ${drawerWidth}px)` },
+          p: 2,
+          width: `calc(100% + ${drawerWidth}px)`,
         }}
       >
         <Typography variant="h5">Dashboard</Typography>

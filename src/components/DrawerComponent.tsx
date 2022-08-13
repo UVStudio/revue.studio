@@ -1,8 +1,6 @@
 import React from 'react';
-import Toolbar from '@mui/material/Toolbar';
 import {
   Box,
-  Divider,
   List,
   ListItem,
   ListItemButton,
@@ -11,21 +9,9 @@ import {
 
 const DrawerComponent = () => {
   return (
-    <Box sx={{ paddingTop: 2 }}>
-      <Toolbar />
-      <Divider />
+    <Box sx={{ paddingTop: 8 }}>
       <List>
-        {['Profile', 'Account', 'Notifications'].map((text) => (
-          <ListItem key={text}>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Storage', 'Data'].map((text) => (
+        {['Profile', 'Account', 'Notifications', 'Storage'].map((text) => (
           <ListItem key={text}>
             <ListItemButton>
               <ListItemText primary={text} />

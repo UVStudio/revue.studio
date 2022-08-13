@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 import { Routes, Route, Link } from 'react-router-dom';
+
 import { selectUser } from '../features/user/userSlice';
 import { useAppSelector } from '../app/hooks';
 import Home from './Home';
@@ -10,16 +11,18 @@ import Projects from './Projects';
 import Login from './Login';
 import AddProject from './AddProject';
 import ProjectDetails from './ProjectDetails';
-
-import AppBar from '@mui/material/AppBar';
-import Menu from '@mui/material/Menu';
+import {
+  AppBar,
+  Menu,
+  MenuItem,
+  Box,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+
 import logo from '../assets/logo.svg';
 
 export const Navbar = () => {
@@ -39,7 +42,7 @@ export const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="relative" sx={{ zIndex: 'tooltip' }}>
+      <AppBar position="relative" sx={{ zIndex: 'snackbar' }}>
         <Toolbar>
           <IconButton>
             <Link to="/">
@@ -78,6 +81,7 @@ export const Navbar = () => {
                   onClose={handleCloseNavMenu}
                   sx={{
                     display: { xs: 'block', md: 'none' },
+                    zIndex: 'tooltip',
                   }}
                 >
                   {authPages.map((page) => (
@@ -89,7 +93,12 @@ export const Navbar = () => {
                   ))}
                 </Menu>
               </Box>
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: { xs: 'none', md: 'flex' },
+                }}
+              >
                 {authPages.map((page) => (
                   <Button
                     key={page}

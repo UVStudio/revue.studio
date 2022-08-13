@@ -6,12 +6,8 @@ a:link {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
 .AppBar-logo {
-  height: 8vmin;
+  height: 40px;
   pointer-events: none;
 }
 
@@ -20,13 +16,12 @@ a:link {
   text-decoration: none;
 }
 
-.test {
+.block {
   display: block;
 }
 
-
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo, .AppBar-logo {
+  .AppBar-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
@@ -98,7 +93,7 @@ a:link {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 50ch;
+  width: 30ch;
   margin: 10px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;
