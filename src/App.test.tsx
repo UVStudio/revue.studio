@@ -2,7 +2,7 @@ import React from 'react';
 import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
-import Projects from './components/Projects';
+import Projects from './components/Project';
 import Login from './components/Login';
 import AddProjects from './components/nested/AddProject';
 import { act } from '@testing-library/react';

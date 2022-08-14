@@ -6,10 +6,8 @@ import DrawerComponent from './DrawerComponent';
 const drawerWidth = 160;
 
 const SideDrawer = ({
-  section,
   setSection,
 }: {
-  section: string;
   setSection: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -57,7 +55,7 @@ const SideDrawer = ({
           },
         }}
       >
-        <DrawerComponent section={section} setSection={setSection} />
+        <DrawerComponent setSection={setSection} />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -70,7 +68,7 @@ const SideDrawer = ({
         }}
         open
       >
-        <DrawerComponent section={section} setSection={setSection} />
+        <DrawerComponent setSection={setSection} />
       </Drawer>
     </Box>
   );

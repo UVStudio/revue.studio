@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import Video from './Video';
-import UploadsList from './UploadsList';
-import { useAppSelector } from '../../app/hooks';
-import { selectUser } from '../../features/user/userSlice';
-import { Project } from '../../features/projects/projectsSlice';
-import { awsS3Url } from '../../constants/awsLinks';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Video from './nested/Video';
+import UploadsList from './nested/UploadsList';
+import { useAppSelector } from '../app/hooks';
+import { selectUser } from '../features/user/userSlice';
+import { Project } from '../features/projects/projectsSlice';
+import { awsS3Url } from '../constants/awsLinks';
 import {
   dynamoDBGetVideosByProjectId,
   s3GetPresignedUrl,
   s3UploadVideos,
-} from '../../features/videos/videosAPI';
+} from '../features/videos/videosAPI';
 
 export interface UploadFileObject {
   id: string;
@@ -39,14 +39,13 @@ const ProjectDetails = () => {
 
   //GLOBAL STATE
   const userState = useAppSelector(selectUser);
+  const navigate = useNavigate();
 
   //COMPONENT STATE HOOKS
   const [fileUrl, setFileUrl] = useState('');
   const [fileName, setFileName] = useState('');
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
   const [videos, setVideos] = useState<VideoObject[]>([]);
-
-  console.log('details rerenders');
 
   const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slicePathToName = (str: string): string => {
@@ -90,6 +89,7 @@ const ProjectDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
+      console.log('UE fetched from DDB Projects');
       setVideos(response.data.Items.reverse());
     };
     fetchData();
@@ -102,6 +102,13 @@ const ProjectDetails = () => {
     await s3UploadVideos(presignedUrl, uploads);
   };
 
+  const toPublicProject = (projectId: string) => {
+    console.log('projectId: ', projectId);
+    navigate(`../project/${projectId}`, {
+      replace: false,
+    });
+  };
+
   return (
     <Box>
       <Box className="section">
@@ -111,6 +118,12 @@ const ProjectDetails = () => {
         <Typography>
           Project Description: {projectState.projectDescription}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => toPublicProject(projectState.id)}
+        >
+          <Typography>Project Public Page</Typography>
+        </Button>
       </Box>
       <Box className="section">
         <Box marginTop={'20px'}>

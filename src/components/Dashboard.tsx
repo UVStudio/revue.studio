@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import SideDrawer from './nested/SideDrawer';
 import Profile from './nested/Profile';
 import ProjectsSection from './nested/ProjectsSection';
+import Account from './nested/Account';
+import Notifications from './nested/Notifications';
+import Storage from './nested/Storage';
 import { Box } from '@mui/material';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useAppSelector } from '../app/hooks';
@@ -20,11 +23,9 @@ const Dashboard = () => {
   const userState = useAppSelector(selectUser);
   const projectsState = useAppSelector(selectProjects);
 
-  console.log(section);
-
   return (
     <Box sx={{ display: 'flex' }}>
-      <SideDrawer section={section} setSection={setSection} />
+      <SideDrawer setSection={setSection} />
       <Box
         component="main"
         className="section"
@@ -37,6 +38,9 @@ const Dashboard = () => {
         {section === 'Projects' ? (
           <ProjectsSection projectsState={projectsState} />
         ) : null}
+        {section === 'Account' ? <Account /> : null}
+        {section === 'Notifications' ? <Notifications /> : null}
+        {section === 'Storage' ? <Storage /> : null}
       </Box>
     </Box>
   );

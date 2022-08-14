@@ -8,10 +8,8 @@ import {
 } from '@mui/material';
 
 const DrawerComponent = ({
-  section,
   setSection,
 }: {
-  section: string;
   setSection: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (

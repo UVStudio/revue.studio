@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { awsS3Url } from '../../constants/awsLinks';
 import { timeStampConverter } from '../../utils/timeConversion';
-import { VideoObject } from './ProjectDetails';
+import { VideoObject } from '../ProjectDetails';
 import ReactPlayer from 'react-player/lazy';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 

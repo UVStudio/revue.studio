@@ -7,10 +7,10 @@ import { useAppSelector } from '../app/hooks';
 import Home from './Home';
 import About from './About';
 import Dashboard from './Dashboard';
-import Projects from './Projects';
+import Project from './Project';
 import Login from './Login';
 import AddProject from './nested/AddProject';
-import ProjectDetails from './nested/ProjectDetails';
+import ProjectDetails from './ProjectDetails';
 import {
   AppBar,
   Menu,
@@ -37,8 +37,8 @@ export const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const authPages = ['About', 'Dashboard', 'Projects'];
-  const unAuthPages = ['About', 'Projects', 'Login'];
+  const authPages = ['About', 'Dashboard', 'Project'];
+  const unAuthPages = ['About', 'Project', 'Login'];
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -174,7 +174,7 @@ export const Navbar = () => {
         <Route path="/about" element={<About />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projectDetails/:projectId" element={<ProjectDetails />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/project/:projectId" element={<Project />} />
         <Route path="/login" element={<Login />} />
         <Route path="/addProject" element={<AddProject />} />
       </Routes>

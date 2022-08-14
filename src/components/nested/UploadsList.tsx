@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { UploadFileObject } from './ProjectDetails';
+import { UploadFileObject } from '../ProjectDetails';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 
 const UploadsList = ({
