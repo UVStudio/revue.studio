@@ -11,13 +11,14 @@ import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { selectProjects } from '../features/projects/projectsSlice';
 import { poolData } from '../constants/poolData';
+import { dashboardSections } from '../constants/dashboardSections';
 import { drawerWidth } from '../constants/layouts';
 
 export const userPool = new CognitoUserPool(poolData);
 
 const Dashboard = () => {
   //STATE HOOKS
-  const [section, setSection] = useState('Profile');
+  const [section, setSection] = useState('Projects');
 
   //GLOBAL STATE
   const userState = useAppSelector(selectUser);
@@ -34,13 +35,15 @@ const Dashboard = () => {
           width: `calc(100% + ${drawerWidth}px)`,
         }}
       >
-        {section === 'Profile' ? <Profile userState={userState} /> : null}
-        {section === 'Projects' ? (
+        {section === dashboardSections.projects ? (
           <ProjectsSection projectsState={projectsState} />
         ) : null}
-        {section === 'Account' ? <Account /> : null}
-        {section === 'Notifications' ? <Notifications /> : null}
-        {section === 'Storage' ? <Storage /> : null}
+        {section === dashboardSections.profile ? (
+          <Profile userState={userState} />
+        ) : null}
+        {section === dashboardSections.account ? <Account /> : null}
+        {section === dashboardSections.notifications ? <Notifications /> : null}
+        {section === dashboardSections.storage ? <Storage /> : null}
       </Box>
     </Box>
   );

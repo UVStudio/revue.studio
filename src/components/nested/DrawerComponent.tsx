@@ -6,6 +6,7 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material';
+import { dashboardSectionsArray } from '../../constants/dashboardSections';
 
 const DrawerComponent = ({
   setSection,
@@ -15,15 +16,13 @@ const DrawerComponent = ({
   return (
     <Box sx={{ paddingTop: 8 }}>
       <List>
-        {['Profile', 'Projects', 'Account', 'Notifications', 'Storage'].map(
-          (text) => (
-            <ListItem key={text}>
-              <ListItemButton>
-                <ListItemText primary={text} onClick={() => setSection(text)} />
-              </ListItemButton>
-            </ListItem>
-          )
-        )}
+        {dashboardSectionsArray.map((text) => (
+          <ListItem key={text}>
+            <ListItemButton onClick={() => setSection(text)}>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </Box>
   );

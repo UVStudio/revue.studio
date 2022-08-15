@@ -46,9 +46,26 @@ export const dynamoDBGetProjectsByUserId = async (userId: string) => {
       `https://${awsProjectsAPI}/projects/${userId}`,
       config
     );
-    console.log('projects: ', data);
     return data;
   } catch (error) {
-    throw new Error('Could not get projects by User Id');
+    throw new Error('Could not get project by User Id');
+  }
+};
+
+//GET PROJECTS BY USERID
+export const dynamoDBGetProjectByProjectId = async (projectId: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  try {
+    const data = await axios.get(
+      `https://${awsProjectsAPI}/project/${projectId}`,
+      config
+    );
+    return data;
+  } catch (error) {
+    throw new Error('Could not get project by Project Id');
   }
 };

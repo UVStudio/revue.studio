@@ -89,7 +89,10 @@ a:link {
 }
 
 .add-project-row {
-  width: 30ch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 35ch;
   margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;

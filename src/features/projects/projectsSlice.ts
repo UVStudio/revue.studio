@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
-export interface Project {
+export interface ProjectObject {
   id: string;
   userId: string;
   projectName: string;
@@ -10,7 +10,7 @@ export interface Project {
 }
 
 export interface ProjectsArray {
-  projects: Project[];
+  projects: ProjectObject[];
 }
 
 const initialState: ProjectsArray = {
@@ -21,7 +21,7 @@ export const projectsSlice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
-    getProjectsList: (state, action: PayloadAction<Project[]>) => {
+    getProjectsList: (state, action: PayloadAction<ProjectObject[]>) => {
       state.projects = action.payload;
     },
     removeProjectsList: (state) => {

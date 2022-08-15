@@ -5,7 +5,7 @@ import Video from './nested/Video';
 import UploadsList from './nested/UploadsList';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
-import { Project } from '../features/projects/projectsSlice';
+import { ProjectObject } from '../features/projects/projectsSlice';
 import { awsS3Url } from '../constants/awsLinks';
 import {
   dynamoDBGetVideosByProjectId,
@@ -35,7 +35,7 @@ export interface VideoObject {
 
 const ProjectDetails = () => {
   //PARAMS FROM NAVIGATE
-  const projectState = useLocation().state as Project;
+  const projectState = useLocation().state as ProjectObject;
 
   //GLOBAL STATE
   const userState = useAppSelector(selectUser);
@@ -87,13 +87,16 @@ const ProjectDetails = () => {
   }, [fileUrl, fileName]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchVideos = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
       console.log('UE fetched from DDB Projects');
       setVideos(response.data.Items.reverse());
     };
-    fetchData();
+    fetchVideos();
   }, [projectState.id]);
+
+  console.log('videos: ', videos);
+  console.log('project id: ', projectState.id);
 
   const uploadVideosHandler = async () => {
     console.log('uploads obj: ', uploads);
@@ -103,7 +106,6 @@ const ProjectDetails = () => {
   };
 
   const toPublicProject = (projectId: string) => {
-    console.log('projectId: ', projectId);
     navigate(`../project/${projectId}`, {
       replace: false,
     });

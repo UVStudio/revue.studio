@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Video from './nested/Video';
 import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
-import { Box } from '@mui/material';
+import { dynamoDBGetProjectByProjectId } from '../features/projects/projectsAPI';
+import { Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { ProjectObject } from '../features/projects/projectsSlice';
 
 export interface VideoObject {
   userId: string;
@@ -14,23 +16,44 @@ export interface VideoObject {
   timeStamp: string;
 }
 
+const initialProject = {
+  id: '',
+  userId: '',
+  projectName: '',
+  projectDescription: '',
+  timeStamp: '',
+};
+
 const Project = () => {
   const [videos, setVideos] = useState<VideoObject[]>([]);
+  const [project, setProject] = useState<ProjectObject>(initialProject);
 
   const params = useParams();
   const projectId = params.projectId as string;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchVideos = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
       console.log('UE fetched from DDB Project');
       setVideos(response.data.Items.reverse());
     };
-    fetchData();
+    fetchVideos();
+  }, [projectId]);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      const response = await dynamoDBGetProjectByProjectId(projectId);
+      console.log('UE fetched from DDB Project: ');
+      setProject(response.data.Items[0]);
+    };
+    fetchProject();
   }, [projectId]);
 
   return (
     <Box className="App">
+      <Box className="section">
+        <Typography variant="h6">{project.projectName}</Typography>
+      </Box>
       <Box className="section">
         {videos.map((video) => {
           return (

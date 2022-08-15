@@ -37,8 +37,8 @@ export const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const authPages = ['About', 'Dashboard', 'Project'];
-  const unAuthPages = ['About', 'Project', 'Login'];
+  const authPages = ['About', 'Dashboard'];
+  const unAuthPages = ['About', 'Login'];
 
   return (
     <Box sx={{ flexGrow: 1 }}>

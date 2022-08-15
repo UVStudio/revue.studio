@@ -1,6 +1,9 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { Project, ProjectsArray } from '../../features/projects/projectsSlice';
+import {
+  ProjectObject,
+  ProjectsArray,
+} from '../../features/projects/projectsSlice';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectsSection = ({
@@ -10,7 +13,7 @@ const ProjectsSection = ({
 }) => {
   const navigate = useNavigate();
 
-  const toProjectDetailsHandler = (project: Project) => {
+  const toProjectDetailsHandler = (project: ProjectObject) => {
     navigate(`../projectDetails/${project.id}`, {
       replace: false,
       state: project,
@@ -29,7 +32,7 @@ const ProjectsSection = ({
         </Button>
       </Box>
       <Typography variant="h5">Your Projects:</Typography>
-      {projectsState.projects.map((project: Project) => {
+      {projectsState.projects.map((project: ProjectObject) => {
         return (
           <Box
             key={project.id}
