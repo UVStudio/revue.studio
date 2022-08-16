@@ -6,13 +6,15 @@ import {
   CognitoUserSession,
   ISignUpResult,
 } from 'amazon-cognito-identity-js';
-import axios from 'axios';
-import { poolData } from '../../constants/poolData';
 import * as AWS from 'aws-sdk/global';
+import axios from 'axios';
+import { ProfileForm } from '../../components/nested/Profile';
+import { poolData } from '../../constants/poolData';
+import { awsUserAPI } from '../../constants/awsLinks';
+import { UserState } from '../../features/user/userSlice';
 
 export const userPool = new CognitoUserPool(poolData);
 export const attributeList: CognitoUserAttribute[] = [];
-export const awsUserAPI = 'lhuqkznck2.execute-api.us-east-1.amazonaws.com';
 
 //COGNITO USER POOL USER REGISTRATION DATA & SIGN UP
 export const userSignUp = (
@@ -41,10 +43,9 @@ export const userSignUp = (
 };
 
 //DYNAMODB USER CREATION
-export const dynamoDBEditUserName = async (
-  id: string,
-  email: string,
-  name: string
+export const dynamoDBEditProfile = async (
+  user: UserState,
+  form: ProfileForm
 ) => {
   const config = {
     headers: {
@@ -52,16 +53,19 @@ export const dynamoDBEditUserName = async (
     },
   };
   const body = JSON.stringify({
-    id,
-    email,
-    name,
+    user,
+    form,
   });
   console.log('body: ', body);
   try {
-    const data = await axios.put(`https://${awsUserAPI}/users`, body, config);
+    const data = await axios.put(
+      `https://${awsUserAPI}/users/${user.id}`,
+      body,
+      config
+    );
     console.log('edited user: ', data);
   } catch (error) {
-    throw new Error('Could not update your name');
+    throw new Error('Could not update your profile');
   }
 };
 

@@ -177,7 +177,7 @@ const Login = () => {
                     id="email"
                     label="E-mail"
                     value={email}
-                    onChange={(e) => onChangeForm(e)}
+                    onChange={onChangeForm}
                   />
                   <TextField
                     required
@@ -186,7 +186,7 @@ const Login = () => {
                     placeholder="+1"
                     helperText={'Please use +1 at the beginning'}
                     value={phone}
-                    onChange={(e) => onChangeForm(e)}
+                    onChange={onChangeForm}
                   />
                   <TextField
                     required
@@ -195,7 +195,7 @@ const Login = () => {
                     type="password"
                     autoComplete="current-password"
                     value={password}
-                    onChange={(e) => onChangeForm(e)}
+                    onChange={onChangeForm}
                   />
                   <TextField
                     required
@@ -204,7 +204,7 @@ const Login = () => {
                     type="password"
                     autoComplete="confirm-password"
                     value={confirmPassword}
-                    onChange={(e) => onChangeForm(e)}
+                    onChange={onChangeForm}
                   />
                   <Button variant="contained" onClick={signUpHandler}>
                     Register

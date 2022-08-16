@@ -113,8 +113,7 @@ const ProjectDetails = () => {
 
   return (
     <Box>
-      <Box className="section">
-        <Typography variant="h6">ProjectDetails</Typography>
+      <Box className="section" paddingTop={'20px'}>
         <Typography>Project Name: {projectState.projectName}</Typography>
         <Typography>Project ID: {projectState.id}</Typography>
         <Typography>

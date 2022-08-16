@@ -99,8 +99,15 @@ a:link {
   padding: 7px;
 }
 
-.add-project-row:hover{
+.add-project-row:hover {
   cursor: pointer;
+}
+
+.column {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @keyframes App-logo-spin {
