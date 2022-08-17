@@ -44,7 +44,6 @@ const ProjectDetails = () => {
   const [videos, setVideos] = useState<VideoObject[]>([]);
 
   const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('add video handler runs');
     if (!e.target.value) return;
     const slicePathToName = (str: string): string => {
       for (let i = str.length; i > 0; i--) {
@@ -70,6 +69,7 @@ const ProjectDetails = () => {
         projectState.id
       }/${timeStamp}-${slicePathToName(e.target.value)}`,
     };
+
     setUploads([...uploads, videoObj]);
     setFileUrl(e.target.value);
   };
@@ -123,24 +123,24 @@ const ProjectDetails = () => {
           return (
             <UploadsList
               key={upload.id}
-              uploads={uploads}
               upload={upload}
-              setUploads={setUploads}
               removeVideoHandler={removeVideoHandler}
             />
           );
         })}
         <Box className="column">
-          <input
-            id="contained-button-file"
-            type="file"
-            style={{ display: 'block' }}
-            onChange={(e) => addVideoHandler(e)}
-            value={''}
-          />
-          <label htmlFor="contained-button-file">
-            <Button>Select Video File</Button>
-          </label>
+          <Box>
+            <input
+              id="contained-button-file"
+              type="file"
+              style={{ display: 'none' }}
+              onChange={addVideoHandler}
+              value={''}
+            />
+            <label htmlFor="contained-button-file">
+              <Button component="span">Select Video</Button>
+            </label>
+          </Box>
         </Box>
       </Box>
       <Box className="section">

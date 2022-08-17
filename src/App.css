@@ -92,19 +92,19 @@ a:link {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+}
+
+.add-project-container {
   width: 35ch;
   margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;
-  padding: 7px;
+  padding: 10px;
 }
 
 .add-project-row:hover {
   cursor: pointer;
-}
-
-.add-project-row-text {
-  padding-left: 10px;
 }
 
 .column {
