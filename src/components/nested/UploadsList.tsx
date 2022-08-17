@@ -1,21 +1,26 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { UploadFileObject } from '../ProjectDetails';
-import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
+import {
+  s3GetPresignedUrl,
+  s3UploadVideos,
+} from '../../features/videos/videosAPI';
 
 const UploadsList = ({
   upload,
-  uploads,
-  setUploads,
+  removeVideoHandler,
 }: {
   upload: UploadFileObject;
   uploads: UploadFileObject[];
   setUploads: React.Dispatch<React.SetStateAction<UploadFileObject[]>>;
+  removeVideoHandler: (id: string) => void;
 }) => {
-  const removeVideoHandler = (fileName: string) => {
-    setUploads(
-      uploads.filter((upload: UploadFileObject) => upload.fileName !== fileName)
-    );
+  const uploadVideoHandler = async () => {
+    const presignedUrl = await s3GetPresignedUrl(upload);
+    console.log('response: ', presignedUrl);
+    await s3UploadVideos(presignedUrl, upload);
   };
 
   return (
@@ -23,9 +28,12 @@ const UploadsList = ({
       <Typography className="add-project-row-text">
         {upload.fileName}
       </Typography>
-      <RemoveCircleOutlineOutlinedIcon
-        onClick={() => removeVideoHandler(upload.fileName)}
-      />
+      <Box className="column">
+        <Button onClick={uploadVideoHandler}>
+          <FileUploadIcon />
+        </Button>
+        <CancelOutlinedIcon onClick={() => removeVideoHandler(upload.id)} />
+      </Box>
     </Box>
   );
 };

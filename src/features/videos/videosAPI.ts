@@ -21,19 +21,19 @@ export const dynamoDBGetVideosByProjectId = async (projectId: string) => {
 };
 
 //GET PRESIGNEDURL
-export const s3GetPresignedUrl = async (uploads: UploadFileObject[]) => {
+export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
   const config = {
     headers: {
       'content-type': 'application/json',
     },
   };
   const body = {
-    uploads: uploads[0],
+    upload,
   };
 
   try {
     const data = await axios.post(
-      `https://${awsVideosAPI}/videos/${uploads[0].projectId}`,
+      `https://${awsVideosAPI}/videos/${upload.projectId}`,
       body,
       config
     );
@@ -45,10 +45,7 @@ export const s3GetPresignedUrl = async (uploads: UploadFileObject[]) => {
 };
 
 //UPLOAD VIDEOS
-export const s3UploadVideos = async (
-  url: string,
-  uploads: UploadFileObject[]
-) => {
+export const s3UploadVideos = async (url: string, upload: UploadFileObject) => {
   const config = {
     headers: {
       'Content-Type': 'video/mp4',
@@ -56,12 +53,12 @@ export const s3UploadVideos = async (
     },
   };
   const body = {
-    uploads: uploads[0],
+    upload,
   };
-  console.log('body: ', body.uploads.file);
+  console.log('body: ', body.upload.file);
 
   try {
-    const data = await axios.put(url, body.uploads.file, config);
+    const data = await axios.put(url, body.upload.file, config);
     console.log('upload response data: ', data);
   } catch (error) {
     throw new Error('Could not upload videos');

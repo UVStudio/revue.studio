@@ -34,7 +34,7 @@ const Project = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
-      console.log('UE fetched from DDB Project');
+      console.log('UE fetched from DDB Videos');
       setVideos(response.data.Items.reverse());
     };
     fetchVideos();
@@ -43,8 +43,8 @@ const Project = () => {
   useEffect(() => {
     const fetchProject = async () => {
       const response = await dynamoDBGetProjectByProjectId(projectId);
-      console.log('UE fetched from DDB Project: ');
-      setProject(response.data.Items[0]);
+      console.log('UE fetched from DDB Project: ', response.data.Item);
+      setProject(response.data.Item);
     };
     fetchProject();
   }, [projectId]);

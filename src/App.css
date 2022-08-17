@@ -103,6 +103,10 @@ a:link {
   cursor: pointer;
 }
 
+.add-project-row-text {
+  padding-left: 10px;
+}
+
 .column {
   display: flex;
   flex-direction: row;

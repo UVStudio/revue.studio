@@ -7,11 +7,7 @@ import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { ProjectObject } from '../features/projects/projectsSlice';
 import { awsS3Url } from '../constants/awsLinks';
-import {
-  dynamoDBGetVideosByProjectId,
-  s3GetPresignedUrl,
-  s3UploadVideos,
-} from '../features/videos/videosAPI';
+import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
 
 export interface UploadFileObject {
   id: string;
@@ -47,7 +43,9 @@ const ProjectDetails = () => {
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
   const [videos, setVideos] = useState<VideoObject[]>([]);
 
-  const fileSelectHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('add video handler runs');
+    if (!e.target.value) return;
     const slicePathToName = (str: string): string => {
       for (let i = str.length; i > 0; i--) {
         if (str[i] === '\\') {
@@ -59,24 +57,24 @@ const ProjectDetails = () => {
 
     const timeStamp = Date.now().toString();
 
-    setUploads([
-      ...uploads,
-      {
-        id: timeStamp,
-        projectId: projectState.id,
-        fileName: slicePathToName(e.target.value),
-        fileUrl: e.target.value,
-        file: e.target.files![0],
-        key: `${userState.id}/${projectState.id}/${timeStamp}-${slicePathToName(
-          e.target.value
-        )}`,
-        s3Url: `${awsS3Url}/${userState.id}/${
-          projectState.id
-        }/${timeStamp}-${slicePathToName(e.target.value)}`,
-      },
-    ]);
+    const videoObj = {
+      id: timeStamp,
+      projectId: projectState.id,
+      fileName: slicePathToName(e.target.value),
+      fileUrl: e.target.value,
+      file: e.target.files![0],
+      key: `${userState.id}/${projectState.id}/${timeStamp}-${slicePathToName(
+        e.target.value
+      )}`,
+      s3Url: `${awsS3Url}/${userState.id}/${
+        projectState.id
+      }/${timeStamp}-${slicePathToName(e.target.value)}`,
+    };
+    setUploads([...uploads, videoObj]);
     setFileUrl(e.target.value);
   };
+
+  console.log('uploads: ', uploads);
 
   useEffect(() => {
     for (let i = fileUrl.length; i > 0; i--) {
@@ -95,20 +93,14 @@ const ProjectDetails = () => {
     fetchVideos();
   }, [projectState.id]);
 
-  console.log('videos: ', videos);
-  console.log('project id: ', projectState.id);
-
-  const uploadVideosHandler = async () => {
-    console.log('uploads obj: ', uploads);
-    const presignedUrl = await s3GetPresignedUrl(uploads);
-    console.log('response: ', presignedUrl);
-    await s3UploadVideos(presignedUrl, uploads);
-  };
-
   const toPublicProject = (projectId: string) => {
     navigate(`../project/${projectId}`, {
       replace: false,
     });
+  };
+
+  const removeVideoHandler = (id: string) => {
+    setUploads(uploads.filter((upload: UploadFileObject) => upload.id !== id));
   };
 
   return (
@@ -127,35 +119,28 @@ const ProjectDetails = () => {
         </Button>
       </Box>
       <Box className="section">
-        <Box marginTop={'20px'}>
+        {uploads.map((upload) => {
+          return (
+            <UploadsList
+              key={upload.id}
+              uploads={uploads}
+              upload={upload}
+              setUploads={setUploads}
+              removeVideoHandler={removeVideoHandler}
+            />
+          );
+        })}
+        <Box className="column">
           <input
             id="contained-button-file"
             type="file"
-            style={{ display: 'none' }}
-            onChange={fileSelectHandler}
+            style={{ display: 'block' }}
+            onChange={(e) => addVideoHandler(e)}
+            value={''}
           />
           <label htmlFor="contained-button-file">
-            <Button variant="contained" component="span">
-              Select Video
-            </Button>
+            <Button>Select Video File</Button>
           </label>
-        </Box>
-        <Box>
-          {uploads.map((upload) => {
-            return (
-              <UploadsList
-                key={upload.id}
-                uploads={uploads}
-                upload={upload}
-                setUploads={setUploads}
-              />
-            );
-          })}
-        </Box>
-        <Box marginTop={'20px'}>
-          <Button variant="contained" onClick={uploadVideosHandler}>
-            Upload Videos to Project
-          </Button>
         </Box>
       </Box>
       <Box className="section">
