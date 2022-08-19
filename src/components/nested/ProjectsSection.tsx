@@ -31,16 +31,16 @@ const ProjectsSection = ({
           New Project
         </Button>
       </Box>
-      <Typography variant="h5">Your Projects:</Typography>
+      <Typography>Your Projects:</Typography>
       {projectsState.projects.map((project: ProjectObject) => {
         return (
           <Box
             key={project.id}
-            className="add-project-row"
+            className="project-list-item"
             sx={{ textAlign: 'center' }}
             onClick={() => toProjectDetailsHandler(project)}
           >
-            <Typography>{project.projectName}</Typography>
+            <Typography variant="body2">{project.projectName}</Typography>
           </Box>
         );
       })}

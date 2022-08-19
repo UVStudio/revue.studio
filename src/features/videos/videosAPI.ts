@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UploadFileObject } from '../../components/ProjectDetails';
+import { UploadFileObject, VideoObject } from '../../components/ProjectDetails';
 import { awsVideosAPI } from '../../constants/awsLinks';
 
 //GET VIDEOS BY PROJECTID
@@ -17,6 +17,19 @@ export const dynamoDBGetVideosByProjectId = async (projectId: string) => {
     return data;
   } catch (error) {
     throw new Error('Could not get videos by Project Id');
+  }
+};
+
+//DELETE VIDEO BY VIDEO ID
+export const s3RemoveVideoById = async (video: VideoObject) => {
+  const { id, s3Url } = video;
+  try {
+    const response = await axios.delete(`https://${awsVideosAPI}/video/${id}`, {
+      data: { s3Url },
+    });
+    console.log('response: ', response);
+  } catch (error) {
+    throw new Error('Could not remove video by Id');
   }
 };
 

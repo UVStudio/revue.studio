@@ -5,16 +5,7 @@ import { dynamoDBGetProjectByProjectId } from '../features/projects/projectsAPI'
 import { Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { ProjectObject } from '../features/projects/projectsSlice';
-
-export interface VideoObject {
-  userId: string;
-  projectId: string;
-  fileName: string;
-  fileUrl: string;
-  file: File;
-  s3Url: string;
-  timeStamp: string;
-}
+import { VideoObject } from './ProjectDetails';
 
 const initialProject = {
   id: '',

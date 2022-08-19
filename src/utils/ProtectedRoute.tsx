@@ -11,7 +11,6 @@ const ProtectedRoute = ({
   children: JSX.Element;
   redirect: string;
 }) => {
-  console.log('redirect: ', redirect);
   if (!userState.email) {
     return <Navigate to="../Refresh" state={redirect} replace />;
   }

@@ -26,7 +26,7 @@ const UploadsList = ({
 
   return (
     <Box className="add-project-container ">
-      <Box key={upload.fileUrl} className="add-project-row">
+      <Box key={upload.fileUrl} className="add-video-row">
         <Typography>{upload.fileName}</Typography>
         {uploadDone ? (
           <Typography>Done!</Typography>

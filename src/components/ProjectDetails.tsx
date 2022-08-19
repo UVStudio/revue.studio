@@ -7,7 +7,10 @@ import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { ProjectObject } from '../features/projects/projectsSlice';
 import { awsS3Url } from '../constants/awsLinks';
-import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
+import {
+  dynamoDBGetVideosByProjectId,
+  s3RemoveVideoById,
+} from '../features/videos/videosAPI';
 
 export interface UploadFileObject {
   id: string;
@@ -20,6 +23,7 @@ export interface UploadFileObject {
 }
 
 export interface VideoObject {
+  id: string;
   userId: string;
   projectId: string;
   fileName: string;
@@ -74,8 +78,6 @@ const ProjectDetails = () => {
     setFileUrl(e.target.value);
   };
 
-  console.log('uploads: ', uploads);
-
   useEffect(() => {
     for (let i = fileUrl.length; i > 0; i--) {
       if (fileUrl[i] === '\\') {
@@ -101,6 +103,12 @@ const ProjectDetails = () => {
 
   const removeVideoHandler = (id: string) => {
     setUploads(uploads.filter((upload: UploadFileObject) => upload.id !== id));
+  };
+
+  const s3DeleteVideoHandler = async (videoDelete: VideoObject) => {
+    console.log('delete this: ', videoDelete);
+    await s3RemoveVideoById(videoDelete);
+    setVideos(videos.filter((video: any) => video.id !== videoDelete.id));
   };
 
   if (useLocation().state === null || !userState)
@@ -149,8 +157,18 @@ const ProjectDetails = () => {
       <Box className="section">
         {videos.map((video) => {
           return (
-            <Box key={video.timeStamp}>
-              <Video video={video} />
+            <Box key={video.timeStamp} className="outer-video-container">
+              <Button
+                sx={{ pl: '1rem' }}
+                onClick={() => s3DeleteVideoHandler(video)}
+              >
+                <Typography variant="body2" color={'red'}>
+                  Delete this video
+                </Typography>
+              </Button>
+              <Box>
+                <Video video={video} />
+              </Box>
             </Box>
           );
         })}

@@ -69,7 +69,7 @@ export const dynamoDBEditProfile = async (
   }
 };
 
-//DYNAMODB USER CREATION AND UPDATE
+//DYNAMODB GET USER PROFILE
 export const dynamoDBGetProfile = async (userId: string) => {
   const config = {
     headers: {

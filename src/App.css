@@ -54,11 +54,15 @@ a:link {
   margin-top: 5px;
 }
 
+.outer-video-container {
+  text-align: right;
+}
+
 .video-container {
   color: white;
   background-color: #282c34;
   filter: drop-shadow(5px 5px 5px rgb(196, 196, 196));
-  margin: 1rem;
+  margin: 0rem, 1rem;
 }
 
 .video-info-container {
@@ -88,11 +92,22 @@ a:link {
   margin: 1vw 5vw;
 }
 
-.add-project-row {
+.project-list-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid rgb(34, 25, 108);
+  border-radius: 7px;
+  padding: 10px;
+  width: 100%;
+  margin: 5px 0px;
+  cursor: pointer;
+}
 
+.add-video-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .add-project-container {
@@ -103,7 +118,7 @@ a:link {
   padding: 10px;
 }
 
-.add-project-row:hover {
+.add-video-row:hover {
   cursor: pointer;
 }
 
