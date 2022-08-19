@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { Routes, Route, Link } from 'react-router-dom';
-
-import { selectUser } from '../features/user/userSlice';
-import { useAppSelector } from '../app/hooks';
-import Home from './Home';
-import About from './About';
-import Dashboard from './Dashboard';
-import Project from './Project';
-import Login from './Login';
-import AddProject from './nested/AddProject';
-import ProjectDetails from './ProjectDetails';
 import {
   AppBar,
   Menu,
@@ -22,7 +11,18 @@ import {
   Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-
+import { Routes, Route, Link } from 'react-router-dom';
+import ProtectedRoute from '../utils/ProtectedRoute';
+import { selectUser } from '../features/user/userSlice';
+import { useAppSelector } from '../app/hooks';
+import Home from './Home';
+import About from './About';
+import Dashboard from './Dashboard';
+import Project from './Project';
+import Login from './Login';
+import AddProject from './nested/AddProject';
+import ProjectDetails from './ProjectDetails';
+import Refresh from './Refresh';
 import logo from '../assets/logo.svg';
 
 export const Navbar = () => {
@@ -171,12 +171,34 @@ export const Navbar = () => {
       </AppBar>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projectDetails/:projectId" element={<ProjectDetails />} />
-        <Route path="/project/:projectId" element={<Project />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/addProject" element={<AddProject />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Refresh" element={<Refresh />} />
+        <Route path="/Project/:projectId" element={<Project />} />
+        <Route
+          path="/Dashboard"
+          element={
+            <ProtectedRoute userState={userState} redirect={'/Dashboard'}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ProjectDetails/:projectId"
+          element={
+            // <ProtectedRoute userState={userState} redirect={'/Dashboard'}>
+            <ProjectDetails />
+            // </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/AddProject"
+          element={
+            <ProtectedRoute userState={userState} redirect={'/AddProject'}>
+              <AddProject />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Box>
   );

@@ -3,8 +3,8 @@ import axios from 'axios';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from './app/hooks';
 import Navbar from './components/Navbar';
-import { awsProjectsAPI } from './constants/awsLinks';
-import { loginUserState } from './features/user/userSlice';
+import { awsProjectsAPI, awsUserAPI } from './constants/awsLinks';
+import { loginUserState, getUserState } from './features/user/userSlice';
 import { selectUser } from './features/user/userSlice';
 import { getProjectsList } from './features/projects/projectsSlice';
 
@@ -17,7 +17,6 @@ export interface userDataLocalStorage {
 export const App = () => {
   //GLOBAL STATE
   const userState = useAppSelector(selectUser);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -28,22 +27,52 @@ export const App = () => {
       const id = parsedData.id;
       const email = parsedData.email;
       const token = parsedData.token;
+
       dispatch(loginUserState({ id, email, token }));
+
       const config = {
         headers: {
           'content-type': 'application/json',
         },
       };
+
       const getProjectsByUserId = async () => {
-        const response = await axios.get(
-          `https://${awsProjectsAPI}/projects/${userState.id}`,
-          config
-        );
-        dispatch(getProjectsList(response.data.Items));
+        try {
+          const response = await axios.get(
+            `https://${awsProjectsAPI}/projects/${userState.id}`,
+            config
+          );
+          dispatch(getProjectsList(response.data.Items));
+        } catch (error) {
+          throw new Error('Cannot fetch Projects list');
+        }
       };
+
       if (userState.id) {
-        console.log('API called from APP');
+        console.log('Get Projects API called from APP');
         getProjectsByUserId();
+      }
+
+      const dynamoDBGetProfile = async () => {
+        const config = {
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        try {
+          const data = await axios.get(
+            `https://${awsUserAPI}/users/${userState.id}`,
+            config
+          );
+          dispatch(getUserState(data.data.Item));
+        } catch (error) {
+          throw new Error('Could not get your profile');
+        }
+      };
+
+      if (userState.id) {
+        console.log('Get User API called from APP');
+        dynamoDBGetProfile();
       }
     }
   }, [userState.id, dispatch]);

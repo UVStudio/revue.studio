@@ -17,20 +17,18 @@ export const userPool = new CognitoUserPool(poolData);
 
 const FORM_UPDATE = 'FORM_UPDATE';
 
-const initialForm = {
-  name: '',
-  city: '',
-  country: '',
-  company: '',
-  description: '',
-};
-
 export interface ProfileForm {
   name: string;
   city: string;
   country: string;
   company: string;
   description: string;
+}
+
+export interface UserProfile extends ProfileForm {
+  email: string;
+  id: string;
+  username: string;
 }
 
 export interface FormAction {
@@ -52,6 +50,16 @@ const formReducer = (state: ProfileForm, action: FormAction) => {
 };
 
 const Profile = ({ userState }: { userState: UserState }) => {
+  const { name, city, country, company, description } = userState;
+
+  const initialForm = {
+    name,
+    city,
+    country,
+    company,
+    description,
+  } as ProfileForm;
+
   const [formState, dispatchFormState] = useReducer(formReducer, initialForm);
 
   const handleTextChange = useCallback(
@@ -111,7 +119,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
             margin="dense"
             id="name"
             label="Name"
-            value={formState.name}
+            value={formState.name ? formState.name : initialForm.name}
             onChange={handleTextChange}
             variant="outlined"
           />
@@ -120,7 +128,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
               margin="dense"
               id="city"
               label="City"
-              value={formState.city}
+              value={formState.city ? formState.city : initialForm.city}
               onChange={handleTextChange}
               variant="outlined"
             />
@@ -128,7 +136,9 @@ const Profile = ({ userState }: { userState: UserState }) => {
               margin="dense"
               id="country"
               label="Country"
-              value={formState.country}
+              value={
+                formState.country ? formState.country : initialForm.country
+              }
               onChange={handleTextChange}
               variant="outlined"
             />
@@ -137,7 +147,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
             margin="dense"
             id="company"
             label="Company Name"
-            value={formState.company}
+            value={formState.company ? formState.company : initialForm.company}
             onChange={handleTextChange}
             variant="outlined"
           />
@@ -145,7 +155,11 @@ const Profile = ({ userState }: { userState: UserState }) => {
             margin="dense"
             id="description"
             label="Brief description of your work"
-            value={formState.description}
+            value={
+              formState.description
+                ? formState.description
+                : initialForm.description
+            }
             onChange={handleTextChange}
             multiline={true}
             maxRows={4}

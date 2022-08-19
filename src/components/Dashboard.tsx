@@ -24,6 +24,8 @@ const Dashboard = () => {
   const userState = useAppSelector(selectUser);
   const projectsState = useAppSelector(selectProjects);
 
+  console.log('userState: ', userState);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <SideDrawer setSection={setSection} />

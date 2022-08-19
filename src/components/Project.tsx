@@ -32,21 +32,21 @@ const Project = () => {
   const projectId = params.projectId as string;
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      const response = await dynamoDBGetVideosByProjectId(projectId);
-      console.log('UE fetched from DDB Videos');
-      setVideos(response.data.Items.reverse());
-    };
-    fetchVideos();
-  }, [projectId]);
-
-  useEffect(() => {
     const fetchProject = async () => {
       const response = await dynamoDBGetProjectByProjectId(projectId);
       console.log('UE fetched from DDB Project: ', response.data.Item);
       setProject(response.data.Item);
     };
     fetchProject();
+  }, [projectId]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const response = await dynamoDBGetVideosByProjectId(projectId);
+      console.log('UE fetched from DDB Videos');
+      setVideos(response.data.Items.reverse());
+    };
+    fetchVideos();
   }, [projectId]);
 
   return (

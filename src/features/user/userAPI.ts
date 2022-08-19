@@ -42,7 +42,7 @@ export const userSignUp = (
   });
 };
 
-//DYNAMODB USER CREATION
+//DYNAMODB USER CREATION AND UPDATE
 export const dynamoDBEditProfile = async (
   user: UserState,
   form: ProfileForm
@@ -66,6 +66,24 @@ export const dynamoDBEditProfile = async (
     console.log('edited user: ', data);
   } catch (error) {
     throw new Error('Could not update your profile');
+  }
+};
+
+//DYNAMODB USER CREATION AND UPDATE
+export const dynamoDBGetProfile = async (userId: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  try {
+    const data = await axios.get(
+      `https://${awsUserAPI}/users/${userId}`,
+      config
+    );
+    return data;
+  } catch (error) {
+    throw new Error('Could not get your profile');
   }
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Video from './nested/Video';
 import UploadsList from './nested/UploadsList';
 import { useAppSelector } from '../app/hooks';
@@ -90,8 +90,8 @@ const ProjectDetails = () => {
       console.log('UE fetched from DDB Projects');
       setVideos(response.data.Items.reverse());
     };
-    fetchVideos();
-  }, [projectState.id]);
+    if (projectState) fetchVideos();
+  }, [projectState]);
 
   const toPublicProject = (projectId: string) => {
     navigate(`../project/${projectId}`, {
@@ -102,6 +102,9 @@ const ProjectDetails = () => {
   const removeVideoHandler = (id: string) => {
     setUploads(uploads.filter((upload: UploadFileObject) => upload.id !== id));
   };
+
+  if (useLocation().state === null || !userState)
+    return <Navigate to="../" replace />;
 
   return (
     <Box>
