@@ -10,11 +10,11 @@ export const dynamoDBGetVideosByProjectId = async (projectId: string) => {
     },
   };
   try {
-    const data = await axios.get(
+    const response = await axios.get(
       `https://${awsVideosAPI}/videos/${projectId}`,
       config
     );
-    return data;
+    return response;
   } catch (error) {
     throw new Error('Could not get videos by Project Id');
   }
@@ -58,7 +58,7 @@ export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
 };
 
 //UPLOAD VIDEOS
-export const s3UploadVideos = async (url: string, upload: UploadFileObject) => {
+export const s3UploadVideo = async (url: string, upload: UploadFileObject) => {
   const config = {
     headers: {
       'Content-Type': 'video/mp4',
@@ -68,7 +68,7 @@ export const s3UploadVideos = async (url: string, upload: UploadFileObject) => {
   const body = {
     upload,
   };
-  console.log('body: ', body.upload.file);
+  console.log('body: ', body);
 
   try {
     const data = await axios.put(url, body.upload.file, config);

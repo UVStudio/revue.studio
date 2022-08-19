@@ -5,7 +5,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { UploadFileObject } from '../ProjectDetails';
 import {
   s3GetPresignedUrl,
-  s3UploadVideos,
+  s3UploadVideo,
 } from '../../features/videos/videosAPI';
 
 const UploadsList = ({
@@ -20,7 +20,7 @@ const UploadsList = ({
   const uploadVideoHandler = async () => {
     const presignedUrl = await s3GetPresignedUrl(upload);
     console.log('response: ', presignedUrl);
-    await s3UploadVideos(presignedUrl, upload);
+    await s3UploadVideo(presignedUrl, upload);
     setUploadDone(true);
   };
 
