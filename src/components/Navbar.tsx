@@ -22,6 +22,7 @@ import Project from './Project';
 import Login from './Login';
 import AddProject from './nested/AddProject';
 import ProjectDetails from './ProjectDetails';
+import VideoDetails from './nested/VideoDetails';
 import Refresh from './Refresh';
 import logo from '../assets/logo.svg';
 
@@ -183,14 +184,7 @@ export const Navbar = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/ProjectDetails/:projectId"
-          element={
-            // <ProtectedRoute userState={userState} redirect={'/Dashboard'}>
-            <ProjectDetails />
-            // </ProtectedRoute>
-          }
-        />
+        <Route path="/ProjectDetails/:projectId" element={<ProjectDetails />} />
         <Route
           path="/AddProject"
           element={
@@ -199,6 +193,7 @@ export const Navbar = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/VideoDetails/:videoId" element={<VideoDetails />} />
       </Routes>
     </Box>
   );

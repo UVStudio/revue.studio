@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-import Video from './nested/Video';
-import UploadsList from './nested/UploadsList';
+import VideoListing from './nested/VideoListing';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
 import { ProjectObject } from '../features/projects/projectsSlice';
@@ -11,6 +10,7 @@ import {
   dynamoDBGetVideosByProjectId,
   s3RemoveVideoById,
 } from '../features/videos/videosAPI';
+import UploadComponent from './nested/UploadComponent';
 
 export interface UploadFileObject {
   id: string;
@@ -46,6 +46,7 @@ const ProjectDetails = () => {
   const [fileName, setFileName] = useState('');
   const [uploads, setUploads] = useState<UploadFileObject[]>([]);
   const [videos, setVideos] = useState<VideoObject[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
@@ -88,9 +89,11 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     const fetchVideos = async () => {
+      setLoading(true);
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
       console.log('UE fetched from DDB Projects');
       setVideos(response.data.Items.reverse());
+      setLoading(false);
     };
     if (projectState) fetchVideos();
   }, [projectState]);
@@ -101,14 +104,16 @@ const ProjectDetails = () => {
     });
   };
 
-  const removeVideoHandler = (id: string) => {
+  const removeVideoFromListHandler = (id: string) => {
     setUploads(uploads.filter((upload: UploadFileObject) => upload.id !== id));
   };
 
   const s3DeleteVideoHandler = async (videoDelete: VideoObject) => {
     console.log('delete this: ', videoDelete);
     await s3RemoveVideoById(videoDelete);
-    setVideos(videos.filter((video: any) => video.id !== videoDelete.id));
+    setVideos(
+      videos.filter((video: VideoObject) => video.id !== videoDelete.id)
+    );
   };
 
   if (useLocation().state === null || !userState)
@@ -132,10 +137,14 @@ const ProjectDetails = () => {
       <Box className="section">
         {uploads.map((upload) => {
           return (
-            <UploadsList
+            <UploadComponent
               key={upload.id}
               upload={upload}
-              removeVideoHandler={removeVideoHandler}
+              videos={videos}
+              projectId={projectState.id}
+              setVideos={setVideos}
+              removeVideoFromListHandler={removeVideoFromListHandler}
+              dynamoDBGetVideosByProjectId={dynamoDBGetVideosByProjectId}
             />
           );
         })}
@@ -155,23 +164,27 @@ const ProjectDetails = () => {
         </Box>
       </Box>
       <Box className="section">
-        {videos.map((video) => {
-          return (
-            <Box key={video.timeStamp} className="outer-video-container">
-              <Button
-                sx={{ pl: '1rem' }}
-                onClick={() => s3DeleteVideoHandler(video)}
-              >
-                <Typography variant="body2" color={'red'}>
-                  Delete this video
-                </Typography>
-              </Button>
-              <Box>
-                <Video video={video} />
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          videos.map((video) => {
+            return (
+              <Box key={video.id} className="outer-video-container">
+                <Button
+                  sx={{ pl: '1rem' }}
+                  onClick={() => s3DeleteVideoHandler(video)}
+                >
+                  <Typography variant="body2" color={'red'}>
+                    Delete Video
+                  </Typography>
+                </Button>
+                <Box>
+                  <VideoListing video={video} videos={videos} />
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })
+        )}
       </Box>
     </Box>
   );

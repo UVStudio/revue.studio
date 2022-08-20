@@ -33,7 +33,7 @@ export const App = () => {
 
       dispatch(loginUserState({ id, email, token }));
 
-      const fetcchProjects = async () => {
+      const fetchProjects = async () => {
         const response = await dynamoDBGetProjectsByUserId(userState.id);
         dispatch(getProjectsList(response.data.Items));
       };
@@ -45,7 +45,7 @@ export const App = () => {
 
       if (userState.id) {
         console.log('Get Projects and Profile API from APP');
-        fetcchProjects();
+        fetchProjects();
         fetchProfile();
       }
     }

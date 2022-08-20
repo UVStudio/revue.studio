@@ -58,7 +58,10 @@ export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
 };
 
 //UPLOAD VIDEOS
-export const s3UploadVideo = async (url: string, upload: UploadFileObject) => {
+export const s3UploadVideo = async (
+  url: string,
+  upload: UploadFileObject
+): Promise<any> => {
   const config = {
     headers: {
       'Content-Type': 'video/mp4',
@@ -73,6 +76,7 @@ export const s3UploadVideo = async (url: string, upload: UploadFileObject) => {
   try {
     const data = await axios.put(url, body.upload.file, config);
     console.log('upload response data: ', data);
+    return data;
   } catch (error) {
     throw new Error('Could not upload videos');
   }

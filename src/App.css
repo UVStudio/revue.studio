@@ -56,13 +56,16 @@ a:link {
 
 .outer-video-container {
   text-align: right;
+  margin-bottom: 20px;
+  width: 60%;
 }
 
 .video-container {
-  color: white;
-  background-color: #282c34;
-  filter: drop-shadow(5px 5px 5px rgb(196, 196, 196));
+  color: rgb(34, 25, 108);
   margin: 0rem, 1rem;
+  width: 100%;
+  border-radius: 7px;
+  border: 1px solid rgb(34, 25, 108);
 }
 
 .video-info-container {
@@ -71,12 +74,12 @@ a:link {
   justify-content: space-between;
   align-content: space-around;
   padding: 8px 15px;
-
+  width: 100%;
 }
 
 .video-player-container {
   padding: 0rem;
-
+  box-shadow: 4px 4px 8px rgb(156, 156, 156);
 }
 
 .video-player {
