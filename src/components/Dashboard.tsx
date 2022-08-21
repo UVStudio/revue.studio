@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CircularProgress } from '@mui/material';
 import SideDrawer from './nested/SideDrawer';
 import Profile from './nested/Profile';
 import ProjectsSection from './nested/ProjectsSection';
@@ -23,6 +24,10 @@ const Dashboard = () => {
   //GLOBAL STATE
   const userState = useAppSelector(selectUser);
   const projectsState = useAppSelector(selectProjects);
+
+  if (userState.loading === 'loading' || projectsState.loading === 'loading') {
+    return <CircularProgress />;
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>

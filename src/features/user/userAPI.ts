@@ -134,11 +134,7 @@ export const cognitoUserLogin = (
               console.log('user authenticated: ', result);
               const id = result.getAccessToken().payload.sub;
               const email = result.getIdToken().payload.email;
-              const token = result.getAccessToken().getJwtToken();
-              localStorage.setItem(
-                'userData',
-                JSON.stringify({ id, email, token })
-              );
+              localStorage.setItem('userData', JSON.stringify({ id, email }));
               resolve(result);
             }
           }

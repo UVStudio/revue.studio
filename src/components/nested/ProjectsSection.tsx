@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import {
   ProjectObject,
   ProjectsArray,
@@ -24,8 +24,16 @@ const ProjectsSection = ({
     navigate('../AddProject', { replace: false });
   };
 
+  const s3DeleteProjectHandler = async (project: ProjectObject) => {
+    console.log('delete: ', project);
+  };
+
+  if (projectsState.loading === 'loading') {
+    return <CircularProgress />;
+  }
+
   return (
-    <Box className="section">
+    <Box className="section" sx={{ width: '100%' }}>
       <Box className="section" marginTop={'20px'}>
         <Button variant="contained" onClick={toNewProjectHandler}>
           New Project
@@ -34,13 +42,22 @@ const ProjectsSection = ({
       <Typography>Your Projects:</Typography>
       {projectsState.projects.map((project: ProjectObject) => {
         return (
-          <Box
-            key={project.id}
-            className="project-list-item"
-            sx={{ textAlign: 'center' }}
-            onClick={() => toProjectDetailsHandler(project)}
-          >
-            <Typography variant="body2">{project.projectName}</Typography>
+          <Box key={project.id} className="outer-project-container">
+            <Button onClick={() => s3DeleteProjectHandler(project)}>
+              <Typography variant="body2" color={'red'}>
+                DELETE PROJECT
+              </Typography>
+            </Button>
+            <Box
+              className="project-list-item"
+              sx={{ paddingY: '8px', paddingX: '15px' }}
+              onClick={() => toProjectDetailsHandler(project)}
+            >
+              <Typography variant="subtitle1">{project.projectName}</Typography>
+              <Typography variant="body2">
+                {project.projectDescription}
+              </Typography>
+            </Box>
           </Box>
         );
       })}

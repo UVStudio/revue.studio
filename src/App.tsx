@@ -6,8 +6,12 @@ import {
   loginUserState,
   getUserState,
   selectUser,
+  userLoading,
 } from './features/user/userSlice';
-import { getProjectsList } from './features/projects/projectsSlice';
+import {
+  getProjectsList,
+  projectsLoading,
+} from './features/projects/projectsSlice';
 import { dynamoDBGetProjectsByUserId } from './features/projects/projectsAPI';
 import { dynamoDBGetProfile } from './features/user/userAPI';
 
@@ -34,17 +38,18 @@ export const App = () => {
       dispatch(loginUserState({ id, email, token }));
 
       const fetchProjects = async () => {
+        dispatch(projectsLoading());
         const response = await dynamoDBGetProjectsByUserId(userState.id);
         dispatch(getProjectsList(response.data.Items));
       };
 
       const fetchProfile = async () => {
+        dispatch(userLoading());
         const response = await dynamoDBGetProfile(userState.id);
         dispatch(getUserState(response.data.Item));
       };
 
       if (userState.id) {
-        console.log('Get Projects and Profile API from APP');
         fetchProjects();
         fetchProfile();
       }

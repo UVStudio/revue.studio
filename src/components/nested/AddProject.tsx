@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, TextField } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  CircularProgress,
+} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { selectUser } from '../../features/user/userSlice';
@@ -35,7 +41,6 @@ const AddProject = () => {
   const userId = userState.id;
 
   useEffect(() => {
-    // setProjectId(uuidv4());
     for (const project of projectsState.projects) {
       if (project.id === projectId) {
         navigate(`../projectDetails/${projectId}`, {
@@ -66,14 +71,19 @@ const AddProject = () => {
         projectDescription,
         timeStamp
       );
-      const result = await dynamoDBGetProjectsByUserId(userId);
-      dispatch(getProjectsList(result.data.Items));
+      const response = await dynamoDBGetProjectsByUserId(userId);
+      dispatch(getProjectsList(response.data.Items));
       setFormData(initialFormData);
+      navigate('../Dashboard', { replace: false });
     } catch (error: unknown) {
       const err = error as Error;
       console.log(err.message);
     }
   };
+
+  if (projectsState.loading === 'loading' || userState.loading === 'loading') {
+    return <CircularProgress />;
+  }
 
   return (
     <Box className="section">

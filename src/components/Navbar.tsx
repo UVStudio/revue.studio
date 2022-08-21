@@ -43,7 +43,10 @@ export const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="relative" sx={{ zIndex: 'snackbar' }}>
+      <AppBar
+        position="relative"
+        sx={{ zIndex: 'snackbar', backgroundColor: '#3f51b5' }}
+      >
         <Toolbar>
           <IconButton>
             <Link to="/">
