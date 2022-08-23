@@ -63,6 +63,7 @@ a:visited {
 
 .home-footer-text {
   padding: 12px 0;
+  cursor: pointer;
 }
 
 .title-container {
@@ -75,21 +76,15 @@ a:visited {
   width: 60%;
 }
 
-.video-container {
-  color: rgb(34, 25, 108);
-  margin: 0rem, 1rem;
-  width: 100%;
-  border-radius: 7px;
-  border: 1px solid rgb(34, 25, 108);
-}
-
 .video-info-container {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   align-content: space-around;
   padding: 8px 15px;
   width: 100%;
+  border-radius: 7px;
+  border: 1px solid rgb(34, 25, 108);
+  cursor: pointer;
 }
 
 .video-player-container {
@@ -126,7 +121,7 @@ a:visited {
   justify-content: space-between;
 }
 
-.add-project-container {
+.add-video-container {
   width: 35ch;
   margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
@@ -143,6 +138,18 @@ a:visited {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+@media only screen and (max-width: 900px) {
+  .video-info-container {
+    display: block;
+    text-align: center;
+    padding: 8px 15px;
+    width: 100%;
+    border-radius: 7px;
+    border: 1px solid rgb(34, 25, 108);
+    cursor: pointer;
+  }
 }
 
 @keyframes App-logo-spin {

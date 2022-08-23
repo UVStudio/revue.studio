@@ -1,10 +1,16 @@
 import React from 'react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { useAppDispatch } from '../../app/hooks';
 import {
   ProjectObject,
   ProjectsArray,
+  projectsLoading,
+  getProjectsList,
 } from '../../features/projects/projectsSlice';
-import { dynamoDBDeleteProjectByProjectId } from '../../features/projects/projectsAPI';
+import {
+  dynamoDBDeleteProjectByProjectId,
+  dynamoDBGetProjectsByUserId,
+} from '../../features/projects/projectsAPI';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectsSection = ({
@@ -12,6 +18,7 @@ const ProjectsSection = ({
 }: {
   projectsState: ProjectsArray;
 }) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const toProjectDetailsHandler = (project: ProjectObject) => {
@@ -26,9 +33,10 @@ const ProjectsSection = ({
   };
 
   const s3DeleteProjectHandler = async (project: ProjectObject) => {
-    console.log('delete: ', project);
-    const response = await dynamoDBDeleteProjectByProjectId(project);
-    console.log('response: ', response);
+    dispatch(projectsLoading());
+    await dynamoDBDeleteProjectByProjectId(project);
+    const response = await dynamoDBGetProjectsByUserId(project.userId);
+    dispatch(getProjectsList(response.data.Items));
   };
 
   const projects = [...projectsState.projects];
@@ -36,7 +44,7 @@ const ProjectsSection = ({
 
   if (projectsState.loading === 'loading') {
     return (
-      <Box className="section" marginTop={'20px'}>
+      <Box className="section" paddingTop={'20px'}>
         <CircularProgress />
       </Box>
     );

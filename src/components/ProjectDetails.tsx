@@ -31,6 +31,7 @@ export interface VideoObject {
   file: File;
   s3Url: string;
   timeStamp: string;
+  fileSize: string;
 }
 
 const ProjectDetails = () => {
@@ -91,7 +92,6 @@ const ProjectDetails = () => {
     const fetchVideos = async () => {
       setLoading(true);
       const response = await dynamoDBGetVideosByProjectId(projectState.id);
-      console.log('UE fetched from DDB Projects');
       setVideos(response.data.Items.reverse());
       setLoading(false);
     };
@@ -115,6 +115,10 @@ const ProjectDetails = () => {
       videos.filter((video: VideoObject) => video.id !== videoDelete.id)
     );
   };
+
+  console.log('videos: ', videos);
+
+  const videosReserved = videos.reverse();
 
   if (useLocation().state === null || !userState)
     return <Navigate to="../" replace />;
@@ -140,7 +144,6 @@ const ProjectDetails = () => {
             <UploadComponent
               key={upload.id}
               upload={upload}
-              videos={videos}
               projectId={projectState.id}
               setVideos={setVideos}
               removeVideoFromListHandler={removeVideoFromListHandler}
@@ -167,7 +170,7 @@ const ProjectDetails = () => {
         {loading ? (
           <CircularProgress />
         ) : (
-          videos.map((video) => {
+          videosReserved.map((video) => {
             return (
               <Box key={video.id} className="outer-video-container">
                 <Button

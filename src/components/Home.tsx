@@ -10,6 +10,12 @@ const Home = () => {
     navigate('../About', { replace: false });
   };
 
+  const sendMail = () => {
+    const mailto: string =
+      'mailto:revue.studio.app@gmail.com@gmail.com?subject=Test subject&body=Body content';
+    window.location.href = mailto;
+  };
+
   return (
     <Box>
       <Box className="section">
@@ -43,12 +49,12 @@ const Home = () => {
           columnSpacing={2}
           sx={{ marginX: '2vw', paddingBottom: '50px', paddingTop: '30px' }}
         >
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Typography className="home-footer-text" variant="h4">
               Revue
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Typography
               onClick={toAbout}
               sx={{ cursor: 'pointer' }}
@@ -60,9 +66,9 @@ const Home = () => {
               Become a beta tester
             </Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Typography className="home-footer-text">
-              revue.studio.app@gmail.com
+          <Grid item xs={12} sm={4}>
+            <Typography className="home-footer-text" onClick={sendMail}>
+              Email us
             </Typography>
             <Link
               href="http://www.dreamsoftproductions.com"

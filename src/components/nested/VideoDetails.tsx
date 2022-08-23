@@ -21,6 +21,8 @@ const VideoDetails = () => {
   return (
     <Box className="section">
       <Typography>{videoState.id}</Typography>
+      <Typography>{videoState.fileName}</Typography>
+      <Typography>{videoState.fileSize} Bytes</Typography>
 
       <Box className="video-player-container">
         <Box className="video-player">

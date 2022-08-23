@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -12,6 +12,7 @@ import { selectUser } from '../../features/user/userSlice';
 import {
   selectProjects,
   getProjectsList,
+  projectsLoading,
 } from '../../features/projects/projectsSlice';
 import {
   dynamoDBAddProject,
@@ -40,17 +41,6 @@ const AddProject = () => {
 
   const userId = userState.id;
 
-  useEffect(() => {
-    for (const project of projectsState.projects) {
-      if (project.id === projectId) {
-        navigate(`../projectDetails/${projectId}`, {
-          replace: false,
-          state: projectsState.projects[projectsState.projects.length - 1],
-        });
-      }
-    }
-  }, [projectId, navigate, projectsState.projects]);
-
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -64,6 +54,7 @@ const AddProject = () => {
       if (projectName === '' || projectDescription === '') {
         throw new Error('Please fill out form');
       }
+      dispatch(projectsLoading());
       await dynamoDBAddProject(
         projectId,
         userId,
@@ -74,7 +65,7 @@ const AddProject = () => {
       const response = await dynamoDBGetProjectsByUserId(userId);
       dispatch(getProjectsList(response.data.Items));
       setFormData(initialFormData);
-      navigate('../Dashboard', { replace: false });
+      navigate('../Dashboard', { replace: true });
     } catch (error: unknown) {
       const err = error as Error;
       console.log(err.message);
@@ -82,7 +73,11 @@ const AddProject = () => {
   };
 
   if (projectsState.loading === 'loading' || userState.loading === 'loading') {
-    return <CircularProgress />;
+    return (
+      <Box className="section" paddingTop={'20px'}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
@@ -121,3 +116,14 @@ const AddProject = () => {
 };
 
 export default AddProject;
+
+// useEffect(() => {
+//   for (const project of projectsState.projects) {
+//     if (project.id === projectId) {
+//       navigate(`../projectDetails/${projectId}`, {
+//         replace: false,
+//         state: projectsState.projects[projectsState.projects.length - 1],
+//       });
+//     }
+//   }
+// }, [projectId, navigate, projectsState.projects]);

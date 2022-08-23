@@ -35,7 +35,10 @@ export const projectsSlice = createSlice({
       }
     },
     removeProjectsList: (state) => {
-      state.projects = [];
+      if (state.loading === 'loading') {
+        state.loading = 'idle';
+        state.projects = [];
+      }
     },
   },
 });

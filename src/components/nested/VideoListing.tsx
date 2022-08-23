@@ -31,17 +31,12 @@ const VideoListing = ({
   };
 
   return (
-    <Box className="video-container">
-      <Box className="video-info-container">
-        <Typography>{shortenedFileName(video.fileName)}</Typography>
-        <Typography>
-          Uploaded: {timeStampConverter(Number(video.timeStamp))}
-        </Typography>
-        <PlayCircleOutlineIcon
-          sx={{ cursor: 'pointer' }}
-          onClick={toVideoDetailsHandler}
-        />
-      </Box>
+    <Box className="video-info-container" onClick={toVideoDetailsHandler}>
+      <Typography>{shortenedFileName(video.fileName)}</Typography>
+      <Typography>
+        Upload: {timeStampConverter(Number(video.timeStamp))}
+      </Typography>
+      <PlayCircleOutlineIcon sx={{ cursor: 'pointer' }} fontSize={'medium'} />
     </Box>
   );
 };

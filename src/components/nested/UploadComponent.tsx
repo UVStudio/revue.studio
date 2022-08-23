@@ -16,14 +16,12 @@ import {
 
 const UploadComponent = ({
   upload,
-  videos,
   projectId,
   setVideos,
   removeVideoFromListHandler,
   dynamoDBGetVideosByProjectId,
 }: {
   upload: UploadFileObject;
-  videos: VideoObject[];
   projectId: string;
   setVideos: React.Dispatch<React.SetStateAction<VideoObject[]>>;
   removeVideoFromListHandler: (id: string) => void;
@@ -35,11 +33,17 @@ const UploadComponent = ({
   const uploadVideoHandler = async () => {
     setUploading(true);
     const presignedUrl = await s3GetPresignedUrl(upload);
-    await s3UploadVideo(presignedUrl, upload);
-    setUploading(false);
-    setUploadDone(true);
-    const response = await dynamoDBGetVideosByProjectId(projectId);
-    console.log('res: ', response.data.Items);
+    const uploadResult = await s3UploadVideo(presignedUrl, upload);
+    console.log('uploadResult: ', uploadResult);
+    setTimeout(async () => {
+      const response = await dynamoDBGetVideosByProjectId(projectId);
+      setVideos(response.data.Items);
+      setUploading(false);
+      setUploadDone(true);
+      setTimeout(() => {
+        removeVideoFromListHandler(upload.id);
+      }, 2000);
+    }, 2000); //wait for DDB to be written
   };
 
   const uploadingIndicator = () => {
@@ -75,7 +79,7 @@ const UploadComponent = ({
   };
 
   return (
-    <Box className="add-project-container ">
+    <Box className="add-video-container">
       <Box key={upload.fileUrl} className="add-video-row">
         <Typography>{upload.fileName}</Typography>
         {uploadingIndicator()}
