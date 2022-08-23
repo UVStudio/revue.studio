@@ -89,11 +89,16 @@ export const Navbar = () => {
                   }}
                 >
                   {authPages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Link to={`/${page}`}>
-                        <Typography textAlign="center">{page}</Typography>
-                      </Link>
-                    </MenuItem>
+                    <Link key={page} to={`/${page}`}>
+                      <MenuItem onClick={handleCloseNavMenu}>
+                        <Typography
+                          textAlign="center"
+                          sx={{ color: '#3f51b5' }}
+                        >
+                          {page}
+                        </Typography>
+                      </MenuItem>
+                    </Link>
                   ))}
                 </Menu>
               </Box>

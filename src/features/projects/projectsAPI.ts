@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { awsProjectsAPI } from '../../constants/awsLinks';
+import { ProjectObject } from './projectsSlice';
 
 //DYNAMODB PROJECT CREATION
 export const dynamoDBAddProject = async (
@@ -67,5 +68,24 @@ export const dynamoDBGetProjectByProjectId = async (projectId: string) => {
     return data;
   } catch (error) {
     throw new Error('Could not get project by Project Id');
+  }
+};
+
+//GET PROJECTS BY USERID
+export const dynamoDBDeleteProjectByProjectId = async (
+  project: ProjectObject
+) => {
+  const s3FolderUrl = project.userId + '/' + project.id + '/';
+  console.log('s3FolderUrl: ', s3FolderUrl);
+  try {
+    const data = await axios.delete(
+      `https://${awsProjectsAPI}/project/${project.id}`,
+      {
+        data: { s3FolderUrl },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw new Error('Could not delete project by Project Id');
   }
 };

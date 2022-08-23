@@ -4,6 +4,7 @@ import {
   ProjectObject,
   ProjectsArray,
 } from '../../features/projects/projectsSlice';
+import { dynamoDBDeleteProjectByProjectId } from '../../features/projects/projectsAPI';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectsSection = ({
@@ -26,10 +27,19 @@ const ProjectsSection = ({
 
   const s3DeleteProjectHandler = async (project: ProjectObject) => {
     console.log('delete: ', project);
+    const response = await dynamoDBDeleteProjectByProjectId(project);
+    console.log('response: ', response);
   };
 
+  const projects = [...projectsState.projects];
+  const reversedProjects = projects.reverse();
+
   if (projectsState.loading === 'loading') {
-    return <CircularProgress />;
+    return (
+      <Box className="section" marginTop={'20px'}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
@@ -40,7 +50,7 @@ const ProjectsSection = ({
         </Button>
       </Box>
       <Typography>Your Projects:</Typography>
-      {projectsState.projects.map((project: ProjectObject) => {
+      {reversedProjects.map((project: ProjectObject) => {
         return (
           <Box key={project.id} className="outer-project-container">
             <Button onClick={() => s3DeleteProjectHandler(project)}>
@@ -57,6 +67,7 @@ const ProjectsSection = ({
               <Typography variant="body2">
                 {project.projectDescription}
               </Typography>
+              <Typography variant="body2">{project.id}</Typography>
             </Box>
           </Box>
         );
