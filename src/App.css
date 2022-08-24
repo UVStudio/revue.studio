@@ -59,6 +59,7 @@ a:visited {
 .home-footer-section {
   background-color: #3f51b5;
   color: white;
+  width: 100%;
 }
 
 .home-footer-text {

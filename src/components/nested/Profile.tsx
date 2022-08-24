@@ -78,7 +78,6 @@ const Profile = ({ userState }: { userState: UserState }) => {
   const navigate = useNavigate();
 
   const dynamoDBEditProfileHandler = async () => {
-    console.log('formState: ', formState);
     await dynamoDBEditProfile(userState, formState);
   };
 

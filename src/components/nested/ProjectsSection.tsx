@@ -57,7 +57,6 @@ const ProjectsSection = ({
           New Project
         </Button>
       </Box>
-      <Typography>Your Projects:</Typography>
       {reversedProjects.map((project: ProjectObject) => {
         return (
           <Box key={project.id} className="outer-project-container">

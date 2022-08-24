@@ -1,21 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Grid, Link } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import HomeAccordion from './nested/HomeAccordion';
+import HomeFooter from './nested/HomeFooter';
+
 import ReactPlayer from 'react-player';
 
 const Home = () => {
-  const navigate = useNavigate();
-
-  const toAbout = () => {
-    navigate('../About', { replace: false });
-  };
-
-  const sendMail = () => {
-    const mailto: string =
-      'mailto:revue.studio.app@gmail.com@gmail.com?subject=Test subject&body=Body content';
-    window.location.href = mailto;
-  };
-
   return (
     <Box>
       <Box className="section">
@@ -42,49 +32,10 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
-
-      <Box sx={{ flexGrow: 1 }} className="home-footer-section">
-        <Grid
-          container
-          columnSpacing={2}
-          sx={{ marginX: '2vw', paddingBottom: '50px', paddingTop: '30px' }}
-        >
-          <Grid item xs={12} sm={4}>
-            <Typography className="home-footer-text" variant="h4">
-              Revue
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography
-              onClick={toAbout}
-              sx={{ cursor: 'pointer' }}
-              className="home-footer-text"
-            >
-              About Revue
-            </Typography>
-            <Typography className="home-footer-text">
-              Become a beta tester
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography className="home-footer-text" onClick={sendMail}>
-              Email us
-            </Typography>
-            <Link
-              href="http://www.dreamsoftproductions.com"
-              target="_blank"
-              rel="noopener"
-            >
-              <Typography
-                sx={{ cursor: 'pointer' }}
-                className="home-footer-text"
-              >
-                Dreamsoft Productions
-              </Typography>
-            </Link>
-          </Grid>
-        </Grid>
+      <Box className="section">
+        <HomeAccordion />
       </Box>
+      <HomeFooter />
     </Box>
   );
 };
