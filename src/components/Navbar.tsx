@@ -44,7 +44,7 @@ export const Navbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
-        position="relative"
+        position="sticky"
         sx={{ zIndex: 'snackbar', backgroundColor: '#3f51b5' }}
       >
         <Toolbar>
@@ -53,8 +53,19 @@ export const Navbar = () => {
               <img src={logo} className="AppBar-logo" alt="logo" />
             </Link>
           </IconButton>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h5"
+            className="app-logo-row"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          >
             Revue.Studio
+            <Typography
+              variant="body2"
+              sx={{ position: 'relative', top: '8px', left: '5px' }}
+            >
+              - Beta
+            </Typography>
           </Typography>
           {userState.email ? (
             <Box>

@@ -71,9 +71,11 @@ const ProjectsSection = ({
               onClick={() => toProjectDetailsHandler(project)}
             >
               <Typography variant="subtitle1">{project.projectName}</Typography>
-              <Typography variant="body2">
-                {project.projectDescription}
-              </Typography>
+              <Box className="project-listing-text">
+                <Typography variant="body2">
+                  {project.projectDescription}
+                </Typography>
+              </Box>
               <Typography variant="body2">{project.id}</Typography>
             </Box>
           </Box>

@@ -128,9 +128,11 @@ const ProjectDetails = () => {
       <Box className="section" paddingTop={'20px'}>
         <Typography>Project Name: {projectState.projectName}</Typography>
         <Typography>Project ID: {projectState.id}</Typography>
-        <Typography>
-          Project Description: {projectState.projectDescription}
-        </Typography>
+        <Box className="project-details-description">
+          <Typography>
+            Project Description: {projectState.projectDescription}
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           onClick={() => toPublicProject(projectState.id)}
