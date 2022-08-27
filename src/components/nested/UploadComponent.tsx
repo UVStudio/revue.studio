@@ -33,17 +33,13 @@ const UploadComponent = ({
   const uploadVideoHandler = async () => {
     setUploading(true);
     const presignedUrl = await s3GetPresignedUrl(upload);
-    const uploadResult = await s3UploadVideo(presignedUrl, upload);
-    console.log('uploadResult: ', uploadResult);
+    await s3UploadVideo(presignedUrl, upload);
     setTimeout(async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
-      setVideos(response.data.Items);
-      setUploading(false);
+      setVideos(response.data.Items.reverse());
       setUploadDone(true);
-      setTimeout(() => {
-        removeVideoFromListHandler(upload.id);
-      }, 2000);
-    }, 2000); //wait for DDB to be written
+      setUploading(false);
+    }, 3000); //wait for DDB to be written
   };
 
   const uploadingIndicator = () => {

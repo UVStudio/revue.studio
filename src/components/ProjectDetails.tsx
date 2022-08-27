@@ -109,16 +109,11 @@ const ProjectDetails = () => {
   };
 
   const s3DeleteVideoHandler = async (videoDelete: VideoObject) => {
-    console.log('delete this: ', videoDelete);
     await s3RemoveVideoById(videoDelete);
     setVideos(
       videos.filter((video: VideoObject) => video.id !== videoDelete.id)
     );
   };
-
-  console.log('videos: ', videos);
-
-  const videosReserved = videos.reverse();
 
   if (useLocation().state === null || !userState)
     return <Navigate to="../" replace />;
@@ -172,7 +167,7 @@ const ProjectDetails = () => {
         {loading ? (
           <CircularProgress />
         ) : (
-          videosReserved.map((video) => {
+          videos.map((video) => {
             return (
               <Box key={video.id} className="outer-video-container">
                 <Button
