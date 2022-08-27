@@ -29,6 +29,7 @@ const UploadComponent = ({
 }) => {
   const [uploadDone, setUploadDone] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [removeUploadComp, setRemoveUploadComp] = useState(false);
 
   const uploadVideoHandler = async () => {
     setUploading(true);
@@ -37,8 +38,11 @@ const UploadComponent = ({
     setTimeout(async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
       setVideos(response.data.Items.reverse());
-      setUploadDone(true);
       setUploading(false);
+      setUploadDone(true);
+      setTimeout(() => {
+        setRemoveUploadComp(true);
+      }, 2000);
     }, 3000); //wait for DDB to be written
   };
 
@@ -75,16 +79,20 @@ const UploadComponent = ({
   };
 
   return (
-    <Box className="add-video-container">
-      <Box key={upload.fileUrl} className="add-video-row">
-        <Typography>{upload.fileName}</Typography>
-        {uploadingIndicator()}
-      </Box>
-      <LinearProgress
-        sx={{ marginTop: '10px', marginBottom: '10px' }}
-        variant="determinate"
-        value={40}
-      />
+    <Box>
+      {removeUploadComp ? null : (
+        <Box className="add-video-container">
+          <Box key={upload.fileUrl} className="add-video-row">
+            <Typography>{upload.fileName}</Typography>
+            {uploadingIndicator()}
+          </Box>
+          <LinearProgress
+            sx={{ marginTop: '10px', marginBottom: '10px' }}
+            variant="determinate"
+            value={40}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
