@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { UploadFileObject, VideoObject } from '../../components/ProjectDetails';
-import { awsVideosAPI } from '../../constants/awsLinks';
+import { awsVideosAPI, awsMultiUploadAPI } from '../../constants/awsLinks';
 
 //GET VIDEOS BY PROJECTID
 export const dynamoDBGetVideosByProjectId = async (projectId: string) => {
@@ -71,7 +71,7 @@ export const s3UploadVideo = async (
   const body = {
     upload,
   };
-  console.log('body: ', body);
+  console.log('body.upload.file: ', body.upload.file);
 
   try {
     const data = await axios.put(url, body.upload.file, config);
@@ -79,5 +79,146 @@ export const s3UploadVideo = async (
     return data;
   } catch (error) {
     throw new Error('Could not upload videos');
+  }
+};
+
+//Upload Multipart
+export const startMultiUpload = async (upload: UploadFileObject) => {
+  console.log('upload: ', upload);
+  const { fileName, projectId, key } = upload;
+
+  const params = {
+    fileName,
+    projectId,
+    key,
+  };
+
+  try {
+    //start upload API is called here, the route returns multipart upload ID
+    const result = await axios.get(
+      `https://${awsMultiUploadAPI}/start-upload`,
+      {
+        params,
+      }
+    );
+    const { UploadId } = result.data.message.result;
+    console.log('upload ID: ', UploadId);
+    return UploadId;
+  } catch (err) {
+    console.log('err: ', err);
+  }
+};
+
+export const uploadMultipartFile = async (
+  upload: UploadFileObject,
+  uploadId: string
+) => {
+  const fileSize = upload.file.size;
+  console.log('upload: ', upload);
+  const { fileName, projectId, key } = upload;
+
+  const fileBlob = new Blob([upload.file], { type: 'video/mp4' });
+
+  try {
+    const CHUNK_SIZE = 10000000; // 10MB
+    const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
+    const promisesArray = [];
+    let start;
+    let end;
+    let blob;
+    for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
+      start = (index - 1) * CHUNK_SIZE;
+      end = index * CHUNK_SIZE;
+      blob =
+        index < CHUNKS_COUNT
+          ? fileBlob.slice(start, end)
+          : fileBlob.slice(start);
+
+      //Get presigned URL for each part
+      const getUploadUrlResponse = await axios.get(
+        `https://${awsMultiUploadAPI}/get-upload-url`,
+        {
+          params: {
+            fileName,
+            partNumber: index,
+            uploadId,
+            key,
+          },
+        }
+      );
+
+      const uploadProgressHandler = async (
+        progressEvent: any,
+        chunks: number,
+        index: number
+      ) => {
+        // console.log('progressEvent: ', progressEvent);
+        // console.log('index: ', index);
+        if (progressEvent.loaded >= progressEvent.total) return;
+
+        const currentProgress = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+
+        // console.log('currentProgress: ', currentProgress);
+        // setProgressArray((progressArray) => {
+        //   progressArray[index - 1] = currentProgress;
+        //   const sum = progressArray.reduce((acc, curr) => acc + curr);
+        //   setUploadProgress(Math.round(sum / chunks));
+
+        //   return progressArray;
+        // });
+        // // console.log(progressArray)
+      };
+
+      const presignedUrl = getUploadUrlResponse.data;
+      console.log(
+        `Presigned URL ${index}: ${presignedUrl} filetype ${fileBlob.type}`
+      );
+
+      // Send part to aws server
+      const uploadResponse = axios.put(presignedUrl, blob, {
+        onUploadProgress: (e) => uploadProgressHandler(e, CHUNKS_COUNT, index),
+        headers: {
+          'Content-Type': fileBlob.type,
+        },
+      });
+      promisesArray.push(uploadResponse);
+    }
+
+    const resolvedArray = await Promise.all(promisesArray);
+    console.log('resolvedArray: ', resolvedArray);
+
+    const uploadPartsArray: any[] = [];
+    resolvedArray.forEach((resolvedPromise, index) => {
+      uploadPartsArray.push({
+        ETag: resolvedPromise.headers.etag,
+        PartNumber: index + 1,
+      });
+    });
+
+    console.log('uploadPartsArray: ', uploadPartsArray);
+
+    // CompleteMultipartUpload in the backend server
+    const completeUploadResponse = await axios.post(
+      `https://${awsMultiUploadAPI}/complete-upload`,
+      {
+        fileName,
+        parts: uploadPartsArray,
+        uploadId,
+        key,
+      }
+    );
+
+    console.log('completeUploadResponse: ', completeUploadResponse);
+    //   // setUploadProgress(100)
+    //   // setUploadSuccess(1)
+    //   // // setSubmitSuccess(2)
+    //   // setSubmitStatus(oldArray => [...oldArray, fileattach])
+    //   // // put a delay in here for 2 seconds
+    //   // // also clear down uploadProgress
+    //   // console.log(completeUploadResp.data, 'upload response complete ')
+  } catch (err) {
+    console.log(err);
   }
 };

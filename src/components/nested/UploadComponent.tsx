@@ -12,6 +12,8 @@ import { UploadFileObject, VideoObject } from '../ProjectDetails';
 import {
   s3GetPresignedUrl,
   s3UploadVideo,
+  startMultiUpload,
+  uploadMultipartFile,
 } from '../../features/videos/videosAPI';
 
 const UploadComponent = ({
@@ -44,6 +46,13 @@ const UploadComponent = ({
         setRemoveUploadComp(true);
       }, 2000);
     }, 3000); //wait for DDB to be written
+  };
+
+  const startUploadHandler = async () => {
+    const uploadId = await startMultiUpload(upload);
+    console.log('step 1 done');
+    await uploadMultipartFile(upload, uploadId);
+    console.log('step 2 done');
   };
 
   const uploadingIndicator = () => {
@@ -80,6 +89,7 @@ const UploadComponent = ({
 
   return (
     <Box>
+      <Button onClick={startUploadHandler}>MultiUpload Test</Button>
       {removeUploadComp ? null : (
         <Box className="add-video-container">
           <Box key={upload.fileUrl} className="add-video-row">

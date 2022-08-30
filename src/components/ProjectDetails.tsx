@@ -51,6 +51,7 @@ const ProjectDetails = () => {
 
   const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
+
     const slicePathToName = (str: string): string => {
       for (let i = str.length; i > 0; i--) {
         if (str[i] === '\\') {
