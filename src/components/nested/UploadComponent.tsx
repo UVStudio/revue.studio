@@ -10,8 +10,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { UploadFileObject, VideoObject } from '../ProjectDetails';
 import {
-  s3GetPresignedUrl,
-  s3UploadVideo,
+  // s3GetPresignedUrl,
+  // s3UploadVideo,
   startMultiUpload,
   uploadMultipartFile,
 } from '../../features/videos/videosAPI';
@@ -32,11 +32,18 @@ const UploadComponent = ({
   const [uploadDone, setUploadDone] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [removeUploadComp, setRemoveUploadComp] = useState(false);
+  const [progressArray, setProgressArray] = useState<number[]>([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const uploadVideoHandler = async () => {
+  const startUploadHandler = async () => {
     setUploading(true);
-    const presignedUrl = await s3GetPresignedUrl(upload);
-    await s3UploadVideo(presignedUrl, upload);
+    const uploadId = await startMultiUpload(upload);
+    await uploadMultipartFile(
+      upload,
+      uploadId,
+      setProgressArray,
+      setUploadProgress
+    );
     setTimeout(async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
       setVideos(response.data.Items.reverse());
@@ -48,12 +55,10 @@ const UploadComponent = ({
     }, 3000); //wait for DDB to be written
   };
 
-  const startUploadHandler = async () => {
-    const uploadId = await startMultiUpload(upload);
-    console.log('step 1 done');
-    await uploadMultipartFile(upload, uploadId);
-    console.log('step 2 done');
-  };
+  console.log(
+    'progressArray.length (number of chunks): ',
+    progressArray.length
+  );
 
   const uploadingIndicator = () => {
     if (!uploading) {
@@ -69,7 +74,7 @@ const UploadComponent = ({
       } else {
         return (
           <Box className="column">
-            <Button onClick={uploadVideoHandler}>
+            <Button onClick={startUploadHandler}>
               <FileUploadIcon />
             </Button>
             <CancelOutlinedIcon
@@ -89,7 +94,6 @@ const UploadComponent = ({
 
   return (
     <Box>
-      <Button onClick={startUploadHandler}>MultiUpload Test</Button>
       {removeUploadComp ? null : (
         <Box className="add-video-container">
           <Box key={upload.fileUrl} className="add-video-row">
@@ -99,7 +103,7 @@ const UploadComponent = ({
           <LinearProgress
             sx={{ marginTop: '10px', marginBottom: '10px' }}
             variant="determinate"
-            value={40}
+            value={uploadProgress}
           />
         </Box>
       )}
@@ -108,3 +112,18 @@ const UploadComponent = ({
 };
 
 export default UploadComponent;
+
+// const uploadVideoHandler = async () => {
+//   setUploading(true);
+//   const presignedUrl = await s3GetPresignedUrl(upload);
+//   await s3UploadVideo(presignedUrl, upload);
+//   setTimeout(async () => {
+//     const response = await dynamoDBGetVideosByProjectId(projectId);
+//     setVideos(response.data.Items.reverse());
+//     setUploading(false);
+//     setUploadDone(true);
+//     setTimeout(() => {
+//       setRemoveUploadComp(true);
+//     }, 2000);
+//   }, 3000); //wait for DDB to be written
+// };

@@ -33,55 +33,6 @@ export const s3RemoveVideoById = async (video: VideoObject) => {
   }
 };
 
-//GET PRESIGNEDURL
-export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
-  const config = {
-    headers: {
-      'content-type': 'application/json',
-    },
-  };
-  const body = {
-    upload,
-  };
-
-  try {
-    const data = await axios.post(
-      `https://${awsVideosAPI}/videos/${upload.projectId}`,
-      body,
-      config
-    );
-
-    return data.data;
-  } catch (error) {
-    throw new Error('Could not obtain presignedUrl');
-  }
-};
-
-//UPLOAD VIDEOS
-export const s3UploadVideo = async (
-  url: string,
-  upload: UploadFileObject
-): Promise<any> => {
-  const config = {
-    headers: {
-      'Content-Type': 'video/mp4',
-      'x-amz-acl': 'public-read',
-    },
-  };
-  const body = {
-    upload,
-  };
-  console.log('body.upload.file: ', body.upload.file);
-
-  try {
-    const data = await axios.put(url, body.upload.file, config);
-    console.log('upload response data: ', data);
-    return data;
-  } catch (error) {
-    throw new Error('Could not upload videos');
-  }
-};
-
 //Upload Multipart
 export const startMultiUpload = async (upload: UploadFileObject) => {
   console.log('upload: ', upload);
@@ -111,11 +62,12 @@ export const startMultiUpload = async (upload: UploadFileObject) => {
 
 export const uploadMultipartFile = async (
   upload: UploadFileObject,
-  uploadId: string
+  uploadId: string,
+  setProgressArray: React.Dispatch<React.SetStateAction<number[]>>,
+  setUploadProgress: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const fileSize = upload.file.size;
-  console.log('upload: ', upload);
-  const { fileName, projectId, key } = upload;
+  const { fileName, key } = upload;
 
   const fileBlob = new Blob([upload.file], { type: 'video/mp4' });
 
@@ -152,23 +104,21 @@ export const uploadMultipartFile = async (
         chunks: number,
         index: number
       ) => {
-        // console.log('progressEvent: ', progressEvent);
-        // console.log('index: ', index);
         if (progressEvent.loaded >= progressEvent.total) return;
 
         const currentProgress = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
 
-        // console.log('currentProgress: ', currentProgress);
-        // setProgressArray((progressArray) => {
-        //   progressArray[index - 1] = currentProgress;
-        //   const sum = progressArray.reduce((acc, curr) => acc + curr);
-        //   setUploadProgress(Math.round(sum / chunks));
+        setProgressArray((progressArray) => {
+          progressArray[index - 1] = currentProgress;
+          const sum = progressArray.reduce(
+            (acc: number, curr: number) => acc + curr
+          );
+          setUploadProgress(Math.round(sum / chunks));
 
-        //   return progressArray;
-        // });
-        // // console.log(progressArray)
+          return progressArray;
+        });
       };
 
       const presignedUrl = getUploadUrlResponse.data;
@@ -211,7 +161,7 @@ export const uploadMultipartFile = async (
     );
 
     console.log('completeUploadResponse: ', completeUploadResponse);
-    //   // setUploadProgress(100)
+    setUploadProgress(100);
     //   // setUploadSuccess(1)
     //   // // setSubmitSuccess(2)
     //   // setSubmitStatus(oldArray => [...oldArray, fileattach])
@@ -222,3 +172,52 @@ export const uploadMultipartFile = async (
     console.log(err);
   }
 };
+
+//GET PRESIGNEDURL
+export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  const body = {
+    upload,
+  };
+
+  try {
+    const data = await axios.post(
+      `https://${awsVideosAPI}/videos/${upload.projectId}`,
+      body,
+      config
+    );
+
+    return data.data;
+  } catch (error) {
+    throw new Error('Could not obtain presignedUrl');
+  }
+};
+
+//UPLOAD VIDEOS
+// export const s3UploadVideo = async (
+//   url: string,
+//   upload: UploadFileObject
+// ): Promise<any> => {
+//   const config = {
+//     headers: {
+//       'Content-Type': 'video/mp4',
+//       'x-amz-acl': 'public-read',
+//     },
+//   };
+//   const body = {
+//     upload,
+//   };
+//   console.log('body.upload.file: ', body.upload.file);
+
+//   try {
+//     const data = await axios.put(url, body.upload.file, config);
+//     console.log('upload response data: ', data);
+//     return data;
+//   } catch (error) {
+//     throw new Error('Could not upload videos');
+//   }
+// };
