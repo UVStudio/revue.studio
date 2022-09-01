@@ -173,29 +173,52 @@ export const uploadMultipartFile = async (
   }
 };
 
-//GET PRESIGNEDURL
-export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
-  const config = {
-    headers: {
-      'content-type': 'application/json',
-    },
-  };
-  const body = {
-    upload,
+export const abortMultipartUpload = async (
+  upload: UploadFileObject,
+  uploadId: string
+) => {
+  const { key } = upload;
+
+  const data = {
+    key,
+    uploadId,
   };
 
-  try {
-    const data = await axios.post(
-      `https://${awsVideosAPI}/videos/${upload.projectId}`,
-      body,
-      config
-    );
+  console.log('abort about to be called: ', data);
+  const abortResult = await axios.delete(
+    `https://${awsMultiUploadAPI}/abort-upload`,
+    { data }
+  );
 
-    return data.data;
-  } catch (error) {
-    throw new Error('Could not obtain presignedUrl');
-  }
+  console.log('abortResult: ', abortResult);
+
+  return abortResult;
 };
+
+//LEGACY UPLOAD CODE
+//GET PRESIGNEDURL
+// export const s3GetPresignedUrl = async (upload: UploadFileObject) => {
+//   const config = {
+//     headers: {
+//       'content-type': 'application/json',
+//     },
+//   };
+//   const body = {
+//     upload,
+//   };
+
+//   try {
+//     const data = await axios.post(
+//       `https://${awsVideosAPI}/videos/${upload.projectId}`,
+//       body,
+//       config
+//     );
+
+//     return data.data;
+//   } catch (error) {
+//     throw new Error('Could not obtain presignedUrl');
+//   }
+// };
 
 //UPLOAD VIDEOS
 // export const s3UploadVideo = async (

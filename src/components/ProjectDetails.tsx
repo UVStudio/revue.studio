@@ -105,7 +105,7 @@ const ProjectDetails = () => {
     });
   };
 
-  const removeVideoFromListHandler = (id: string) => {
+  const removeVideoFromListHandler = async (id: string) => {
     setUploads(uploads.filter((upload: UploadFileObject) => upload.id !== id));
   };
 

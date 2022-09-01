@@ -14,6 +14,7 @@ import {
   // s3UploadVideo,
   startMultiUpload,
   uploadMultipartFile,
+  abortMultipartUpload,
 } from '../../features/videos/videosAPI';
 
 const UploadComponent = ({
@@ -34,10 +35,12 @@ const UploadComponent = ({
   const [removeUploadComp, setRemoveUploadComp] = useState(false);
   const [progressArray, setProgressArray] = useState<number[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [multiUploadId, setMultiUploadId] = useState('');
 
   const startUploadHandler = async () => {
     setUploading(true);
     const uploadId = await startMultiUpload(upload);
+    setMultiUploadId(uploadId);
     await uploadMultipartFile(
       upload,
       uploadId,
@@ -53,6 +56,11 @@ const UploadComponent = ({
         setRemoveUploadComp(true);
       }, 2000);
     }, 3000); //wait for DDB to be written
+  };
+
+  const abortUploadHandler = async (upload: UploadFileObject) => {
+    console.log('abort clicked');
+    await abortMultipartUpload(upload, multiUploadId);
   };
 
   console.log(
@@ -87,6 +95,7 @@ const UploadComponent = ({
       return (
         <Box className="column">
           <CircularProgress sx={{ marginRight: '10px' }} size={20} />
+          <CancelOutlinedIcon onClick={() => abortUploadHandler(upload)} />
         </Box>
       );
     }
