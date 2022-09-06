@@ -63,6 +63,7 @@ export const startMultiUpload = async (upload: UploadFileObject) => {
 export const uploadMultipartFile = async (
   upload: UploadFileObject,
   uploadId: string,
+  abortUpload: boolean,
   setProgressArray: React.Dispatch<React.SetStateAction<number[]>>,
   setUploadProgress: React.Dispatch<React.SetStateAction<number>>
 ) => {
@@ -70,6 +71,8 @@ export const uploadMultipartFile = async (
   const { fileName, key } = upload;
 
   const fileBlob = new Blob([upload.file], { type: 'video/mp4' });
+
+  const controller = new AbortController();
 
   try {
     const CHUNK_SIZE = 10000000; // 10MB
@@ -132,9 +135,12 @@ export const uploadMultipartFile = async (
         headers: {
           'Content-Type': fileBlob.type,
         },
+        signal: controller.signal,
       });
       promisesArray.push(uploadResponse);
     }
+
+    if (abortUpload) controller.abort();
 
     const resolvedArray = await Promise.all(promisesArray);
     console.log('resolvedArray: ', resolvedArray);
@@ -189,8 +195,6 @@ export const abortMultipartUpload = async (
     `https://${awsMultiUploadAPI}/abort-upload`,
     { data }
   );
-
-  console.log('abortResult: ', abortResult);
 
   return abortResult;
 };

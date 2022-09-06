@@ -36,6 +36,7 @@ const UploadComponent = ({
   const [progressArray, setProgressArray] = useState<number[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [multiUploadId, setMultiUploadId] = useState('');
+  const [abortUpload, setAbortUpload] = useState(false);
 
   const startUploadHandler = async () => {
     setUploading(true);
@@ -44,6 +45,7 @@ const UploadComponent = ({
     await uploadMultipartFile(
       upload,
       uploadId,
+      abortUpload,
       setProgressArray,
       setUploadProgress
     );
@@ -59,8 +61,19 @@ const UploadComponent = ({
   };
 
   const abortUploadHandler = async (upload: UploadFileObject) => {
-    console.log('abort clicked');
-    await abortMultipartUpload(upload, multiUploadId);
+    const abortResult = await abortMultipartUpload(upload, multiUploadId);
+    console.log('abort result F/E: ', abortResult);
+    if (abortResult.status === 200) {
+      setUploading(false);
+      setUploadProgress(0);
+      setAbortUpload(true);
+      setTimeout(() => {
+        setRemoveUploadComp(true);
+      }, 2000);
+      console.log(
+        'abort is successful at AWS, now do something to stop the upload'
+      );
+    }
   };
 
   console.log(
