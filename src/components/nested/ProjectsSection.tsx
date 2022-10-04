@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import { useAppDispatch } from '../../app/hooks';
 import {
@@ -70,7 +69,7 @@ const ProjectsSection = ({
               sx={{ paddingY: '8px', paddingX: '15px' }}
               onClick={() => toProjectDetailsHandler(project)}
             >
-              <Typography variant="subtitle1">{project.projectName}</Typography>
+              <Typography variant="h6">{project.projectName}</Typography>
               <Box className="project-listing-text">
                 <Typography variant="body2">
                   {project.projectDescription}

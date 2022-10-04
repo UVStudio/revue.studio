@@ -99,7 +99,20 @@ a:visited {
 }
 
 .video-player {
+  position: relative;
   margin: 0rem;
+  z-index: 1;
+}
+
+.canvas {
+  position: absolute;
+  z-index: 2;
+  width:1280;
+  height:720;
+}
+
+.canvas:hover {
+  cursor: pointer;
 }
 
 .text-overlay {

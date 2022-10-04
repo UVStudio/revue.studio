@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 const initialFormData = {
   projectName: '',
   projectDescription: '',
+  projectPassword: '',
 };
 
 const AddProject = () => {
@@ -37,7 +38,7 @@ const AddProject = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [projectId] = useState(uuidv4());
 
-  const { projectName, projectDescription } = formData;
+  const { projectName, projectDescription, projectPassword } = formData;
 
   const userId = userState.id;
 
@@ -51,7 +52,11 @@ const AddProject = () => {
     const timeStamp = Date.now().toString();
 
     try {
-      if (projectName === '' || projectDescription === '') {
+      if (
+        projectName === '' ||
+        projectDescription === '' ||
+        projectPassword === ''
+      ) {
         throw new Error('Please fill out form');
       }
       dispatch(projectsLoading());
@@ -60,7 +65,8 @@ const AddProject = () => {
         userId,
         projectName,
         projectDescription,
-        timeStamp
+        timeStamp,
+        projectPassword
       );
       const response = await dynamoDBGetProjectsByUserId(userId);
       dispatch(getProjectsList(response.data.Items));
@@ -103,6 +109,14 @@ const AddProject = () => {
           id="projectDescription"
           label="Project Description"
           value={projectDescription}
+          onChange={(e) => onChangeForm(e)}
+        />
+        <TextField
+          fullWidth
+          required
+          id="projectPassword"
+          label="Project Password"
+          value={projectPassword}
           onChange={(e) => onChangeForm(e)}
         />
       </Box>

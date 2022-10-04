@@ -7,6 +7,7 @@ export interface ProjectObject {
   projectName: string;
   projectDescription: string;
   timeStamp: string;
+  projectPassword: string;
 }
 
 export interface ProjectsArray {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
@@ -10,10 +9,7 @@ import { VideoObject } from '../ProjectDetails';
 const VideoDetails = () => {
   //PARAMS FROM NAVIGATE
   const videoState = useLocation().state as VideoObject;
-
   const userState = useAppSelector(selectUser);
-
-  console.log('state: ', videoState);
 
   if (useLocation().state === null || !userState)
     return <Navigate to="../" replace />;

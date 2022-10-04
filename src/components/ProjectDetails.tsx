@@ -122,11 +122,17 @@ const ProjectDetails = () => {
   return (
     <Box>
       <Box className="section" paddingTop={'20px'}>
-        <Typography>Project Name: {projectState.projectName}</Typography>
+        <Typography variant="h6">{projectState.projectName}</Typography>
         <Typography>Project ID: {projectState.id}</Typography>
         <Box className="project-details-description">
           <Typography>
             Project Description: {projectState.projectDescription}
+          </Typography>
+          <Typography>
+            Project Password:{' '}
+            {projectState.projectPassword
+              ? projectState.projectPassword
+              : 'no password'}
           </Typography>
         </Box>
         <Button
@@ -159,7 +165,7 @@ const ProjectDetails = () => {
               value={''}
             />
             <label htmlFor="contained-button-file">
-              <Button component="span">Select Video</Button>
+              <Button component="span">Select Video to Upload</Button>
             </label>
           </Box>
         </Box>

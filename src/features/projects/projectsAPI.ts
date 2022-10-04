@@ -8,7 +8,8 @@ export const dynamoDBAddProject = async (
   userId: string,
   projectName: string,
   projectDescription: string,
-  timeStamp: string
+  timeStamp: string,
+  projectPassword: string
 ) => {
   const config = {
     headers: {
@@ -21,8 +22,9 @@ export const dynamoDBAddProject = async (
     projectName,
     projectDescription,
     timeStamp,
+    projectPassword,
   });
-  console.log('body: ', body);
+
   try {
     const data = await axios.post(
       `https://${awsProjectsAPI}/projects`,
