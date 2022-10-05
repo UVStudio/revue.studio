@@ -28,6 +28,7 @@ const initialPassword = {
 
 export interface projectPasswordLocalStorage {
   projectPassword: string;
+  timeStamp: number;
 }
 
 const Project = () => {
@@ -53,9 +54,14 @@ const Project = () => {
       setVideos(response.data.Items.reverse());
     };
 
+    const result = localStorage.getItem('projectPassword');
+    const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
+
+    if (parsedData && parsedData.timeStamp + 60000 < Date.now()) {
+      localStorage.removeItem('projectPassword');
+    }
+
     const retrieveStoredPassword = () => {
-      const result = localStorage.getItem('projectPassword');
-      const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
       const storedPassword: string = parsedData.projectPassword;
       if (storedPassword === project.projectPassword) {
         setAllowed(true);
@@ -68,7 +74,7 @@ const Project = () => {
     fetchVideos();
     fetchProject();
     setLoading(false);
-    const result = localStorage.getItem('projectPassword');
+
     if (result) {
       retrieveStoredPassword();
     }
@@ -80,17 +86,18 @@ const Project = () => {
     setPassword({ ...password, [e.target.id]: e.target.value });
   };
 
-  const checkPassword = () => {
+  const enterPassword = () => {
     if (project.projectPassword === password.projectPassword) {
       setAllowed(true);
       localStorage.setItem(
         'projectPassword',
-        JSON.stringify({ projectPassword: password.projectPassword })
+        JSON.stringify({
+          projectPassword: password.projectPassword,
+          timeStamp: Date.now(),
+        })
       );
     }
   };
-
-  console.log('localStorage.projectPassword: ', localStorage.projectPassword);
 
   return (
     <Box className="App">
@@ -129,7 +136,7 @@ const Project = () => {
               onChange={(e) => onChangeForm(e)}
             />
           </Box>
-          <Button onClick={checkPassword}>
+          <Button onClick={enterPassword}>
             <Typography>Enter Project</Typography>
           </Button>
         </Box>

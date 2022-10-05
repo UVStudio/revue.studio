@@ -43,7 +43,7 @@ const VideoDetails = () => {
     setPassword({ ...password, [e.target.id]: e.target.value });
   };
 
-  const checkPassword = () => {
+  const enterPassword = () => {
     if (projectState!.projectPassword === password.projectPassword) {
       setAllowed(true);
       localStorage.setItem(
@@ -90,7 +90,7 @@ const VideoDetails = () => {
               onChange={(e) => onChangeForm(e)}
             />
           </Box>
-          <Button onClick={checkPassword}>
+          <Button onClick={enterPassword}>
             <Typography>Enter Project</Typography>
           </Button>
         </Box>
