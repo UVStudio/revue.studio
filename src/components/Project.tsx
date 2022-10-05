@@ -22,15 +22,19 @@ const initialProject = {
   projectPassword: '',
 };
 
-const initialFormData = {
+const initialPassword = {
   projectPassword: '',
 };
+
+export interface projectPasswordLocalStorage {
+  projectPassword: string;
+}
 
 const Project = () => {
   const [videos, setVideos] = useState<VideoObject[]>([]);
   const [project, setProject] = useState<ProjectObject>(initialProject);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(initialFormData);
+  const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
 
   const params = useParams();
@@ -48,28 +52,45 @@ const Project = () => {
       // console.log('UE fetched from DDB Videos');
       setVideos(response.data.Items.reverse());
     };
+
+    const retrieveStoredPassword = () => {
+      const result = localStorage.getItem('projectPassword');
+      const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
+      const storedPassword: string = parsedData.projectPassword;
+      if (storedPassword === project.projectPassword) {
+        setAllowed(true);
+      } else {
+        setAllowed(false);
+      }
+    };
+
     setLoading(true);
     fetchVideos();
     fetchProject();
     setLoading(false);
-  }, [projectId]);
+    const result = localStorage.getItem('projectPassword');
+    if (result) {
+      retrieveStoredPassword();
+    }
+  }, [projectId, project.projectPassword]);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    setPassword({ ...password, [e.target.id]: e.target.value });
   };
 
-  console.log('projectPW: ', project.projectPassword);
-  console.log('formDataPW: ', formData.projectPassword);
-
   const checkPassword = () => {
-    if (project.projectPassword === formData.projectPassword) {
+    if (project.projectPassword === password.projectPassword) {
       setAllowed(true);
+      localStorage.setItem(
+        'projectPassword',
+        JSON.stringify({ projectPassword: password.projectPassword })
+      );
     }
   };
 
-  console.log('allowed: ', allowed);
+  console.log('localStorage.projectPassword: ', localStorage.projectPassword);
 
   return (
     <Box className="App">
@@ -86,7 +107,7 @@ const Project = () => {
           {videos.map((video) => {
             return (
               <Box key={video.timeStamp} className="outer-video-container">
-                <VideoListing video={video} videos={videos} />
+                <VideoListing video={video} videos={videos} project={project} />
               </Box>
             );
           })}
@@ -104,7 +125,7 @@ const Project = () => {
               required
               id="projectPassword"
               label="Project Password?"
-              value={formData.projectPassword}
+              value={password.projectPassword}
               onChange={(e) => onChangeForm(e)}
             />
           </Box>

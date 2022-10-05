@@ -186,7 +186,11 @@ const ProjectDetails = () => {
                   </Typography>
                 </Button>
                 <Box>
-                  <VideoListing video={video} videos={videos} />
+                  <VideoListing
+                    video={video}
+                    videos={videos}
+                    project={projectState}
+                  />
                 </Box>
               </Box>
             );
