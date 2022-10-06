@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField } from '@mui/material';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  CircularProgress,
+} from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../features/user/userSlice';
 import { awsS3Url } from '../../constants/awsLinks';
 import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
+import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
+import { projectPasswordLocalStorage } from '../Project';
 
 interface projVideoState {
   video: VideoObject;
@@ -20,22 +28,62 @@ const initialPassword = {
 const VideoDetails = () => {
   const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
+  const [projectId, setProjectId] = useState('');
+  const [loading, setLoading] = useState(true);
 
   //PARAMS FROM NAVIGATE
   const projVideoState = useLocation().state as projVideoState;
-  const videoState = projVideoState
+  const videoSlice = projVideoState
     ? (projVideoState.video as VideoObject)
     : null;
-  const projectState = projVideoState
+  const projectSlice = projVideoState
     ? (projVideoState.project as ProjectObject)
     : null;
   const userState = useAppSelector(selectUser);
 
+  const params = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (userState) {
+    const fetchProjectId = async () => {
+      setLoading(true);
+      const response = await dynamoDBGetVideoByVideoId(params.videoId!);
+      setProjectId(response.data.Item.projectId);
+      setLoading(false);
+      if (projVideoState === null && projectId) {
+        navigate(`../project/${projectId}`);
+      }
+    };
+
+    fetchProjectId();
+  }, [params, projVideoState, projectId, navigate]);
+
+  useEffect(() => {
+    const retrieveStoredPassword = () => {
+      const storedPassword: string = parsedData.projectPassword;
+      if (storedPassword === projectSlice!.projectPassword) {
+        setAllowed(true);
+      } else {
+        setAllowed(false);
+        localStorage.removeItem('projectPassword');
+      }
+    };
+
+    const result = localStorage.getItem('projectPassword');
+    const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
+
+    if (parsedData && parsedData.timeStamp + 60000 < Date.now()) {
+      localStorage.removeItem('projectPassword');
+    }
+
+    if (result) {
+      retrieveStoredPassword();
+    }
+
+    if (userState.id !== '') {
       setAllowed(true);
     }
-  }, [projVideoState, userState, setAllowed]);
+  }, [projVideoState, userState, setAllowed, projectSlice, params]);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,31 +92,33 @@ const VideoDetails = () => {
   };
 
   const enterPassword = () => {
-    if (projectState!.projectPassword === password.projectPassword) {
+    if (projectSlice!.projectPassword === password.projectPassword) {
       setAllowed(true);
       localStorage.setItem(
         'projectPassword',
-        JSON.stringify({ projectPassword: password.projectPassword })
+        JSON.stringify({
+          projectPassword: password.projectPassword,
+          timeStamp: Date.now(),
+        })
       );
     }
   };
 
-  if (projVideoState === null) return <Navigate to="../" replace />;
-
   return (
     <Box className="section">
-      {allowed ? (
+      {loading ? (
+        <CircularProgress />
+      ) : allowed ? (
         <Box className="section">
-          <Typography>{videoState!.id}</Typography>
-          <Typography>{videoState!.fileName}</Typography>
-          <Typography>{videoState!.fileSize} Bytes</Typography>
-
+          <Typography>{videoSlice!.id}</Typography>
+          <Typography>{videoSlice!.fileName}</Typography>
+          <Typography>{videoSlice!.fileSize} Bytes</Typography>
           <Box className="video-player-container">
             <Box className="video-player">
               <ReactPlayer
                 controls={true}
                 light={false}
-                url={`${awsS3Url}/${videoState!.s3Url}`}
+                url={`${awsS3Url}/${videoSlice!.s3Url}`}
               />
             </Box>
           </Box>

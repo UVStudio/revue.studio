@@ -20,6 +20,24 @@ export const dynamoDBGetVideosByProjectId = async (projectId: string) => {
   }
 };
 
+//GET VIDEO BY VIDEO ID
+export const dynamoDBGetVideoByVideoId = async (videoId: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+  try {
+    const response = await axios.get(
+      `https://${awsVideosAPI}/video/${videoId}`,
+      config
+    );
+    return response;
+  } catch (error) {
+    throw new Error('Could not get video by Video Id');
+  }
+};
+
 //DELETE VIDEO BY VIDEO ID
 export const s3RemoveVideoById = async (video: VideoObject) => {
   const { id, s3Url } = video;

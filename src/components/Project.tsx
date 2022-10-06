@@ -44,13 +44,11 @@ const Project = () => {
   useEffect(() => {
     const fetchProject = async () => {
       const response = await dynamoDBGetProjectByProjectId(projectId);
-      //console.log('UE fetched from DDB Project: ', response.data.Item);
       setProject(response.data.Item);
     };
 
     const fetchVideos = async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
-      // console.log('UE fetched from DDB Videos');
       setVideos(response.data.Items.reverse());
     };
 
@@ -60,25 +58,24 @@ const Project = () => {
     if (parsedData && parsedData.timeStamp + 60000 < Date.now()) {
       localStorage.removeItem('projectPassword');
     }
-
     const retrieveStoredPassword = () => {
       const storedPassword: string = parsedData.projectPassword;
       if (storedPassword === project.projectPassword) {
         setAllowed(true);
       } else {
         setAllowed(false);
+        localStorage.removeItem('projectPassword');
       }
     };
 
     setLoading(true);
     fetchVideos();
     fetchProject();
-    setLoading(false);
-
-    if (result) {
+    if (result && project.projectPassword) {
       retrieveStoredPassword();
     }
-  }, [projectId, project.projectPassword]);
+    setLoading(false);
+  }, [projectId, allowed, project.projectPassword]);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
