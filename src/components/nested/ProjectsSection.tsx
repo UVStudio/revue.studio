@@ -1,4 +1,10 @@
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Paper,
+} from '@mui/material';
 import { useAppDispatch } from '../../app/hooks';
 import {
   ProjectObject,
@@ -64,7 +70,8 @@ const ProjectsSection = ({
                 DELETE PROJECT
               </Typography>
             </Button>
-            <Box
+            <Paper
+              elevation={2}
               className="project-list-item"
               sx={{ paddingY: '8px', paddingX: '15px' }}
               onClick={() => toProjectDetailsHandler(project)}
@@ -76,7 +83,7 @@ const ProjectsSection = ({
                 </Typography>
               </Box>
               <Typography variant="body2">{project.id}</Typography>
-            </Box>
+            </Paper>
           </Box>
         );
       })}

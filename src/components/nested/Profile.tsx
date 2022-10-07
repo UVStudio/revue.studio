@@ -101,7 +101,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
   };
 
   return (
-    <Card className="whiteCard">
+    <Card raised className="whiteCard">
       <Box sx={{ m: 4 }}>
         <Box className="center">
           <Typography>{userState.email}</Typography>

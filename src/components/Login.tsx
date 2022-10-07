@@ -147,7 +147,7 @@ const Login = () => {
           <Typography>You are logged in as {userState.email}</Typography>
         </Box>
       ) : (
-        <Card>
+        <Card raised>
           <Box
             className="whiteCard"
             component="form"

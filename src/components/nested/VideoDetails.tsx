@@ -7,6 +7,7 @@ import {
   TextField,
   CircularProgress,
   Card,
+  Paper,
 } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
 import { useAppSelector } from '../../app/hooks';
@@ -107,49 +108,53 @@ const VideoDetails = () => {
 
   return (
     <Box className="background">
-      <Box className="section">
-        {loading ? (
-          <CircularProgress />
-        ) : allowed ? (
-          <Box className="section">
-            <Typography>Video ID: {videoSlice!.id}</Typography>
-            <Typography>Video File Name: {videoSlice!.fileName}</Typography>
-            <Typography>Data: {videoSlice!.fileSize} Bytes</Typography>
-            <Box className="video-player-container">
-              <Box className="video-player">
-                <ReactPlayer
-                  controls={true}
-                  light={false}
-                  url={`${awsS3Url}/${videoSlice!.s3Url}`}
-                />
+      <Paper sx={{ p: 3, px: 4 }}>
+        <Box className="center">
+          {loading ? (
+            <CircularProgress />
+          ) : allowed ? (
+            <Box className="center">
+              <Box sx={{ pb: 2 }}>
+                <Typography>Video ID: {videoSlice!.id}</Typography>
+                <Typography>Video File Name: {videoSlice!.fileName}</Typography>
+                <Typography>Data: {videoSlice!.fileSize} Bytes</Typography>
+              </Box>
+              <Box className="video-player-container">
+                <Box className="video-player">
+                  <ReactPlayer
+                    controls={true}
+                    light={false}
+                    url={`${awsS3Url}/${videoSlice!.s3Url}`}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ) : (
-          <Box className="section">
-            <Card className="whiteCard" sx={{ px: 7, py: 5 }}>
-              <Box
-                className="center"
-                component="form"
-                sx={{
-                  marginY: '20px',
-                }}
-              >
-                <TextField
-                  required
-                  id="projectPassword"
-                  label="Project Password?"
-                  value={password.projectPassword}
-                  onChange={(e) => onChangeForm(e)}
-                />
-              </Box>
-              <Button onClick={enterPassword}>
-                <Typography>Enter Project</Typography>
-              </Button>
-            </Card>
-          </Box>
-        )}
-      </Box>
+          ) : (
+            <Box className="section">
+              <Card className="whiteCard" sx={{ px: 7, py: 5 }}>
+                <Box
+                  className="center"
+                  component="form"
+                  sx={{
+                    marginY: '20px',
+                  }}
+                >
+                  <TextField
+                    required
+                    id="projectPassword"
+                    label="Project Password?"
+                    value={password.projectPassword}
+                    onChange={(e) => onChangeForm(e)}
+                  />
+                </Box>
+                <Button onClick={enterPassword}>
+                  <Typography>Enter Project</Typography>
+                </Button>
+              </Card>
+            </Box>
+          )}
+        </Box>
+      </Paper>
     </Box>
   );
 };

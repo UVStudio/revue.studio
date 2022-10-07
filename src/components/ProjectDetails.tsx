@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Paper,
+} from '@mui/material';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import VideoListing from './nested/VideoListing';
 import { useAppSelector } from '../app/hooks';
@@ -121,8 +127,11 @@ const ProjectDetails = () => {
 
   return (
     <Box className="background">
-      <Box sx={{ width: '100%' }}>
-        <Box className="section" paddingTop={'20px'}>
+      <Paper
+        elevation={2}
+        sx={{ width: '90%', backgroundColor: 'white', my: 3 }}
+      >
+        <Box className="center" paddingTop={'20px'}>
           <Typography variant="h6">{projectState.projectName}</Typography>
           <Typography>Project ID: {projectState.id}</Typography>
           <Box className="project-details-description">
@@ -143,7 +152,7 @@ const ProjectDetails = () => {
             <Typography>Project Public Page</Typography>
           </Button>
         </Box>
-        <Box className="section">
+        <Box className="center">
           {uploads.map((upload) => {
             return (
               <UploadComponent
@@ -171,7 +180,7 @@ const ProjectDetails = () => {
             </Box>
           </Box>
         </Box>
-        <Box className="section">
+        <Box className="center" sx={{ my: 2 }}>
           {loading ? (
             <CircularProgress />
           ) : (
@@ -198,7 +207,7 @@ const ProjectDetails = () => {
             })
           )}
         </Box>
-      </Box>
+      </Paper>
     </Box>
   );
 };
