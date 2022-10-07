@@ -120,82 +120,84 @@ const ProjectDetails = () => {
     return <Navigate to="../" replace />;
 
   return (
-    <Box>
-      <Box className="section" paddingTop={'20px'}>
-        <Typography variant="h6">{projectState.projectName}</Typography>
-        <Typography>Project ID: {projectState.id}</Typography>
-        <Box className="project-details-description">
-          <Typography>
-            Project Description: {projectState.projectDescription}
-          </Typography>
-          <Typography>
-            Project Password:{' '}
-            {projectState.projectPassword
-              ? projectState.projectPassword
-              : 'no password'}
-          </Typography>
+    <Box className="background">
+      <Box sx={{ width: '100%' }}>
+        <Box className="section" paddingTop={'20px'}>
+          <Typography variant="h6">{projectState.projectName}</Typography>
+          <Typography>Project ID: {projectState.id}</Typography>
+          <Box className="project-details-description">
+            <Typography>
+              Project Description: {projectState.projectDescription}
+            </Typography>
+            <Typography>
+              Project Password:{' '}
+              {projectState.projectPassword
+                ? projectState.projectPassword
+                : 'no password'}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            onClick={() => toPublicProject(projectState.id)}
+          >
+            <Typography>Project Public Page</Typography>
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          onClick={() => toPublicProject(projectState.id)}
-        >
-          <Typography>Project Public Page</Typography>
-        </Button>
-      </Box>
-      <Box className="section">
-        {uploads.map((upload) => {
-          return (
-            <UploadComponent
-              key={upload.id}
-              upload={upload}
-              projectId={projectState.id}
-              setVideos={setVideos}
-              removeVideoFromListHandler={removeVideoFromListHandler}
-              dynamoDBGetVideosByProjectId={dynamoDBGetVideosByProjectId}
-            />
-          );
-        })}
-        <Box className="column">
-          <Box>
-            <input
-              id="contained-button-file"
-              type="file"
-              style={{ display: 'none' }}
-              onChange={addVideoHandler}
-              value={''}
-            />
-            <label htmlFor="contained-button-file">
-              <Button component="span">Select Video to Upload</Button>
-            </label>
+        <Box className="section">
+          {uploads.map((upload) => {
+            return (
+              <UploadComponent
+                key={upload.id}
+                upload={upload}
+                projectId={projectState.id}
+                setVideos={setVideos}
+                removeVideoFromListHandler={removeVideoFromListHandler}
+                dynamoDBGetVideosByProjectId={dynamoDBGetVideosByProjectId}
+              />
+            );
+          })}
+          <Box className="column">
+            <Box>
+              <input
+                id="contained-button-file"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={addVideoHandler}
+                value={''}
+              />
+              <label htmlFor="contained-button-file">
+                <Button component="span">Select Video to Upload</Button>
+              </label>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box className="section">
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          videos.map((video) => {
-            return (
-              <Box key={video.id} className="outer-video-container">
-                <Button
-                  sx={{ pl: '1rem' }}
-                  onClick={() => s3DeleteVideoHandler(video)}
-                >
-                  <Typography variant="body2" color={'red'}>
-                    Delete Video
-                  </Typography>
-                </Button>
-                <Box>
-                  <VideoListing
-                    video={video}
-                    videos={videos}
-                    project={projectState}
-                  />
+        <Box className="section">
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            videos.map((video) => {
+              return (
+                <Box key={video.id} className="outer-video-container">
+                  <Button
+                    sx={{ pl: '1rem' }}
+                    onClick={() => s3DeleteVideoHandler(video)}
+                  >
+                    <Typography variant="body2" color={'red'}>
+                      Delete Video
+                    </Typography>
+                  </Button>
+                  <Box>
+                    <VideoListing
+                      video={video}
+                      videos={videos}
+                      project={projectState}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </Box>
       </Box>
     </Box>
   );

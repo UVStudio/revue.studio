@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SideDrawer from './nested/SideDrawer';
 import Profile from './nested/Profile';
 import ProjectsSection from './nested/ProjectsSection';
@@ -25,25 +25,29 @@ const Dashboard = () => {
   const projectsState = useAppSelector(selectProjects);
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <SideDrawer setSection={setSection} />
-      <Box
-        component="main"
-        className="section"
-        sx={{
-          p: 2,
-          width: `calc(100% + ${drawerWidth}px)`,
-        }}
-      >
-        {section === dashboardSections.projects ? (
-          <ProjectsSection projectsState={projectsState} />
-        ) : null}
-        {section === dashboardSections.profile ? (
-          <Profile userState={userState} />
-        ) : null}
-        {section === dashboardSections.account ? <Account /> : null}
-        {section === dashboardSections.notifications ? <Notifications /> : null}
-        {section === dashboardSections.storage ? <Storage /> : null}
+    <Box className="background">
+      <Box sx={{ display: 'flex' }}>
+        <SideDrawer setSection={setSection} />
+        <Box
+          component="main"
+          className=""
+          sx={{
+            p: 2,
+            width: `calc(100% + ${drawerWidth}px)`,
+          }}
+        >
+          {section === dashboardSections.projects ? (
+            <ProjectsSection projectsState={projectsState} />
+          ) : null}
+          {section === dashboardSections.profile ? (
+            <Profile userState={userState} />
+          ) : null}
+          {section === dashboardSections.account ? <Account /> : null}
+          {section === dashboardSections.notifications ? (
+            <Notifications />
+          ) : null}
+          {section === dashboardSections.storage ? <Storage /> : null}
+        </Box>
       </Box>
     </Box>
   );

@@ -1,12 +1,19 @@
 import React, { useReducer, useCallback } from 'react';
-import { Box, Button, Typography, FormGroup, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Typography,
+  FormGroup,
+  TextField,
+  Card,
+} from '@mui/material';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { poolData } from '../../constants/poolData';
 import {
   cognitoUserLogout,
-  getCognitoUserAttributes,
+  // getCognitoUserAttributes,
   dynamoDBEditProfile,
 } from '../../features/user/userAPI';
 import { removeProjectsList } from '../../features/projects/projectsSlice';
@@ -81,9 +88,9 @@ const Profile = ({ userState }: { userState: UserState }) => {
     await dynamoDBEditProfile(userState, formState);
   };
 
-  const getUserAttrHandler = async () => {
-    await getCognitoUserAttributes();
-  };
+  // const getUserAttrHandler = async () => {
+  //   await getCognitoUserAttributes();
+  // };
 
   const userLogoutHandler = () => {
     localStorage.clear();
@@ -94,84 +101,88 @@ const Profile = ({ userState }: { userState: UserState }) => {
   };
 
   return (
-    <Box className="section">
-      <Box className="section">
-        <Typography>{userState.email}</Typography>
-        {userState.email ? (
-          <Button variant="contained" onClick={userLogoutHandler}>
-            Logout
-          </Button>
-        ) : (
-          <Typography>You are not authenticated.</Typography>
-        )}
-      </Box>
-      <Box className="section">
+    <Card className="whiteCard">
+      <Box sx={{ m: 4 }}>
+        <Box className="center">
+          <Typography>{userState.email}</Typography>
+          {userState.email ? (
+            <Button variant="contained" onClick={userLogoutHandler}>
+              Logout
+            </Button>
+          ) : (
+            <Typography>You are not authenticated.</Typography>
+          )}
+        </Box>
+        {/* <Box className="center">
         <Button variant="contained" onClick={getUserAttrHandler}>
           User Attribute
         </Button>
-      </Box>
-      <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
-        <Typography variant="h6">Your Profile Info</Typography>
-        <Typography variant="body2">(all fields voluntary)</Typography>
-        <FormGroup>
-          <TextField
-            margin="dense"
-            id="name"
-            label="Name"
-            value={formState.name ? formState.name : initialForm.name}
-            onChange={handleTextChange}
-            variant="outlined"
-          />
-          <Box className="column">
+      </Box> */}
+        <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
+          <Typography variant="h6">Your Profile Info</Typography>
+          <Typography variant="body2">(all fields voluntary)</Typography>
+          <FormGroup>
             <TextField
               margin="dense"
-              id="city"
-              label="City"
-              value={formState.city ? formState.city : initialForm.city}
+              id="name"
+              label="Name"
+              value={formState.name ? formState.name : initialForm.name}
               onChange={handleTextChange}
               variant="outlined"
             />
+            <Box className="column">
+              <TextField
+                margin="dense"
+                id="city"
+                label="City"
+                value={formState.city ? formState.city : initialForm.city}
+                onChange={handleTextChange}
+                variant="outlined"
+              />
+              <TextField
+                margin="dense"
+                id="country"
+                label="Country"
+                value={
+                  formState.country ? formState.country : initialForm.country
+                }
+                onChange={handleTextChange}
+                variant="outlined"
+              />
+            </Box>
             <TextField
               margin="dense"
-              id="country"
-              label="Country"
+              id="company"
+              label="Company Name"
               value={
-                formState.country ? formState.country : initialForm.country
+                formState.company ? formState.company : initialForm.company
               }
               onChange={handleTextChange}
               variant="outlined"
             />
+            <TextField
+              margin="dense"
+              id="description"
+              label="Brief description of your work"
+              value={
+                formState.description
+                  ? formState.description
+                  : initialForm.description
+              }
+              onChange={handleTextChange}
+              multiline={true}
+              maxRows={4}
+              variant="outlined"
+            />
+          </FormGroup>
+          <Box className="center" marginTop={'20px'}>
+            <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
+              Update Profile Info
+            </Button>
           </Box>
-          <TextField
-            margin="dense"
-            id="company"
-            label="Company Name"
-            value={formState.company ? formState.company : initialForm.company}
-            onChange={handleTextChange}
-            variant="outlined"
-          />
-          <TextField
-            margin="dense"
-            id="description"
-            label="Brief description of your work"
-            value={
-              formState.description
-                ? formState.description
-                : initialForm.description
-            }
-            onChange={handleTextChange}
-            multiline={true}
-            maxRows={4}
-            variant="outlined"
-          />
-        </FormGroup>
-        <Box className="section" marginTop={'20px'}>
-          <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
-            Update Profile Info
-          </Button>
         </Box>
       </Box>
-    </Box>
+    </Card>
   );
 };
 

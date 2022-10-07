@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography, Card } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, loginUserState } from '../features/user/userSlice';
 import {
@@ -141,15 +141,15 @@ const Login = () => {
 
   //UI RENDERS
   return (
-    <Box>
+    <Box className="background">
       {userState.email ? (
         <Box>
           <Typography>You are logged in as {userState.email}</Typography>
         </Box>
       ) : (
-        <Box>
+        <Card>
           <Box
-            className="section"
+            className="whiteCard"
             component="form"
             sx={{
               '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -171,7 +171,7 @@ const Login = () => {
             </Box>
             {!confirmSent ? (
               register ? (
-                <Box className="section">
+                <Box className="whiteCard">
                   <TextField
                     required
                     id="email"
@@ -211,7 +211,7 @@ const Login = () => {
                   </Button>
                 </Box>
               ) : (
-                <Box className="section">
+                <Box className="whiteCard">
                   <TextField
                     required
                     id="email"
@@ -237,7 +237,7 @@ const Login = () => {
           </Box>
           {confirmSent ? (
             <Box
-              className="section"
+              className="whiteCard"
               component="form"
               sx={{
                 '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -267,7 +267,7 @@ const Login = () => {
               </Button>
             </Box>
           ) : null}
-        </Box>
+        </Card>
       )}
     </Box>
   );
