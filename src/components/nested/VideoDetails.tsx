@@ -17,6 +17,7 @@ import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
 import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
 import { projectPasswordLocalStorage } from '../Project';
+import CommentBox from './CommentBox';
 
 interface projVideoState {
   video: VideoObject;
@@ -48,7 +49,6 @@ const VideoDetails = () => {
 
   useEffect(() => {
     const fetchProjectId = async () => {
-      setLoading(true);
       const response = await dynamoDBGetVideoByVideoId(params.videoId!);
       setProjectId(response.data.Item.projectId);
       setLoading(false);
@@ -109,7 +109,7 @@ const VideoDetails = () => {
   return (
     <Box className="background">
       <Paper sx={{ p: 3, px: 4 }}>
-        <Box className="center">
+        <Box className="center" sx={{ width: '700px' }}>
           {loading ? (
             <CircularProgress />
           ) : allowed ? (
@@ -127,6 +127,23 @@ const VideoDetails = () => {
                     url={`${awsS3Url}/${videoSlice!.s3Url}`}
                   />
                 </Box>
+              </Box>
+              <Box className="comment-section">
+                <Typography variant="h6">Comments</Typography>
+                <CommentBox />
+                <Paper
+                  className="comment-box"
+                  square={false}
+                  elevation={2}
+                  sx={{ backgroundColor: '#FDFDFF' }}
+                >
+                  <Typography className="comment-text">
+                    In sed neque dui. Integer ut tempor libero. Donec ante
+                    metus, iaculis eu tempus a, suscipit quis metus. Donec eu
+                    porttitor mauris, at dictum enim. In at est at enim volutpat
+                    sagittis in vel sem.
+                  </Typography>
+                </Paper>
               </Box>
             </Box>
           ) : (

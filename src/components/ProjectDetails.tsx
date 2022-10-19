@@ -55,6 +55,8 @@ const ProjectDetails = () => {
   const [videos, setVideos] = useState<VideoObject[]>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log('loading: ', loading);
+
   const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
 
