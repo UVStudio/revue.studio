@@ -57,7 +57,7 @@ const ProjectsSection = ({
 
   return (
     <Box className="section" sx={{ width: '100%' }}>
-      <Box className="section" marginTop={'20px'}>
+      <Box className="section" sx={{ mt: 8 }}>
         <Button variant="contained" onClick={toNewProjectHandler}>
           New Project
         </Button>
