@@ -55,8 +55,6 @@ const ProjectDetails = () => {
   const [videos, setVideos] = useState<VideoObject[]>([]);
   const [loading, setLoading] = useState(false);
 
-  console.log('loading: ', loading);
-
   const addVideoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
 
@@ -134,8 +132,9 @@ const ProjectDetails = () => {
         sx={{ width: '90%', backgroundColor: 'white', my: 3 }}
       >
         <Box className="center" paddingTop={'20px'}>
-          <Typography variant="h6">{projectState.projectName}</Typography>
-          <Typography>Project ID: {projectState.id}</Typography>
+          <Typography variant="h6">
+            Project Name: {projectState.projectName}
+          </Typography>
           <Box className="project-details-description">
             <Typography>
               Project Description: {projectState.projectDescription}
@@ -146,6 +145,7 @@ const ProjectDetails = () => {
                 ? projectState.projectPassword
                 : 'no password'}
             </Typography>
+            <Typography>Project ID: {projectState.id}</Typography>
           </Box>
           <Button
             variant="contained"

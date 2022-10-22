@@ -1,17 +1,25 @@
 import { Typography, Paper } from '@mui/material';
 
-const CommentBox = () => {
+export interface CommentObject {
+  id: string;
+  comment: string;
+  timeStamp: string;
+  userId: string;
+  videoId: string;
+}
+
+const CommentBox = ({ comment }: { comment: CommentObject }) => {
+  let backgColor = '#DAF9DE';
+  if (comment.userId === 'guest') backgColor = '#FDFDFF';
+
   return (
     <Paper
       className="comment-box"
       square={false}
       elevation={2}
-      sx={{ backgroundColor: '#DAF9DE' }}
+      sx={{ backgroundColor: backgColor }}
     >
-      <Typography className="comment-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed
-        sapien dui. Vivamus iaculis eros vel maximus placerat.
-      </Typography>
+      <Typography className="comment-text">{comment.comment}</Typography>
     </Paper>
   );
 };

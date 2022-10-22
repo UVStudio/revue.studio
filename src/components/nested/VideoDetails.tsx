@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Card,
   Paper,
+  FormControl,
 } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
 import { useAppSelector } from '../../app/hooks';
@@ -15,7 +16,9 @@ import { selectUser } from '../../features/user/userSlice';
 import { awsS3Url } from '../../constants/awsLinks';
 import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
+import { CommentObject } from './CommentBox';
 import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
+import { dynamoDBGetCommentsByVideoId } from '../../features/comments/commentsAPI';
 import { projectPasswordLocalStorage } from '../Project';
 import CommentBox from './CommentBox';
 
@@ -33,6 +36,7 @@ const VideoDetails = () => {
   const [allowed, setAllowed] = useState(false);
   const [projectId, setProjectId] = useState('');
   const [loading, setLoading] = useState(true);
+  const [comments, setComments] = useState<CommentObject[]>([]);
 
   //PARAMS FROM NAVIGATE
   const projVideoState = useLocation().state as projVideoState;
@@ -59,6 +63,15 @@ const VideoDetails = () => {
 
     fetchProjectId();
   }, [params, projVideoState, projectId, navigate]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      const response = await dynamoDBGetCommentsByVideoId(params.videoId!);
+      setComments(response.data.Items);
+    };
+
+    fetchComments();
+  }, [params]);
 
   useEffect(() => {
     const retrieveStoredPassword = () => {
@@ -107,14 +120,14 @@ const VideoDetails = () => {
   };
 
   return (
-    <Box className="background">
-      <Paper sx={{ p: 3, px: 4 }}>
+    <Box className="background" sx={{ height: '100%' }}>
+      <Paper sx={{ my: 2, mb: 5, px: 4 }}>
         <Box className="center" sx={{ width: '700px' }}>
           {loading ? (
             <CircularProgress />
           ) : allowed ? (
             <Box className="center">
-              <Box sx={{ pb: 2 }}>
+              <Box sx={{ py: 2 }}>
                 <Typography>Video ID: {videoSlice!.id}</Typography>
                 <Typography>Video File Name: {videoSlice!.fileName}</Typography>
                 <Typography>Data: {videoSlice!.fileSize} Bytes</Typography>
@@ -129,21 +142,24 @@ const VideoDetails = () => {
                 </Box>
               </Box>
               <Box className="comment-section">
+                <FormControl fullWidth sx={{ my: 2 }}>
+                  <Box className="flex-column">
+                    <TextField
+                      id="outlined-basic"
+                      label="New Comment"
+                      variant="outlined"
+                      sx={{ mr: 3, width: '100%' }}
+                    />
+                    <Button variant="contained">Post</Button>
+                  </Box>
+                </FormControl>
+
                 <Typography variant="h6">Comments</Typography>
-                <CommentBox />
-                <Paper
-                  className="comment-box"
-                  square={false}
-                  elevation={2}
-                  sx={{ backgroundColor: '#FDFDFF' }}
-                >
-                  <Typography className="comment-text">
-                    In sed neque dui. Integer ut tempor libero. Donec ante
-                    metus, iaculis eu tempus a, suscipit quis metus. Donec eu
-                    porttitor mauris, at dictum enim. In at est at enim volutpat
-                    sagittis in vel sem.
-                  </Typography>
-                </Paper>
+                {comments.length > 0
+                  ? comments.map((comment) => {
+                      return <CommentBox key={comment.id} comment={comment} />;
+                    })
+                  : null}
               </Box>
             </Box>
           ) : (
