@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { selectUser } from '../features/user/userSlice';
+import { useAppSelector } from '../app/hooks';
 import VideoListing from './nested/VideoListing';
 import { dynamoDBGetVideosByProjectId } from '../features/videos/videosAPI';
 import { dynamoDBGetProjectByProjectId } from '../features/projects/projectsAPI';
@@ -38,6 +40,7 @@ const Project = () => {
   const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
 
+  const userState = useAppSelector(selectUser);
   const params = useParams();
   const projectId = params.projectId as string;
 
@@ -51,6 +54,10 @@ const Project = () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
       setVideos(response.data.Items.reverse());
     };
+
+    if (userState.id !== '') {
+      setAllowed(true);
+    }
 
     const result = localStorage.getItem('projectPassword');
     const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
@@ -75,7 +82,7 @@ const Project = () => {
       retrieveStoredPassword();
     }
     setLoading(false);
-  }, [projectId, allowed, project.projectPassword]);
+  }, [projectId, allowed, project.projectPassword, userState]);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -134,7 +141,7 @@ const Project = () => {
             />
           </Box>
           <Button onClick={enterPassword}>
-            <Typography>Enter Project</Typography>
+            <Typography>Enter Project from Project</Typography>
           </Button>
         </Box>
       )}

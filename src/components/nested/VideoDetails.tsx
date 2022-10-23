@@ -31,15 +31,24 @@ const initialPassword = {
   projectPassword: '',
 };
 
+const initialComment = {
+  newComment: '',
+};
+
 const VideoDetails = () => {
   const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
   const [projectId, setProjectId] = useState('');
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<CommentObject[]>([]);
+  const [comment, setComment] = useState(initialComment);
+
+  const params = useParams();
 
   //PARAMS FROM NAVIGATE
   const projVideoState = useLocation().state as projVideoState;
+  console.log('projVideoState: ', projVideoState);
+
   const videoSlice = projVideoState
     ? (projVideoState.video as VideoObject)
     : null;
@@ -48,34 +57,27 @@ const VideoDetails = () => {
     : null;
   const userState = useAppSelector(selectUser);
 
-  const params = useParams();
   const navigate = useNavigate();
+  // console.log('allowed: ', allowed); //allowed logic seems correct
 
   useEffect(() => {
     const fetchProjectId = async () => {
       const response = await dynamoDBGetVideoByVideoId(params.videoId!);
       setProjectId(response.data.Item.projectId);
-      setLoading(false);
-      if (projVideoState === null && projectId) {
-        navigate(`../project/${projectId}`);
+
+      if (!projVideoState && projectId && userState.id !== '') {
+        navigate(`../projectDetails/${projectId}`);
       }
+      setLoading(false);
     };
 
     fetchProjectId();
-  }, [params, projVideoState, projectId, navigate]);
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      const response = await dynamoDBGetCommentsByVideoId(params.videoId!);
-      setComments(response.data.Items);
-    };
-
-    fetchComments();
-  }, [params]);
+  }, [params, projVideoState, projectId, navigate, userState.id]);
 
   useEffect(() => {
     const retrieveStoredPassword = () => {
       const storedPassword: string = parsedData.projectPassword;
+
       if (storedPassword === projectSlice!.projectPassword) {
         setAllowed(true);
       } else {
@@ -100,10 +102,25 @@ const VideoDetails = () => {
     }
   }, [projVideoState, userState, setAllowed, projectSlice, params]);
 
-  const onChangeForm = (
+  useEffect(() => {
+    const fetchComments = async () => {
+      const response = await dynamoDBGetCommentsByVideoId(params.videoId!);
+      setComments(response.data.Items);
+    };
+
+    fetchComments();
+  }, [params]);
+
+  const onPasswordChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setPassword({ ...password, [e.target.id]: e.target.value });
+  };
+
+  const onCommentChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setComment({ ...comment, [e.target.id]: e.target.value });
   };
 
   const enterPassword = () => {
@@ -121,11 +138,11 @@ const VideoDetails = () => {
 
   return (
     <Box className="background" sx={{ height: '100%' }}>
-      <Paper sx={{ my: 2, mb: 5, px: 4 }}>
-        <Box className="center" sx={{ width: '700px' }}>
-          {loading ? (
-            <CircularProgress />
-          ) : allowed ? (
+      {loading ? (
+        <CircularProgress />
+      ) : allowed && projVideoState ? (
+        <Paper sx={{ my: 2, mb: 5, px: 4 }}>
+          <Box className="center" sx={{ width: '700px' }}>
             <Box className="center">
               <Box sx={{ py: 2 }}>
                 <Typography>Video ID: {videoSlice!.id}</Typography>
@@ -145,10 +162,12 @@ const VideoDetails = () => {
                 <FormControl fullWidth sx={{ my: 2 }}>
                   <Box className="flex-column">
                     <TextField
-                      id="outlined-basic"
+                      id="newComment"
                       label="New Comment"
                       variant="outlined"
                       sx={{ mr: 3, width: '100%' }}
+                      value={comment.newComment}
+                      onChange={(e) => onCommentChange(e)}
                     />
                     <Button variant="contained">Post</Button>
                   </Box>
@@ -162,32 +181,24 @@ const VideoDetails = () => {
                   : null}
               </Box>
             </Box>
-          ) : (
-            <Box className="section">
-              <Card className="whiteCard" sx={{ px: 7, py: 5 }}>
-                <Box
-                  className="center"
-                  component="form"
-                  sx={{
-                    marginY: '20px',
-                  }}
-                >
-                  <TextField
-                    required
-                    id="projectPassword"
-                    label="Project Password?"
-                    value={password.projectPassword}
-                    onChange={(e) => onChangeForm(e)}
-                  />
-                </Box>
-                <Button onClick={enterPassword}>
-                  <Typography>Enter Project</Typography>
-                </Button>
-              </Card>
-            </Box>
-          )}
+          </Box>
+        </Paper>
+      ) : (
+        <Box className="section">
+          <Card className="whiteCard" sx={{ px: 7, py: 5, my: 5 }}>
+            <TextField
+              required
+              id="projectPassword"
+              label="Project Password?"
+              value={password.projectPassword}
+              onChange={(e) => onPasswordChangeForm(e)}
+            />
+            <Button onClick={enterPassword} sx={{ mt: 3 }}>
+              <Typography>Enter Project from Video</Typography>
+            </Button>
+          </Card>
         </Box>
-      </Paper>
+      )}
     </Box>
   );
 };

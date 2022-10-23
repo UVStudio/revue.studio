@@ -6,10 +6,16 @@ import {
   CircularProgress,
   Paper,
 } from '@mui/material';
-import { useLocation, useNavigate, Navigate } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  Navigate,
+  useParams,
+} from 'react-router-dom';
 import VideoListing from './nested/VideoListing';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/user/userSlice';
+import { selectProjects } from '../features/projects/projectsSlice';
 import { ProjectObject } from '../features/projects/projectsSlice';
 import { awsS3Url } from '../constants/awsLinks';
 import {
@@ -41,10 +47,18 @@ export interface VideoObject {
 }
 
 const ProjectDetails = () => {
-  //PARAMS FROM NAVIGATE
-  const projectState = useLocation().state as ProjectObject;
+  //GET PROJECT STATE FROM REDUX STORE
+  const params = useParams();
+  const projectSelector = useAppSelector(selectProjects);
+  const currentProj = projectSelector.projects.filter(
+    (project) => project.id === params.projectId
+  );
 
-  //GLOBAL STATE
+  //PROJECT STATE FROM EITHER PARAMS OR REDUX STORE
+  const projectState: ProjectObject =
+    (useLocation().state as ProjectObject) || currentProj[0];
+
+  //USER STATE
   const userState = useAppSelector(selectUser);
   const navigate = useNavigate();
 
@@ -122,94 +136,99 @@ const ProjectDetails = () => {
     );
   };
 
-  if (useLocation().state === null || !userState)
+  if (userState.id === '') {
     return <Navigate to="../" replace />;
+  }
 
   return (
     <Box className="background">
-      <Paper
-        elevation={2}
-        sx={{ width: '90%', backgroundColor: 'white', my: 3 }}
-      >
-        <Box className="center" paddingTop={'20px'}>
-          <Typography variant="h6">
-            Project Name: {projectState.projectName}
-          </Typography>
-          <Box className="project-details-description">
-            <Typography>
-              Project Description: {projectState.projectDescription}
+      {projectState ? (
+        <Paper
+          elevation={2}
+          sx={{ width: '90%', backgroundColor: 'white', my: 3 }}
+        >
+          <Box className="center" paddingTop={'20px'}>
+            <Typography variant="h6">
+              Project Name: {projectState.projectName}
             </Typography>
-            <Typography>
-              Project Password:{' '}
-              {projectState.projectPassword
-                ? projectState.projectPassword
-                : 'no password'}
-            </Typography>
-            <Typography>Project ID: {projectState.id}</Typography>
+            <Box className="project-details-description">
+              <Typography>
+                Project Description: {projectState.projectDescription}
+              </Typography>
+              <Typography>
+                Project Password:{' '}
+                {projectState.projectPassword
+                  ? projectState.projectPassword
+                  : 'no password'}
+              </Typography>
+              <Typography>Project ID: {projectState.id}</Typography>
+            </Box>
+            <Button
+              variant="contained"
+              onClick={() => toPublicProject(projectState.id)}
+            >
+              <Typography>Project Public Page</Typography>
+            </Button>
           </Box>
-          <Button
-            variant="contained"
-            onClick={() => toPublicProject(projectState.id)}
-          >
-            <Typography>Project Public Page</Typography>
-          </Button>
-        </Box>
-        <Box className="center">
-          {uploads.map((upload) => {
-            return (
-              <UploadComponent
-                key={upload.id}
-                upload={upload}
-                projectId={projectState.id}
-                setVideos={setVideos}
-                removeVideoFromListHandler={removeVideoFromListHandler}
-                dynamoDBGetVideosByProjectId={dynamoDBGetVideosByProjectId}
-              />
-            );
-          })}
-          <Box className="column">
-            <Box>
-              <input
-                id="contained-button-file"
-                type="file"
-                style={{ display: 'none' }}
-                onChange={addVideoHandler}
-                value={''}
-              />
-              <label htmlFor="contained-button-file">
-                <Button component="span">Select Video to Upload</Button>
-              </label>
+          <Box className="center">
+            {uploads.map((upload) => {
+              return (
+                <UploadComponent
+                  key={upload.id}
+                  upload={upload}
+                  projectId={projectState.id}
+                  setVideos={setVideos}
+                  removeVideoFromListHandler={removeVideoFromListHandler}
+                  dynamoDBGetVideosByProjectId={dynamoDBGetVideosByProjectId}
+                />
+              );
+            })}
+            <Box className="column">
+              <Box>
+                <input
+                  id="contained-button-file"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={addVideoHandler}
+                  value={''}
+                />
+                <label htmlFor="contained-button-file">
+                  <Button component="span">Select Video to Upload</Button>
+                </label>
+              </Box>
             </Box>
           </Box>
-        </Box>
-        <Box className="center" sx={{ my: 2 }}>
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            videos.map((video) => {
-              return (
-                <Box key={video.id} className="outer-video-container">
-                  <Button
-                    sx={{ pl: '1rem' }}
-                    onClick={() => s3DeleteVideoHandler(video)}
-                  >
-                    <Typography variant="body2" color={'red'}>
-                      Delete Video
-                    </Typography>
-                  </Button>
-                  <Box>
-                    <VideoListing
-                      video={video}
-                      videos={videos}
-                      project={projectState}
-                    />
+          <Box className="center" sx={{ my: 2 }}>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              videos.map((video) => {
+                return (
+                  <Box key={video.id} className="outer-video-container">
+                    <Button
+                      sx={{ pl: '1rem' }}
+                      onClick={() => s3DeleteVideoHandler(video)}
+                    >
+                      <Typography variant="body2" color={'red'}>
+                        Delete Video
+                      </Typography>
+                    </Button>
+                    <Box>
+                      <VideoListing
+                        video={video}
+                        videos={videos}
+                        project={projectState}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              );
-            })
-          )}
-        </Box>
-      </Paper>
+                );
+              })
+            )}
+          </Box>
+        </Paper>
+      ) : (
+        <CircularProgress />
+      )}
     </Box>
   );
 };

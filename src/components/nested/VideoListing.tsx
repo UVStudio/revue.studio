@@ -8,7 +8,6 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
 const VideoListing = ({
   video,
-  videos,
   project,
 }: {
   video: VideoObject;
