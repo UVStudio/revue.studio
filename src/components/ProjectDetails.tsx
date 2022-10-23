@@ -50,13 +50,13 @@ const ProjectDetails = () => {
   //GET PROJECT STATE FROM REDUX STORE
   const params = useParams();
   const projectSelector = useAppSelector(selectProjects);
-  const currentProj = projectSelector.projects.filter(
+  const projState = projectSelector.projects.filter(
     (project) => project.id === params.projectId
   );
 
   //PROJECT STATE FROM EITHER PARAMS OR REDUX STORE
   const projectState: ProjectObject =
-    (useLocation().state as ProjectObject) || currentProj[0];
+    (useLocation().state as ProjectObject) || projState[0];
 
   //USER STATE
   const userState = useAppSelector(selectUser);

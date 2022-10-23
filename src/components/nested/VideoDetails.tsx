@@ -13,10 +13,12 @@ import {
 import ReactPlayer from 'react-player/lazy';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../features/user/userSlice';
+import { selectProjects } from '../../features/projects/projectsSlice';
 import { awsS3Url } from '../../constants/awsLinks';
 import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
 import { CommentObject } from './CommentBox';
+import { dynamoDBGetProjectByProjectId } from '../../features/projects/projectsAPI';
 import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
 import { dynamoDBGetCommentsByVideoId } from '../../features/comments/commentsAPI';
 import { projectPasswordLocalStorage } from '../Project';
@@ -39,6 +41,8 @@ const VideoDetails = () => {
   const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
   const [projectId, setProjectId] = useState('');
+  const [videoState, setVideoState] = useState<null | VideoObject>(null);
+  const [projectState, setProjectState] = useState<null | ProjectObject>(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<CommentObject[]>([]);
   const [comment, setComment] = useState(initialComment);
@@ -46,15 +50,17 @@ const VideoDetails = () => {
   const params = useParams();
 
   //PARAMS FROM NAVIGATE
+  //projVideoState will yield both video and project state, which is ideal
+  //but we can only get projVideoState in one step from useLocation
   const projVideoState = useLocation().state as projVideoState;
-  console.log('projVideoState: ', projVideoState);
+  // console.log('projVideoState: ', projVideoState);
 
   const videoSlice = projVideoState
     ? (projVideoState.video as VideoObject)
-    : null;
+    : videoState;
   const projectSlice = projVideoState
     ? (projVideoState.project as ProjectObject)
-    : null;
+    : projectState;
   const userState = useAppSelector(selectUser);
 
   const navigate = useNavigate();
@@ -62,12 +68,17 @@ const VideoDetails = () => {
 
   useEffect(() => {
     const fetchProjectId = async () => {
-      const response = await dynamoDBGetVideoByVideoId(params.videoId!);
-      setProjectId(response.data.Item.projectId);
+      const videoResponse = await dynamoDBGetVideoByVideoId(params.videoId!);
+      setProjectId(videoResponse.data.Item.projectId);
+      setVideoState(videoResponse.data.Item);
+      const projectResponse = await dynamoDBGetProjectByProjectId(
+        videoResponse.data.Item.projectId
+      );
+      setProjectState(projectResponse.data.Item);
 
-      if (!projVideoState && projectId && userState.id !== '') {
-        navigate(`../projectDetails/${projectId}`);
-      }
+      // if (!projVideoState && projectId && userState.id !== '') {
+      //   navigate(`../projectDetails/${projectId}`);
+      // }
       setLoading(false);
     };
 
@@ -140,7 +151,7 @@ const VideoDetails = () => {
     <Box className="background" sx={{ height: '100%' }}>
       {loading ? (
         <CircularProgress />
-      ) : allowed && projVideoState ? (
+      ) : allowed && videoSlice ? (
         <Paper sx={{ my: 2, mb: 5, px: 4 }}>
           <Box className="center" sx={{ width: '700px' }}>
             <Box className="center">
