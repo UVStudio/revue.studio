@@ -11,16 +11,19 @@ import {
   FormControl,
 } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
+import { v4 as uuidv4 } from 'uuid';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../features/user/userSlice';
-import { selectProjects } from '../../features/projects/projectsSlice';
 import { awsS3Url } from '../../constants/awsLinks';
 import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
 import { CommentObject } from './CommentBox';
 import { dynamoDBGetProjectByProjectId } from '../../features/projects/projectsAPI';
 import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
-import { dynamoDBGetCommentsByVideoId } from '../../features/comments/commentsAPI';
+import {
+  postComment,
+  dynamoDBGetCommentsByVideoId,
+} from '../../features/comments/commentsAPI';
 import { projectPasswordLocalStorage } from '../Project';
 import CommentBox from './CommentBox';
 
@@ -50,10 +53,11 @@ const VideoDetails = () => {
   const params = useParams();
 
   //PARAMS FROM NAVIGATE
-  //projVideoState will yield both video and project state, which is ideal
-  //but we can only get projVideoState in one step from useLocation
+  //projVideoState will yield both video and project state, which is ideal,
+  //but we can only get projVideoState in one step from useLocation by the user
+  //navigating from ProjectDetails.
+  //But for direct URL access, useLocation will be null
   const projVideoState = useLocation().state as projVideoState;
-  // console.log('projVideoState: ', projVideoState);
 
   const videoSlice = projVideoState
     ? (projVideoState.video as VideoObject)
@@ -64,21 +68,17 @@ const VideoDetails = () => {
   const userState = useAppSelector(selectUser);
 
   const navigate = useNavigate();
-  // console.log('allowed: ', allowed); //allowed logic seems correct
 
   useEffect(() => {
     const fetchProjectId = async () => {
       const videoResponse = await dynamoDBGetVideoByVideoId(params.videoId!);
       setProjectId(videoResponse.data.Item.projectId);
       setVideoState(videoResponse.data.Item);
+      //getting videoState from reading the database
       const projectResponse = await dynamoDBGetProjectByProjectId(
         videoResponse.data.Item.projectId
       );
       setProjectState(projectResponse.data.Item);
-
-      // if (!projVideoState && projectId && userState.id !== '') {
-      //   navigate(`../projectDetails/${projectId}`);
-      // }
       setLoading(false);
     };
 
@@ -120,7 +120,7 @@ const VideoDetails = () => {
     };
 
     fetchComments();
-  }, [params]);
+  }, [params, comments]);
 
   const onPasswordChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -147,18 +147,51 @@ const VideoDetails = () => {
     }
   };
 
+  const toProjectDetails = () => {
+    navigate(`../projectDetails/${projectSlice!.id}`);
+  };
+
+  const submitComment = async () => {
+    const id = uuidv4();
+    const userId = userState.id !== '' ? userState.id : 'guest';
+    const videoId = videoSlice!.id;
+    const videoComment = comment.newComment;
+    const timeStamp = Date.now().toString();
+
+    const response = await postComment(
+      id,
+      userId,
+      videoId,
+      videoComment,
+      timeStamp
+    );
+    if (response.status === 200) {
+      setComment(initialComment);
+    }
+  };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <Box className="background" sx={{ height: '100%' }}>
-      {loading ? (
-        <CircularProgress />
-      ) : allowed && videoSlice ? (
+      {allowed && videoSlice ? (
         <Paper sx={{ my: 2, mb: 5, px: 4 }}>
           <Box className="center" sx={{ width: '700px' }}>
             <Box className="center">
               <Box sx={{ py: 2 }}>
                 <Typography>Video ID: {videoSlice!.id}</Typography>
-                <Typography>Video File Name: {videoSlice!.fileName}</Typography>
-                <Typography>Data: {videoSlice!.fileSize} Bytes</Typography>
+                <Typography>
+                  File Name: {videoSlice!.fileName.split('-')[1]}
+                </Typography>
+                <Typography>
+                  File Size:{' '}
+                  {(Number(videoSlice!.fileSize) / 1000000).toFixed(2)} MB
+                </Typography>
+                <Button onClick={toProjectDetails}>
+                  Project Name: {projectSlice!.projectName}
+                </Button>
               </Box>
               <Box className="video-player-container">
                 <Box className="video-player">
@@ -180,7 +213,9 @@ const VideoDetails = () => {
                       value={comment.newComment}
                       onChange={(e) => onCommentChange(e)}
                     />
-                    <Button variant="contained">Post</Button>
+                    <Button variant="contained" onClick={submitComment}>
+                      Post
+                    </Button>
                   </Box>
                 </FormControl>
 
