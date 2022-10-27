@@ -1,4 +1,6 @@
-import { Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 
 export interface CommentObject {
   id: string;
@@ -8,7 +10,15 @@ export interface CommentObject {
   videoId: string;
 }
 
-const CommentBox = ({ comment }: { comment: CommentObject }) => {
+const CommentBox = ({
+  comment,
+  editComment,
+  deleteComment,
+}: {
+  comment: CommentObject;
+  editComment: (comment: CommentObject) => void;
+  deleteComment: (comment: CommentObject) => void;
+}) => {
   let backgColor = '#DAF9DE';
   if (comment.userId === 'guest') backgColor = '#FDFDFF';
 
@@ -19,7 +29,13 @@ const CommentBox = ({ comment }: { comment: CommentObject }) => {
       elevation={2}
       sx={{ backgroundColor: backgColor }}
     >
-      <Typography className="comment-text">{comment.comment}</Typography>
+      <Box className="flex-row">
+        <Typography className="comment-text">{comment.comment}</Typography>
+        <Box className="flex-row">
+          <EditIcon onClick={() => editComment(comment)} />
+          <DeleteForeverIcon onClick={() => deleteComment(comment)} />
+        </Box>
+      </Box>
     </Paper>
   );
 };

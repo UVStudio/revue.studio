@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { awsCommentsAPI } from '../../constants/awsLinks';
+import { CommentObject } from '../../components/nested/CommentBox';
 
 //GET COMMENTS BY VIDEO ID
 export const dynamoDBGetCommentsByVideoId = async (videoId: string) => {
@@ -48,5 +49,13 @@ export const postComment = async (
     return response;
   } catch (error) {
     throw new Error('Could not post comment');
+  }
+};
+
+export const deleteCommentById = async (comment: CommentObject) => {
+  try {
+    await axios.delete(`https://${awsCommentsAPI}/comment/${comment.id}`);
+  } catch (error) {
+    throw new Error('Could not delete comment');
   }
 };

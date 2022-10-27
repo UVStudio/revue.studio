@@ -22,6 +22,7 @@ import { dynamoDBGetProjectByProjectId } from '../../features/projects/projectsA
 import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
 import {
   postComment,
+  deleteCommentById,
   dynamoDBGetCommentsByVideoId,
 } from '../../features/comments/commentsAPI';
 import { projectPasswordLocalStorage } from '../Project';
@@ -147,15 +148,26 @@ const VideoDetails = () => {
     }
   };
 
+  const deleteComment = async (comment: CommentObject) => {
+    await deleteCommentById(comment);
+    setComments(comments.filter((commt) => commt.id !== comment.id));
+  };
+
+  const editComment = async (comment: CommentObject) => {
+    console.log(comment);
+  };
+
   const toProjectDetails = () => {
     navigate(`../projectDetails/${projectSlice!.id}`);
   };
+
+  const signature = userState.id !== '' ? ` - ${userState.name}` : ' - guest';
 
   const submitComment = async () => {
     const id = uuidv4();
     const userId = userState.id !== '' ? userState.id : 'guest';
     const videoId = videoSlice!.id;
-    const videoComment = comment.newComment;
+    const videoComment = comment.newComment + signature;
     const timeStamp = Date.now().toString();
 
     const response = await postComment(
@@ -171,7 +183,11 @@ const VideoDetails = () => {
   };
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <Box className="background" sx={{ height: '100vh' }}>
+        <CircularProgress />;
+      </Box>
+    );
   }
 
   return (
@@ -204,8 +220,9 @@ const VideoDetails = () => {
               </Box>
               <Box className="comment-section">
                 <FormControl fullWidth sx={{ my: 2 }}>
-                  <Box className="flex-column">
+                  <Box className="flex-row">
                     <TextField
+                      multiline
                       id="newComment"
                       label="New Comment"
                       variant="outlined"
@@ -213,7 +230,11 @@ const VideoDetails = () => {
                       value={comment.newComment}
                       onChange={(e) => onCommentChange(e)}
                     />
-                    <Button variant="contained" onClick={submitComment}>
+                    <Button
+                      variant="contained"
+                      onClick={submitComment}
+                      sx={{ height: '55px' }}
+                    >
                       Post
                     </Button>
                   </Box>
@@ -222,7 +243,14 @@ const VideoDetails = () => {
                 <Typography variant="h6">Comments</Typography>
                 {comments.length > 0
                   ? comments.map((comment) => {
-                      return <CommentBox key={comment.id} comment={comment} />;
+                      return (
+                        <CommentBox
+                          key={comment.id}
+                          comment={comment}
+                          editComment={editComment}
+                          deleteComment={deleteComment}
+                        />
+                      );
                     })
                   : null}
               </Box>
