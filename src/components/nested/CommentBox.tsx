@@ -51,6 +51,7 @@ const CommentBox = ({
     const videoId = comment.videoId;
     const timeStamp = comment.timeStamp;
     await editCommentById(id, userId, videoId, comment.comment, timeStamp);
+    setEditOrNot(!editOrNot);
   };
 
   return (
