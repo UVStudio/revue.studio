@@ -56,7 +56,6 @@ export const dynamoDBEditProfile = async (
     user,
     form,
   });
-  console.log('body: ', body);
   try {
     const data = await axios.put(
       `https://${awsUserAPI}/users/${user.id}`,

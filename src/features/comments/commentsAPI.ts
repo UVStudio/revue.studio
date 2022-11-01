@@ -39,7 +39,6 @@ export const postComment = async (
     comment,
     timeStamp,
   });
-  console.log('userId: ', userId);
   try {
     const response = await axios.put(
       `https://${awsCommentsAPI}/comment`,
@@ -57,5 +56,45 @@ export const deleteCommentById = async (comment: CommentObject) => {
     await axios.delete(`https://${awsCommentsAPI}/comment/${comment.id}`);
   } catch (error) {
     throw new Error('Could not delete comment');
+  }
+};
+
+// {
+//   "id": "1234",
+//   "userId": "87ab327e-0ad4-4f81-8363-98e50613ff3b",
+//   "videoId": "1666045577261",
+//   "comment": "3rd time New edited Test comment",
+//   "timeStamp": "33333333"
+// }
+
+export const editCommentById = async (
+  id: string,
+  userId: string,
+  videoId: string,
+  comment: string,
+  timeStamp: string
+) => {
+  try {
+    const config = {
+      headers: {
+        'content-type': 'application/json',
+      },
+    };
+    const body = JSON.stringify({
+      id,
+      userId,
+      videoId,
+      comment,
+      timeStamp,
+    });
+
+    const response = await axios.put(
+      `https://${awsCommentsAPI}/comment/${id}`,
+      body,
+      config
+    );
+    console.log('resp: ', response);
+  } catch (error) {
+    throw new Error('Could not edit comment');
   }
 };

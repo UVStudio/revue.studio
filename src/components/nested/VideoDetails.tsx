@@ -27,6 +27,7 @@ import {
 } from '../../features/comments/commentsAPI';
 import { projectPasswordLocalStorage } from '../Project';
 import CommentBox from './CommentBox';
+import PublishIcon from '@mui/icons-material/Publish';
 
 interface projVideoState {
   video: VideoObject;
@@ -153,10 +154,6 @@ const VideoDetails = () => {
     setComments(comments.filter((commt) => commt.id !== comment.id));
   };
 
-  const editComment = async (comment: CommentObject) => {
-    console.log(comment);
-  };
-
   const toProjectDetails = () => {
     navigate(`../projectDetails/${projectSlice!.id}`);
   };
@@ -235,7 +232,7 @@ const VideoDetails = () => {
                       onClick={submitComment}
                       sx={{ height: '55px' }}
                     >
-                      Post
+                      <PublishIcon />
                     </Button>
                   </Box>
                 </FormControl>
@@ -247,7 +244,7 @@ const VideoDetails = () => {
                         <CommentBox
                           key={comment.id}
                           comment={comment}
-                          editComment={editComment}
+                          // editComment={editComment}
                           deleteComment={deleteComment}
                         />
                       );
