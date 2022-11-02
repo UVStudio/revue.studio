@@ -15,11 +15,11 @@ export interface CommentObject {
 
 const CommentBox = ({
   comment,
-  // editComment,
+  stateUserId,
   deleteComment,
 }: {
   comment: CommentObject;
-  // editComment: (comment: CommentObject) => void;
+  stateUserId: string;
   deleteComment: (comment: CommentObject) => void;
 }) => {
   const initialComment = {
@@ -38,8 +38,13 @@ const CommentBox = ({
     setCommentEdit({ ...commentEdit, [e.target.id]: e.target.value });
   };
 
-  const editTrigger = () => {
-    setEditOrNot(!editOrNot);
+  const editTrigger = (comment: CommentObject) => {
+    if (!stateUserId) stateUserId = 'guest';
+    if (comment.userId === stateUserId) {
+      setEditOrNot(!editOrNot);
+    } else {
+      console.log('You are not allowed to edit this comment');
+    }
   };
 
   const editComment = async () => {
@@ -68,7 +73,7 @@ const CommentBox = ({
             id="newComment"
             label="Edit Comment"
             variant="outlined"
-            sx={{ width: '100%' }}
+            sx={{ width: '100%', '& fieldset': { border: 'none' } }}
             value={commentEdit.newComment}
             onChange={(e) => onCommentChange(e)}
           />
@@ -76,13 +81,16 @@ const CommentBox = ({
           <Typography className="comment-text">{comment.comment}</Typography>
         )}
         <Box className="flex-row">
-          <EditIcon onClick={editTrigger} sx={{ marginRight: 1 }} />
+          <EditIcon
+            onClick={() => editTrigger(comment)}
+            className="icon-margins"
+          />
           {editOrNot ? (
-            <PublishIcon onClick={editComment} sx={{ marginRight: 1 }} />
+            <PublishIcon onClick={editComment} className="icon-margins" />
           ) : (
             <DeleteForeverIcon
               onClick={() => deleteComment(comment)}
-              sx={{ marginRight: 1 }}
+              className="icon-margins"
             />
           )}
         </Box>

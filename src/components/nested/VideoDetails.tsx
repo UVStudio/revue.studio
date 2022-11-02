@@ -182,7 +182,7 @@ const VideoDetails = () => {
   if (loading) {
     return (
       <Box className="background" sx={{ height: '100vh' }}>
-        <CircularProgress />;
+        <CircularProgress />
       </Box>
     );
   }
@@ -244,6 +244,7 @@ const VideoDetails = () => {
                         <CommentBox
                           key={comment.id}
                           comment={comment}
+                          stateUserId={userState.id}
                           // editComment={editComment}
                           deleteComment={deleteComment}
                         />
