@@ -103,16 +103,6 @@ const Profile = ({ userState }: { userState: UserState }) => {
   return (
     <Card raised className="whiteCard">
       <Box sx={{ m: 4 }}>
-        <Box className="center">
-          <Typography>{userState.email}</Typography>
-          {userState.email ? (
-            <Button variant="contained" onClick={userLogoutHandler}>
-              Logout
-            </Button>
-          ) : (
-            <Typography>You are not authenticated.</Typography>
-          )}
-        </Box>
         {/* <Box className="center">
         <Button variant="contained" onClick={getUserAttrHandler}>
           User Attribute
@@ -179,6 +169,23 @@ const Profile = ({ userState }: { userState: UserState }) => {
             <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
               Update Profile Info
             </Button>
+          </Box>
+          <Box className="center" sx={{ marginTop: 3 }}>
+            <Typography>
+              <strong>Email: </strong>
+              {userState.email}
+            </Typography>
+            {userState.email ? (
+              <Button
+                variant="contained"
+                onClick={userLogoutHandler}
+                sx={{ marginTop: 2 }}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Typography>You are not authenticated.</Typography>
+            )}
           </Box>
         </Box>
       </Box>

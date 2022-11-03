@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -45,7 +45,6 @@ const initialComment = {
 const VideoDetails = () => {
   const [password, setPassword] = useState(initialPassword);
   const [allowed, setAllowed] = useState(false);
-  const [projectId, setProjectId] = useState('');
   const [videoState, setVideoState] = useState<null | VideoObject>(null);
   const [projectState, setProjectState] = useState<null | ProjectObject>(null);
   const [loading, setLoading] = useState(true);
@@ -71,21 +70,20 @@ const VideoDetails = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProjectId = async () => {
-      const videoResponse = await dynamoDBGetVideoByVideoId(params.videoId!);
-      setProjectId(videoResponse.data.Item.projectId);
-      setVideoState(videoResponse.data.Item);
-      //getting videoState from reading the database
-      const projectResponse = await dynamoDBGetProjectByProjectId(
-        videoResponse.data.Item.projectId
-      );
-      setProjectState(projectResponse.data.Item);
-      setLoading(false);
-    };
+  const fetchProjectId = useCallback(async () => {
+    const videoResponse = await dynamoDBGetVideoByVideoId(params.videoId!);
+    setVideoState(videoResponse.data.Item);
+    //getting videoState from reading the database
+    const projectResponse = await dynamoDBGetProjectByProjectId(
+      videoResponse.data.Item.projectId
+    );
+    setProjectState(projectResponse.data.Item);
+    setLoading(false);
+  }, [params.videoId]);
 
+  useEffect(() => {
     fetchProjectId();
-  }, [params, projVideoState, projectId, navigate, userState.id]);
+  }, [fetchProjectId]);
 
   useEffect(() => {
     const retrieveStoredPassword = () => {

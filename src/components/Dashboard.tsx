@@ -46,7 +46,9 @@ const Dashboard = () => {
           {section === dashboardSections.notifications ? (
             <Notifications />
           ) : null}
-          {section === dashboardSections.storage ? <Storage /> : null}
+          {section === dashboardSections.storage ? (
+            <Storage userState={userState} />
+          ) : null}
         </Box>
       </Box>
     </Box>

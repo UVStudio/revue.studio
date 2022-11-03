@@ -51,6 +51,19 @@ export const s3RemoveVideoById = async (video: VideoObject) => {
   }
 };
 
+//GET ALL VIDEOS FROM DDB BY USER ID
+//For the purpose of calculating total storage
+export const getS3AllVideosByUserId = async (userId: string) => {
+  try {
+    const response = await axios.get(
+      `https://${awsVideosAPI}/videos/user/${userId}`
+    );
+    return response;
+  } catch (error) {
+    throw new Error('Could not get videos by user Id');
+  }
+};
+
 //Upload Multipart
 export const startMultiUpload = async (upload: UploadFileObject) => {
   console.log('upload: ', upload);
