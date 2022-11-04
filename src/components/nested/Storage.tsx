@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UserState } from '../../features/user/userSlice';
-import { Box, Card, Typography, LinearProgress } from '@mui/material';
+import { Box, Card, Typography, CircularProgress } from '@mui/material';
 import { getS3AllVideosByUserId } from '../../features/videos/videosAPI';
 import { VideoObject } from '../ProjectDetails';
 
@@ -32,33 +32,41 @@ const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
     return (sum / 1000000).toFixed(2);
   };
 
-  if (loading) return <LinearProgress />;
+  if (loading || videoData.length === 0) {
+    return (
+      <Box sx={{ height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <Card raised className="whiteCard">
-      <Box sx={{ m: 4 }}>
-        <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
-          <Typography sx={{ marginBottom: 3 }}>
-            Your current total uploaded videos
-          </Typography>
-          {videoData.length > 0
-            ? videoData.map((video, index) => {
-                return (
-                  <Box key={index} className="flex-row">
-                    <Typography>{video.fileName.split('-')[1]}</Typography>
-                    <Typography>
-                      {(Number(video.fileSize) / 1000000).toFixed(2)} MB
-                    </Typography>
-                  </Box>
-                );
-              })
-            : null}
-          <Typography sx={{ marginTop: 3 }}>
-            Your total storage usage is: {totalStorage()} MB's
-          </Typography>
+    <Box className="section" sx={{ height: '650px' }}>
+      <Card raised className="whiteCard">
+        <Box sx={{ m: 4 }}>
+          <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
+            <Typography variant="h6" sx={{ marginBottom: 3 }}>
+              Your current uploaded videos
+            </Typography>
+            {videoData.length > 0
+              ? videoData.map((video, index) => {
+                  return (
+                    <Box key={index} className="flex-row">
+                      <Typography>{video.fileName.split('-')[1]}</Typography>
+                      <Typography>
+                        {(Number(video.fileSize) / 1000000).toFixed(2)} MB
+                      </Typography>
+                    </Box>
+                  );
+                })
+              : null}
+            <Typography sx={{ marginTop: 3 }}>
+              Your total storage usage is: {totalStorage()} MB
+            </Typography>
+          </Box>
         </Box>
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
 };
 

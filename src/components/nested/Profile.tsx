@@ -101,95 +101,97 @@ const Profile = ({ userState }: { userState: UserState }) => {
   };
 
   return (
-    <Card raised className="whiteCard">
-      <Box sx={{ m: 4 }}>
-        {/* <Box className="center">
+    <Box sx={{ height: '650px' }}>
+      <Card raised className="whiteCard" sx={{ marginTop: 2 }}>
+        <Box sx={{ m: 4 }}>
+          {/* <Box className="center">
         <Button variant="contained" onClick={getUserAttrHandler}>
           User Attribute
         </Button>
       </Box> */}
-        <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
-          <Typography variant="h6">Your Profile Info</Typography>
-          <Typography variant="body2">(all fields voluntary)</Typography>
-          <FormGroup>
-            <TextField
-              margin="dense"
-              id="name"
-              label="Name"
-              value={formState.name ? formState.name : initialForm.name}
-              onChange={handleTextChange}
-              variant="outlined"
-            />
-            <Box className="column">
+          <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
+            <Typography variant="h6">Your Profile Info</Typography>
+            <Typography variant="body2">(all fields voluntary)</Typography>
+            <FormGroup>
               <TextField
                 margin="dense"
-                id="city"
-                label="City"
-                value={formState.city ? formState.city : initialForm.city}
+                id="name"
+                label="Name"
+                value={formState.name ? formState.name : initialForm.name}
                 onChange={handleTextChange}
                 variant="outlined"
               />
+              <Box className="column">
+                <TextField
+                  margin="dense"
+                  id="city"
+                  label="City"
+                  value={formState.city ? formState.city : initialForm.city}
+                  onChange={handleTextChange}
+                  variant="outlined"
+                />
+                <TextField
+                  margin="dense"
+                  id="country"
+                  label="Country"
+                  value={
+                    formState.country ? formState.country : initialForm.country
+                  }
+                  onChange={handleTextChange}
+                  variant="outlined"
+                />
+              </Box>
               <TextField
                 margin="dense"
-                id="country"
-                label="Country"
+                id="company"
+                label="Company Name"
                 value={
-                  formState.country ? formState.country : initialForm.country
+                  formState.company ? formState.company : initialForm.company
                 }
                 onChange={handleTextChange}
                 variant="outlined"
               />
-            </Box>
-            <TextField
-              margin="dense"
-              id="company"
-              label="Company Name"
-              value={
-                formState.company ? formState.company : initialForm.company
-              }
-              onChange={handleTextChange}
-              variant="outlined"
-            />
-            <TextField
-              margin="dense"
-              id="description"
-              label="Brief description of your work"
-              value={
-                formState.description
-                  ? formState.description
-                  : initialForm.description
-              }
-              onChange={handleTextChange}
-              multiline={true}
-              maxRows={4}
-              variant="outlined"
-            />
-          </FormGroup>
-          <Box className="center" marginTop={'20px'}>
-            <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
-              Update Profile Info
-            </Button>
-          </Box>
-          <Box className="center" sx={{ marginTop: 3 }}>
-            <Typography>
-              <strong>Email: </strong>
-              {userState.email}
-            </Typography>
-            {userState.email ? (
-              <Button
-                variant="contained"
-                onClick={userLogoutHandler}
-                sx={{ marginTop: 2 }}
-              >
-                Logout
+              <TextField
+                margin="dense"
+                id="description"
+                label="Brief description of your work"
+                value={
+                  formState.description
+                    ? formState.description
+                    : initialForm.description
+                }
+                onChange={handleTextChange}
+                multiline={true}
+                maxRows={4}
+                variant="outlined"
+              />
+            </FormGroup>
+            <Box className="center" marginTop={'20px'}>
+              <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
+                Update Profile Info
               </Button>
-            ) : (
-              <Typography>You are not authenticated.</Typography>
-            )}
+            </Box>
+            <Box className="center" sx={{ marginTop: 3 }}>
+              <Typography>
+                <strong>Email: </strong>
+                {userState.email}
+              </Typography>
+              {userState.email ? (
+                <Button
+                  variant="contained"
+                  onClick={userLogoutHandler}
+                  sx={{ marginTop: 2 }}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Typography>You are not authenticated.</Typography>
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
 };
 

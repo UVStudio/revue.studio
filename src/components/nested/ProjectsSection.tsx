@@ -47,9 +47,19 @@ const ProjectsSection = ({
   const projects = [...projectsState.projects];
   const reversedProjects = projects.reverse();
 
+  const convertTime = (millisecond: string) => {
+    const numberMilli = Number(millisecond);
+    const date = new Date(numberMilli)
+      .toString()
+      .split(' ')
+      .splice(1, 4)
+      .join(' ');
+    return date;
+  };
+
   if (projectsState.loading === 'loading') {
     return (
-      <Box className="section" paddingTop={'20px'}>
+      <Box className="section">
         <CircularProgress />
       </Box>
     );
@@ -57,7 +67,7 @@ const ProjectsSection = ({
 
   return (
     <Box className="section" sx={{ width: '100%' }}>
-      <Box className="section" sx={{ mt: 8 }}>
+      <Box className="section" sx={{ mt: 2 }}>
         <Button variant="contained" onClick={toNewProjectHandler}>
           New Project
         </Button>
@@ -73,7 +83,7 @@ const ProjectsSection = ({
             <Paper
               elevation={2}
               className="project-list-item"
-              sx={{ paddingY: '8px', paddingX: '15px' }}
+              sx={{ paddingY: 3, paddingX: 7 }}
               onClick={() => toProjectDetailsHandler(project)}
             >
               <Typography variant="h6">{project.projectName}</Typography>
@@ -82,7 +92,9 @@ const ProjectsSection = ({
                   {project.projectDescription}
                 </Typography>
               </Box>
-              <Typography variant="body2">{project.id}</Typography>
+              <Typography variant="body2" sx={{ alignSelf: 'flex-end' }}>
+                Created: {convertTime(project.timeStamp)}
+              </Typography>
             </Paper>
           </Box>
         );

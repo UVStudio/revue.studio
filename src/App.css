@@ -54,7 +54,6 @@ a:visited {
 
 .background {
   background-color: #e9f1ff;
-  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,6 +66,16 @@ a:visited {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 20px;
+}
+
+.section-full-height {
+  background-color: #e9f1ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: '100%';
   padding-bottom: 20px;
 }
 
@@ -160,6 +169,31 @@ a:visited {
   justify-content: space-between;
 }
 
+.side-image-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.backgroundImage {
+  width: 1280px;
+  height: 396px;
+}
+
+.sideImage {
+  width: 50%;
+}
+
+.sideImageWide {
+  width: 50%;
+  display: block
+}
+
+.sideImageNarrow {
+  width: 50%;
+  display: none
+}
+
 .canvas:hover {
   cursor: pointer;
 }
@@ -194,7 +228,7 @@ a:visited {
 
 .project-listing-text {
   text-align: left;
-  margin: 20px 0px;
+  margin: 15px 0px;
 }
 
 .add-video-row {
@@ -232,6 +266,35 @@ a:visited {
     border: 1px solid rgb(34, 25, 108);
     cursor: pointer;
   }
+  .sideImage {
+    width: 100%;
+  }
+  .side-image-box {
+    display: flex;
+    flex-direction: column;
+  }
+  .sideImageWide {
+    width: 100%;
+    display: none;
+  }
+  .sideImageNarrow {
+    width: 100%;
+    display: block
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .project-list-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* border: 1px solid rgb(34, 25, 108); */
+    border-radius: 7px;
+    width: 350px;
+    cursor: pointer;
+    background-color: white;
+  }
+
 }
 
 @keyframes App-logo-spin {
