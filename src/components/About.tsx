@@ -15,7 +15,7 @@ const About = () => {
       </Box>
       <Box className="section" sx={{ backgroundColor: 'white' }}>
         <Box className="full-length-copy-container">
-          <Box className="center" sx={{ marginBottom: 7 }}>
+          <Box className="center" sx={{ mb: 7 }}>
             <Typography variant="h5" sx={{ marginY: 4 }}>
               Save. Time and Money.
             </Typography>
@@ -29,14 +29,10 @@ const About = () => {
           <Box className="side-image-box">
             <img src={picTwo} alt="picTwo" className="sideImage" />
             <Box sx={{ marginX: 5, marginY: 4 }}>
-              <Typography
-                variant="h5"
-                className="center"
-                sx={{ marginBottom: 4 }}
-              >
+              <Typography variant="h5" className="center" sx={{ mb: 4 }}>
                 Save Time
               </Typography>
-              <Typography sx={{ marginBottom: 4 }}>
+              <Typography sx={{ mb: 4 }}>
                 Spend less time dealing with apps, and more time with your
                 clients, you projects and your gear.
               </Typography>
@@ -46,14 +42,10 @@ const About = () => {
           <Box className="side-image-box">
             <img src={picThree} alt="picThree" className="sideImageNarrow" />
             <Box sx={{ marginX: 5, marginY: 4 }}>
-              <Typography
-                variant="h5"
-                className="center"
-                sx={{ marginBottom: 4 }}
-              >
+              <Typography variant="h5" className="center" sx={{ mb: 4 }}>
                 Save Money
               </Typography>
-              <Typography sx={{ marginBottom: 4 }}>
+              <Typography sx={{ mb: 4 }}>
                 We've built a very cost efficient backend server to handle all
                 your upload, download and storage needs while keeping cost down.
               </Typography>

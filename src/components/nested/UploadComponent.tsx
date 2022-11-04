@@ -85,7 +85,7 @@ const UploadComponent = ({
     if (!uploading) {
       if (uploadDone) {
         return (
-          <Box className="column">
+          <Box className="flex-row">
             <Typography sx={{ marginRight: '10px' }}>Done!</Typography>
             <CancelOutlinedIcon
               onClick={() => removeVideoFromListHandler(upload.id)}
@@ -94,7 +94,7 @@ const UploadComponent = ({
         );
       } else {
         return (
-          <Box className="column">
+          <Box className="flex-row">
             <Button onClick={startUploadHandler}>
               <FileUploadIcon />
             </Button>
@@ -106,7 +106,7 @@ const UploadComponent = ({
       }
     } else {
       return (
-        <Box className="column">
+        <Box className="flex-row">
           <CircularProgress sx={{ marginRight: '10px' }} size={20} />
           <CancelOutlinedIcon onClick={() => abortUploadHandler(upload)} />
         </Box>
@@ -123,7 +123,7 @@ const UploadComponent = ({
             {uploadingIndicator()}
           </Box>
           <LinearProgress
-            sx={{ marginTop: '10px', marginBottom: '10px' }}
+            sx={{ mt: '10px', mb: '10px' }}
             variant="determinate"
             value={uploadProgress}
           />

@@ -141,11 +141,11 @@ const ProjectDetails = () => {
   }
 
   return (
-    <Box className="background">
+    <Box className="background" sx={{ minHeight: '700px' }}>
       {projectState ? (
         <Paper
           elevation={2}
-          sx={{ width: '90%', backgroundColor: 'white', my: 3 }}
+          sx={{ width: '80%', backgroundColor: 'white', my: 3 }}
         >
           <Box className="center" paddingTop={'20px'}>
             <Typography variant="h6">
@@ -183,7 +183,7 @@ const ProjectDetails = () => {
                 />
               );
             })}
-            <Box className="column">
+            <Box className="flex-row">
               <Box>
                 <input
                   id="contained-button-file"

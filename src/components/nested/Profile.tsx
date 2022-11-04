@@ -101,8 +101,8 @@ const Profile = ({ userState }: { userState: UserState }) => {
   };
 
   return (
-    <Box sx={{ height: '650px' }}>
-      <Card raised className="whiteCard" sx={{ marginTop: 2 }}>
+    <Box sx={{ minHeight: '650px' }}>
+      <Card raised className="whiteCard" sx={{ mt: 2 }}>
         <Box sx={{ m: 4 }}>
           {/* <Box className="center">
         <Button variant="contained" onClick={getUserAttrHandler}>
@@ -121,7 +121,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
                 onChange={handleTextChange}
                 variant="outlined"
               />
-              <Box className="column">
+              <Box className="flex-row">
                 <TextField
                   margin="dense"
                   id="city"
@@ -166,12 +166,12 @@ const Profile = ({ userState }: { userState: UserState }) => {
                 variant="outlined"
               />
             </FormGroup>
-            <Box className="center" marginTop={'20px'}>
+            <Box className="center" mt={'20px'}>
               <Button variant="contained" onClick={dynamoDBEditProfileHandler}>
                 Update Profile Info
               </Button>
             </Box>
-            <Box className="center" sx={{ marginTop: 3 }}>
+            <Box className="center" sx={{ mt: 3 }}>
               <Typography>
                 <strong>Email: </strong>
                 {userState.email}
@@ -180,7 +180,7 @@ const Profile = ({ userState }: { userState: UserState }) => {
                 <Button
                   variant="contained"
                   onClick={userLogoutHandler}
-                  sx={{ marginTop: 2 }}
+                  sx={{ mt: 2 }}
                 >
                   Logout
                 </Button>

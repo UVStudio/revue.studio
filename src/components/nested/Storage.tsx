@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UserState } from '../../features/user/userSlice';
-import { Box, Card, Typography, CircularProgress } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import { getS3AllVideosByUserId } from '../../features/videos/videosAPI';
 import { VideoObject } from '../ProjectDetails';
+import CustomCircularProgress from './CustomCircularProgress';
 
 const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -33,19 +34,15 @@ const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
   };
 
   if (loading || videoData.length === 0) {
-    return (
-      <Box sx={{ height: '100vh' }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <CustomCircularProgress />;
   }
 
   return (
-    <Box className="section" sx={{ height: '650px' }}>
+    <Box className="section" sx={{ minHeight: '650px' }}>
       <Card raised className="whiteCard">
         <Box sx={{ m: 4 }}>
           <Box sx={{ width: { xs: '30ch', sm: '45ch' } }}>
-            <Typography variant="h6" sx={{ marginBottom: 3 }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>
               Your current uploaded videos
             </Typography>
             {videoData.length > 0
@@ -60,7 +57,7 @@ const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
                   );
                 })
               : null}
-            <Typography sx={{ marginTop: 3 }}>
+            <Typography sx={{ mt: 3 }}>
               Your total storage usage is: {totalStorage()} MB
             </Typography>
           </Box>

@@ -64,7 +64,7 @@ const CommentBox = ({
       className="comment-box"
       square={false}
       elevation={2}
-      sx={{ backgroundColor: backgColor }}
+      sx={{ backgroundColor: backgColor, marginY: 2 }}
     >
       <Box className="flex-row">
         {editOrNot ? (

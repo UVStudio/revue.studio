@@ -120,7 +120,7 @@ const AddProject = () => {
           onChange={(e) => onChangeForm(e)}
         />
       </Box>
-      <Box className="section" marginTop={'20px'}>
+      <Box className="section" mt={'20px'}>
         <Button variant="contained" onClick={createProjectObject}>
           Create Project
         </Button>

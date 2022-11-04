@@ -50,6 +50,7 @@ const VideoDetails = () => {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<CommentObject[]>([]);
   const [comment, setComment] = useState(initialComment);
+  const [loadingComments, setLoadingComments] = useState(false);
 
   const params = useParams();
 
@@ -89,22 +90,26 @@ const VideoDetails = () => {
     const retrieveStoredPassword = () => {
       const storedPassword: string = parsedData.projectPassword;
 
-      if (storedPassword === projectSlice!.projectPassword) {
-        setAllowed(true);
-      } else {
-        setAllowed(false);
-        localStorage.removeItem('projectPassword');
+      if (projectSlice) {
+        if (storedPassword === projectSlice!.projectPassword) {
+          setAllowed(true);
+        } else {
+          setAllowed(false);
+          localStorage.removeItem('projectPassword');
+        }
       }
     };
 
-    const result = localStorage.getItem('projectPassword');
-    const parsedData: projectPasswordLocalStorage = JSON.parse(result!);
+    const localStorageResult = localStorage.getItem('projectPassword');
+    const parsedData: projectPasswordLocalStorage = JSON.parse(
+      localStorageResult!
+    );
 
-    if (parsedData && parsedData.timeStamp + 60000 < Date.now()) {
+    if (parsedData && parsedData.timeStamp + 18000 < Date.now()) {
       localStorage.removeItem('projectPassword');
     }
 
-    if (result) {
+    if (localStorageResult) {
       retrieveStoredPassword();
     }
 
@@ -113,14 +118,16 @@ const VideoDetails = () => {
     }
   }, [projVideoState, userState, setAllowed, projectSlice, params]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      const response = await dynamoDBGetCommentsByVideoId(params.videoId!);
-      setComments(response.data.Items);
-    };
+  const fetchComments = useCallback(async () => {
+    const response = await dynamoDBGetCommentsByVideoId(params.videoId!);
+    setComments(response.data.Items);
+  }, [params.videoId]);
 
+  useEffect(() => {
+    setLoadingComments(true);
     fetchComments();
-  }, [params, comments]);
+    setLoadingComments(false);
+  }, [fetchComments]);
 
   const onPasswordChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -236,26 +243,35 @@ const VideoDetails = () => {
                 </FormControl>
 
                 <Typography variant="h6">Comments</Typography>
-                {comments.length > 0
-                  ? comments.map((comment) => {
+                {!loadingComments ? (
+                  comments.length > 0 ? (
+                    comments.map((comment) => {
                       return (
                         <CommentBox
                           key={comment.id}
                           comment={comment}
                           stateUserId={userState.id}
-                          // editComment={editComment}
                           deleteComment={deleteComment}
                         />
                       );
                     })
-                  : null}
+                  ) : null
+                ) : (
+                  <CircularProgress />
+                )}
               </Box>
             </Box>
           </Box>
         </Paper>
       ) : (
-        <Box className="section">
+        <Box className="section" sx={{ minHeight: '700px' }}>
           <Card className="whiteCard" sx={{ px: 7, py: 5, my: 5 }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>
+              Project: {projectSlice?.projectName}
+            </Typography>
+            <Typography sx={{ mb: 3 }}>
+              Please enter project password to view video.
+            </Typography>
             <TextField
               required
               id="projectPassword"
@@ -264,7 +280,7 @@ const VideoDetails = () => {
               onChange={(e) => onPasswordChangeForm(e)}
             />
             <Button onClick={enterPassword} sx={{ mt: 3 }}>
-              <Typography>Enter Project from Video</Typography>
+              <Typography>Enter Project</Typography>
             </Button>
           </Card>
         </Box>

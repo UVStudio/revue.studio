@@ -249,7 +249,7 @@ a:visited {
   cursor: pointer;
 }
 
-.column {
+.flex-row {
   display: flex;
   flex-direction: row;
   align-items: center;
