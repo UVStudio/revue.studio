@@ -105,7 +105,7 @@ const VideoDetails = () => {
       localStorageResult!
     );
 
-    if (parsedData && parsedData.timeStamp + 18000 < Date.now()) {
+    if (parsedData && parsedData.timeStamp + 60000 < Date.now()) {
       localStorage.removeItem('projectPassword');
     }
 
@@ -160,7 +160,11 @@ const VideoDetails = () => {
   };
 
   const toProjectDetails = () => {
-    navigate(`../projectDetails/${projectSlice!.id}`);
+    if (userState.id) {
+      navigate(`../projectDetails/${projectSlice!.id}`);
+    } else {
+      navigate(`../project/${projectSlice!.id}`);
+    }
   };
 
   const signature = userState.id !== '' ? ` - ${userState.name}` : ' - guest';
@@ -181,6 +185,7 @@ const VideoDetails = () => {
     );
     if (response.status === 200) {
       setComment(initialComment);
+      await fetchComments();
     }
   };
 

@@ -17,6 +17,7 @@ import {
   dynamoDBGetProjectsByUserId,
 } from '../../features/projects/projectsAPI';
 import { useNavigate } from 'react-router-dom';
+import { convertTime } from '../../utils/convertTime';
 
 const ProjectsSection = ({
   projectsState,
@@ -46,16 +47,6 @@ const ProjectsSection = ({
 
   const projects = [...projectsState.projects];
   const reversedProjects = projects.reverse();
-
-  const convertTime = (millisecond: string) => {
-    const numberMilli = Number(millisecond);
-    const date = new Date(numberMilli)
-      .toString()
-      .split(' ')
-      .splice(1, 4)
-      .join(' ');
-    return date;
-  };
 
   if (projectsState.loading === 'loading') {
     return (

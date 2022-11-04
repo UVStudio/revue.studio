@@ -8,12 +8,15 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Card,
+  Paper,
   TextField,
   Button,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { ProjectObject } from '../features/projects/projectsSlice';
 import { VideoObject } from './ProjectDetails';
+import { convertTime } from '../utils/convertTime';
 
 const initialProject = {
   id: '',
@@ -108,23 +111,32 @@ const Project = () => {
       {loading ? (
         <CircularProgress />
       ) : allowed ? (
-        <Box className="section">
-          <Typography variant="h6" sx={{ marginY: '20px' }}>
-            {project.projectName}
-          </Typography>
-          <Typography sx={{ marginY: '20px' }}>
-            {project.projectDescription}
-          </Typography>
-          {videos.map((video) => {
-            return (
-              <Box key={video.timeStamp} className="outer-video-container">
-                <VideoListing video={video} videos={videos} project={project} />
-              </Box>
-            );
-          })}
+        <Box className="section" sx={{ minHeight: '700px' }}>
+          <Paper
+            elevation={2}
+            className="section"
+            sx={{ width: '80%', backgroundColor: 'white', my: 3 }}
+          >
+            <Typography variant="h6" sx={{ mt: 3 }}>
+              {project.projectName}
+            </Typography>
+            <Typography sx={{ my: 3 }}>{project.projectDescription}</Typography>
+            {videos.map((video) => {
+              return (
+                <Box key={video.timeStamp} className="outer-video-container">
+                  <VideoListing
+                    video={video}
+                    videos={videos}
+                    project={project}
+                  />
+                </Box>
+              );
+            })}
+            <Typography>Created: {convertTime(project.timeStamp)}</Typography>
+          </Paper>
         </Box>
       ) : (
-        <Box className="section">
+        <Box className="section" sx={{ minHeight: '700px' }}>
           <Box
             className="section"
             component="form"
@@ -132,17 +144,25 @@ const Project = () => {
               marginY: '20px',
             }}
           >
-            <TextField
-              required
-              id="projectPassword"
-              label="Project Password?"
-              value={password.projectPassword}
-              onChange={(e) => onChangeForm(e)}
-            />
+            <Card className="whiteCard" sx={{ px: 7, py: 5, my: 5 }}>
+              <Typography variant="h6" sx={{ mb: 3 }}>
+                Project: {project?.projectName}
+              </Typography>
+              <Typography sx={{ mb: 3 }}>
+                Please enter project password to browse project.
+              </Typography>
+              <TextField
+                required
+                id="projectPassword"
+                label="Project Password?"
+                value={password.projectPassword}
+                onChange={(e) => onChangeForm(e)}
+              />
+              <Button onClick={enterPassword} sx={{ mt: 4 }}>
+                <Typography>Enter Project</Typography>
+              </Button>
+            </Card>
           </Box>
-          <Button onClick={enterPassword}>
-            <Typography>Enter Project from Project</Typography>
-          </Button>
         </Box>
       )}
     </Box>
