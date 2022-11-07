@@ -10,7 +10,7 @@ const Home = () => {
     <Box>
       <Box className="section">
         <Typography className="text-overlay" fontSize={'4vw'}>
-          Manage all your cloud assets in one platform
+          Manage all your cloud assets on one platform
         </Typography>
         <ReactPlayer
           url="revue-hero.mp4"
@@ -31,9 +31,9 @@ const Home = () => {
             overhead by shrinking the number of subscription services.
           </Typography>
         </Box>
-      </Box>
-      <Box className="section">
-        <HomeAccordion />
+        <Box className="section" sx={{ my: 3 }}>
+          <HomeAccordion />
+        </Box>
       </Box>
       <HomeFooter />
     </Box>

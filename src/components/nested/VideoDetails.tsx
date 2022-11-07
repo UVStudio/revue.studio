@@ -155,6 +155,10 @@ const VideoDetails = () => {
   };
 
   const deleteComment = async (comment: CommentObject) => {
+    if (comment.id !== userState.id) {
+      console.log('You are not authorized to delete comment');
+      return;
+    }
     await deleteCommentById(comment);
     setComments(comments.filter((commt) => commt.id !== comment.id));
   };
@@ -167,18 +171,18 @@ const VideoDetails = () => {
     }
   };
 
-  const signature = userState.id !== '' ? ` - ${userState.name}` : ' - guest';
-
   const submitComment = async () => {
     const id = uuidv4();
     const userId = userState.id !== '' ? userState.id : 'guest';
+    const username = userState.name !== '' ? userState.name : 'guest';
     const videoId = videoSlice!.id;
-    const videoComment = comment.newComment + signature;
+    const videoComment = comment.newComment;
     const timeStamp = Date.now().toString();
 
     const response = await postComment(
       id,
       userId,
+      username,
       videoId,
       videoComment,
       timeStamp
@@ -246,18 +250,40 @@ const VideoDetails = () => {
                     </Button>
                   </Box>
                 </FormControl>
-
-                <Typography variant="h6">Comments</Typography>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  Comments
+                </Typography>
                 {!loadingComments ? (
                   comments.length > 0 ? (
                     comments.map((comment) => {
                       return (
-                        <CommentBox
+                        <Box
                           key={comment.id}
-                          comment={comment}
-                          stateUserId={userState.id}
-                          deleteComment={deleteComment}
-                        />
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end',
+                          }}
+                        >
+                          <CommentBox
+                            key={comment.id}
+                            comment={comment}
+                            stateUserId={userState.id}
+                            deleteComment={deleteComment}
+                          />
+                          <Typography
+                            sx={{
+                              display: 'flex',
+                              alignSelf: 'flex-end',
+                              position: 'relative',
+                              top: -10,
+                              left: -10,
+                              fontSize: 14,
+                            }}
+                          >
+                            {comment.username || comment.userId}
+                          </Typography>
+                        </Box>
                       );
                     })
                   ) : null

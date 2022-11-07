@@ -141,7 +141,7 @@ const Login = () => {
 
   //UI RENDERS
   return (
-    <Box className="background">
+    <Box className="background" sx={{ minHeight: '700px' }}>
       {userState.email ? (
         <Box>
           <Typography>You are logged in as {userState.email}</Typography>

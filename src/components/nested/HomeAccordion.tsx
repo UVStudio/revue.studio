@@ -17,7 +17,14 @@ export const HomeAccordion = () => {
     };
 
   return (
-    <Box sx={{ width: '90%' }}>
+    <Box
+      sx={{
+        width: '90%',
+        backgroundColor: '#C8CBE8',
+        padding: 2.5,
+        borderRadius: '15px',
+      }}
+    >
       <Accordion
         expanded={expanded === 'panel1'}
         onChange={handleChange('panel1')}
@@ -27,14 +34,15 @@ export const HomeAccordion = () => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography variant="subtitle2" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
             What is Revue.Studio?
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant="body2">
-            Revue is going to be a file storage, sharing, video collaboration
-            app, made especially for video production studios and professionals.
+            Revue is going to be a file storage, sharing, video project
+            management app, made especially for video production studios and
+            professionals.
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -47,7 +55,7 @@ export const HomeAccordion = () => {
           aria-controls="panel2bh-content"
           id="panel2bh-header"
         >
-          <Typography variant="subtitle2" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
             Why should I use Revue when I already have other similar services?
           </Typography>
         </AccordionSummary>
@@ -69,7 +77,7 @@ export const HomeAccordion = () => {
           aria-controls="panel3bh-content"
           id="panel3bh-header"
         >
-          <Typography variant="subtitle2" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
             When will Revue.Studio will ready?
           </Typography>
         </AccordionSummary>
@@ -91,13 +99,13 @@ export const HomeAccordion = () => {
           aria-controls="panel4bh-content"
           id="panel4bh-header"
         >
-          <Typography variant="subtitle2" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
             What is Revue.Studio trying to accomplish?
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant="body2">
-            Our goal is to make life easier for video professionals' around the
+            Our goal is to make life easier for video professionals around the
             world. One app to replace all of your other cloud based apps,
             decreasing your cost and save you hassle.
           </Typography>

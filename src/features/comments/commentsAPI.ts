@@ -23,6 +23,7 @@ export const dynamoDBGetCommentsByVideoId = async (videoId: string) => {
 export const postComment = async (
   id: string,
   userId: string,
+  username: string | undefined,
   videoId: string,
   comment: string,
   timeStamp: string
@@ -35,6 +36,7 @@ export const postComment = async (
   const body = JSON.stringify({
     id,
     userId,
+    username,
     videoId,
     comment,
     timeStamp,
@@ -59,17 +61,10 @@ export const deleteCommentById = async (comment: CommentObject) => {
   }
 };
 
-// {
-//   "id": "1234",
-//   "userId": "87ab327e-0ad4-4f81-8363-98e50613ff3b",
-//   "videoId": "1666045577261",
-//   "comment": "3rd time New edited Test comment",
-//   "timeStamp": "33333333"
-// }
-
 export const editCommentById = async (
   id: string,
   userId: string,
+  username: string | undefined,
   videoId: string,
   comment: string,
   timeStamp: string
@@ -83,6 +78,7 @@ export const editCommentById = async (
     const body = JSON.stringify({
       id,
       userId,
+      username,
       videoId,
       comment,
       timeStamp,

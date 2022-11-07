@@ -10,6 +10,7 @@ export interface CommentObject {
   comment: string;
   timeStamp: string;
   userId: string;
+  username: string | undefined;
   videoId: string;
 }
 
@@ -29,8 +30,9 @@ const CommentBox = ({
   const [editOrNot, setEditOrNot] = useState(false);
   const [commentEdit, setCommentEdit] = useState(initialComment);
 
-  let backgColor = '#DAF9DE';
+  let backgColor = '#F2FCF2';
   if (comment.userId === 'guest') backgColor = '#FDFDFF';
+  if (editOrNot === true) backgColor = '#FFF7E4';
 
   const onCommentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,12 +52,19 @@ const CommentBox = ({
   const editComment = async () => {
     //updating the passed-down comment object with the new updated comment
     comment.comment = commentEdit.newComment;
-    // console.log(comment);
     const id = comment.id;
     const userId = comment.userId;
+    const username = comment.username;
     const videoId = comment.videoId;
     const timeStamp = comment.timeStamp;
-    await editCommentById(id, userId, videoId, comment.comment, timeStamp);
+    await editCommentById(
+      id,
+      userId,
+      username,
+      videoId,
+      comment.comment,
+      timeStamp
+    );
     setEditOrNot(!editOrNot);
   };
 
@@ -64,16 +73,25 @@ const CommentBox = ({
       className="comment-box"
       square={false}
       elevation={2}
-      sx={{ backgroundColor: backgColor, marginY: 2 }}
+      sx={{
+        backgroundColor: backgColor,
+        mb: 1.5,
+        maxWidth: '650px',
+        borderRadius: 6,
+      }}
     >
       <Box className="flex-row">
         {editOrNot ? (
           <TextField
             multiline
+            fullWidth
             id="newComment"
             label="Edit Comment"
             variant="outlined"
-            sx={{ width: '100%', '& fieldset': { border: 'none' } }}
+            sx={{
+              width: '650px',
+              '& fieldset': { border: 'none' },
+            }}
             value={commentEdit.newComment}
             onChange={(e) => onCommentChange(e)}
           />

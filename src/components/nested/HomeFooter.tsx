@@ -7,7 +7,7 @@ const HomeFooter = () => {
 
   const sendMail = () => {
     const mailto: string =
-      'mailto:revue.studio.app@gmail.com@gmail.com?subject=Test subject&body=Body content';
+      'mailto:revue.studio.app@gmail.com?subject=Test subject&body=Hey Revue! Just wanted to say hi!';
     window.location.href = mailto;
   };
 
@@ -51,7 +51,10 @@ const HomeFooter = () => {
             target="_blank"
             rel="noopener"
           >
-            <Typography sx={{ cursor: 'pointer' }} className="home-footer-text">
+            <Typography
+              sx={{ cursor: 'pointer', color: 'white' }}
+              className="home-footer-text"
+            >
               Dreamsoft Productions
             </Typography>
           </Link>
