@@ -28,6 +28,7 @@ import {
 import { projectPasswordLocalStorage } from '../Project';
 import CommentBox from './CommentBox';
 import PublishIcon from '@mui/icons-material/Publish';
+import { convertFileName } from '../../utils/filenameClean';
 
 interface projVideoState {
   video: VideoObject;
@@ -210,7 +211,7 @@ const VideoDetails = () => {
               <Box sx={{ py: 2 }}>
                 <Typography>Video ID: {videoSlice!.id}</Typography>
                 <Typography>
-                  File Name: {videoSlice!.fileName.split('-')[1]}
+                  File Name: {convertFileName(videoSlice!.fileName)}
                 </Typography>
                 <Typography>
                   File Size:{' '}

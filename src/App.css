@@ -237,6 +237,8 @@ a, a:visited {
 
 .add-video-container {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;

@@ -96,7 +96,8 @@ export const uploadMultipartFile = async (
   uploadId: string,
   abortUpload: boolean,
   setProgressArray: React.Dispatch<React.SetStateAction<number[]>>,
-  setUploadProgress: React.Dispatch<React.SetStateAction<number>>
+  setUploadProgress: React.Dispatch<React.SetStateAction<number>>,
+  setTimeRemaining: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const fileSize = upload.file.size;
   const { fileName, key } = upload;
@@ -112,6 +113,7 @@ export const uploadMultipartFile = async (
     let start;
     let end;
     let blob;
+    const estArray: any[] = [];
     for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
       start = (index - 1) * CHUNK_SIZE;
       end = index * CHUNK_SIZE;
@@ -139,6 +141,7 @@ export const uploadMultipartFile = async (
         index: number
       ) => {
         if (progressEvent.loaded >= progressEvent.total) return;
+        // console.log(`prog evt loaded ${index}: `, progressEvent.loaded);
 
         const currentProgress = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
@@ -149,7 +152,27 @@ export const uploadMultipartFile = async (
           const sum = progressArray.reduce(
             (acc: number, curr: number) => acc + curr
           );
-          setUploadProgress(Math.round(sum / chunks));
+          const progressOverChunks = sum / chunks;
+          setUploadProgress(Math.round(progressOverChunks));
+
+          estArray.push({ progress: progressOverChunks, time: Date.now() });
+
+          const dynamicLength = estArray.length;
+          if (dynamicLength > 9 && estArray.length === dynamicLength) {
+            // const dynamicPercent =
+            //   estArray[dynamicLength - 1].progress -
+            //   estArray[dynamicLength - 9].progress;
+            // console.log('percent: ', dynamicPercent);
+            const dynamicTimeDiff =
+              estArray[dynamicLength - 1].time -
+              estArray[dynamicLength - 9].time;
+            // console.log('timeDiff: ', dynamicTimeDiff);
+            const remainder = 100 - progressOverChunks;
+            // console.log('remainder: ', remainder);
+            const milliRemaining = remainder * dynamicTimeDiff;
+            console.log('milliRemaining: ', milliRemaining);
+            setTimeRemaining(milliRemaining);
+          }
 
           return progressArray;
         });

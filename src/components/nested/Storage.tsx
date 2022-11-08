@@ -4,6 +4,7 @@ import { Box, Card, Typography } from '@mui/material';
 import { getS3AllVideosByUserId } from '../../features/videos/videosAPI';
 import { VideoObject } from '../ProjectDetails';
 import CustomCircularProgress from './CustomCircularProgress';
+import { convertFileName } from '../../utils/filenameClean';
 
 const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ const Storage = ({ userState }: { userState: UserState }): JSX.Element => {
               ? videoData.map((video, index) => {
                   return (
                     <Box key={index} className="flex-row">
-                      <Typography>{video.fileName.split('-')[1]}</Typography>
+                      <Typography>{convertFileName(video.fileName)}</Typography>
                       <Typography>
                         {(Number(video.fileSize) / 1000000).toFixed(2)} MB
                       </Typography>

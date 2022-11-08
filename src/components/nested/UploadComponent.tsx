@@ -32,8 +32,9 @@ const UploadComponent = ({
   const [uploadDone, setUploadDone] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [removeUploadComp, setRemoveUploadComp] = useState(false);
-  const [progressArray, setProgressArray] = useState<number[]>([]);
+  const [, setProgressArray] = useState<number[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState<number>(-1);
   const [multiUploadId, setMultiUploadId] = useState('');
   const [abortUpload, setAbortUpload] = useState(false);
 
@@ -46,7 +47,8 @@ const UploadComponent = ({
       uploadId,
       abortUpload,
       setProgressArray,
-      setUploadProgress
+      setUploadProgress,
+      setTimeRemaining
     );
     setTimeout(async () => {
       const response = await dynamoDBGetVideosByProjectId(projectId);
@@ -75,10 +77,10 @@ const UploadComponent = ({
     }
   };
 
-  console.log(
-    'progressArray.length (number of chunks): ',
-    progressArray.length
-  );
+  // console.log(
+  //   'progressArray.length (number of chunks): ',
+  //   progressArray.length
+  // );
 
   const uploadingIndicator = () => {
     if (!uploading) {
@@ -125,6 +127,11 @@ const UploadComponent = ({
             variant="determinate"
             value={uploadProgress}
           />
+          <Typography sx={{ alignSelf: 'center' }}>
+            {timeRemaining === -1
+              ? 'Upload has not started'
+              : (timeRemaining / 1000).toFixed(0) + ' seconds remaining'}
+          </Typography>
         </Box>
       )}
     </Box>

@@ -155,13 +155,13 @@ const ProjectDetails = () => {
               <Typography>
                 Project Description: {projectState.projectDescription}
               </Typography>
-              <Typography>
+              {/* <Typography>
                 Project Password:{' '}
                 {projectState.projectPassword
                   ? projectState.projectPassword
                   : 'no password'}
-              </Typography>
-              <Typography>Project ID: {projectState.id}</Typography>
+              </Typography> */}
+              {/* <Typography>Project ID: {projectState.id}</Typography> */}
             </Box>
             <Button
               variant="contained"
