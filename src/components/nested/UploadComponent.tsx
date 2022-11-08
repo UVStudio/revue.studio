@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Button,
   Typography,
   LinearProgress,
   CircularProgress,
@@ -95,9 +94,7 @@ const UploadComponent = ({
       } else {
         return (
           <Box className="flex-row">
-            <Button onClick={startUploadHandler}>
-              <FileUploadIcon />
-            </Button>
+            <FileUploadIcon sx={{ mr: '10px' }} onClick={startUploadHandler} />
             <CancelOutlinedIcon
               onClick={() => removeVideoFromListHandler(upload.id)}
             />
@@ -107,7 +104,7 @@ const UploadComponent = ({
     } else {
       return (
         <Box className="flex-row">
-          <CircularProgress sx={{ marginRight: '10px' }} size={20} />
+          <CircularProgress sx={{ marginRight: '10px' }} size={22} />
           <CancelOutlinedIcon onClick={() => abortUploadHandler(upload)} />
         </Box>
       );
@@ -115,11 +112,12 @@ const UploadComponent = ({
   };
 
   return (
-    <Box>
+    <Box sx={{ width: '60%' }}>
       {removeUploadComp ? null : (
         <Box className="add-video-container">
           <Box key={upload.fileUrl} className="add-video-row">
             <Typography>{upload.fileName}</Typography>
+            <Typography>{uploadProgress}%</Typography>
             {uploadingIndicator()}
           </Box>
           <LinearProgress

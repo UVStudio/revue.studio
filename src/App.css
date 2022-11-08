@@ -236,7 +236,7 @@ a, a:visited {
 }
 
 .add-video-container {
-  width: 35ch;
+  width: 100%;
   margin: 8px 0px;
   border: 1px solid rgb(34, 25, 108);
   border-radius: 7px;
