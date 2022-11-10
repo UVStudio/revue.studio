@@ -82,6 +82,16 @@ const UploadComponent = ({
   //   progressArray.length
   // );
 
+  const uploadTimer = (timeRemaining: number, uploadProgress: number) => {
+    let text =
+      timeRemaining === -1
+        ? 'Upload has not started'
+        : timeRemaining !== -1 && uploadProgress < 1
+        ? 'Upload started. Calculating time remaining.'
+        : (timeRemaining / 1000).toFixed(0) + ' seconds remaining';
+    return text;
+  };
+
   const uploadingIndicator = () => {
     if (!uploading) {
       if (uploadDone) {
@@ -128,9 +138,7 @@ const UploadComponent = ({
             value={uploadProgress}
           />
           <Typography sx={{ alignSelf: 'center' }}>
-            {timeRemaining === -1
-              ? 'Upload has not started'
-              : (timeRemaining / 1000).toFixed(0) + ' seconds remaining'}
+            {uploadTimer(timeRemaining, uploadProgress)}
           </Typography>
         </Box>
       )}

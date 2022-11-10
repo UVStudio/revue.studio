@@ -110,10 +110,11 @@ export const uploadMultipartFile = async (
     const CHUNK_SIZE = 10000000; // 10MB
     const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
     const promisesArray = [];
-    let start;
-    let end;
-    let blob;
+    let start: number;
+    let end: number;
+    let blob: Blob;
     const estArray: any[] = [];
+    const latestArray: number[] = [];
     for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
       start = (index - 1) * CHUNK_SIZE;
       end = index * CHUNK_SIZE;
@@ -158,10 +159,10 @@ export const uploadMultipartFile = async (
           estArray.push({ progress: progressOverChunks, time: Date.now() });
 
           const dynamicLength = estArray.length;
-          if (dynamicLength > 9 && estArray.length === dynamicLength) {
-            // const dynamicPercent =
-            //   estArray[dynamicLength - 1].progress -
-            //   estArray[dynamicLength - 9].progress;
+          if (dynamicLength > 9) {
+            const dynamicPercent =
+              estArray[dynamicLength - 1].progress -
+              estArray[dynamicLength - 9].progress;
             // console.log('percent: ', dynamicPercent);
             const dynamicTimeDiff =
               estArray[dynamicLength - 1].time -
@@ -169,11 +170,25 @@ export const uploadMultipartFile = async (
             // console.log('timeDiff: ', dynamicTimeDiff);
             const remainder = 100 - progressOverChunks;
             // console.log('remainder: ', remainder);
-            const milliRemaining = remainder * dynamicTimeDiff;
-            console.log('milliRemaining: ', milliRemaining);
-            setTimeRemaining(milliRemaining);
-          }
 
+            //eg dynamicPercent is 2%, dynamicDiff is 1000 milli
+            //if remainder is 50%, then we need 50/2*1000 = 25000 millis to complete upload
+            //if remainder is 80%, then we need 80/2*1000 = 40000 millis to complete upload
+            const milliRemaining =
+              (remainder / dynamicPercent) * dynamicTimeDiff;
+
+            latestArray.push(milliRemaining);
+
+            if (progressOverChunks > 0 && latestArray.length <= 10) {
+              setTimeRemaining(milliRemaining);
+            } else if (latestArray.length > 10) {
+              const lastTwentyAve =
+                (latestArray[latestArray.length - 1] +
+                  latestArray[latestArray.length - 10]) /
+                2;
+              setTimeRemaining(lastTwentyAve);
+            }
+          }
           return progressArray;
         });
       };
