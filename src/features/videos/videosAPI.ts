@@ -142,7 +142,6 @@ export const uploadMultipartFile = async (
         index: number
       ) => {
         if (progressEvent.loaded >= progressEvent.total) return;
-        // console.log(`prog evt loaded ${index}: `, progressEvent.loaded);
 
         const currentProgress = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
@@ -163,13 +162,12 @@ export const uploadMultipartFile = async (
             const dynamicPercent =
               estArray[dynamicLength - 1].progress -
               estArray[dynamicLength - 9].progress;
-            // console.log('percent: ', dynamicPercent);
+
             const dynamicTimeDiff =
               estArray[dynamicLength - 1].time -
               estArray[dynamicLength - 9].time;
-            // console.log('timeDiff: ', dynamicTimeDiff);
+
             const remainder = 100 - progressOverChunks;
-            // console.log('remainder: ', remainder);
 
             //eg dynamicPercent is 2%, dynamicDiff is 1000 milli
             //if remainder is 50%, then we need 50/2*1000 = 25000 millis to complete upload
@@ -179,14 +177,20 @@ export const uploadMultipartFile = async (
 
             latestArray.push(milliRemaining);
 
-            if (progressOverChunks > 0 && latestArray.length <= 10) {
+            if (progressOverChunks > 0 && latestArray.length <= 30) {
+              //first 30 data points from axios get printed onto the UI directly...
               setTimeRemaining(milliRemaining);
-            } else if (latestArray.length > 10) {
-              const lastTwentyAve =
-                (latestArray[latestArray.length - 1] +
-                  latestArray[latestArray.length - 10]) /
-                2;
-              setTimeRemaining(lastTwentyAve);
+              //after that, the average of the last 30 is printed...
+            } else if (latestArray.length > 30) {
+              let sumTotal = 0;
+              for (let i = 1; i < 31; i++) {
+                sumTotal = sumTotal + latestArray[latestArray.length - i];
+                let lastThirtyAverage = sumTotal / 30;
+                //if almost done, revert back to milliRemaining to make sure we hit 0
+                if (latestArray[latestArray.length - i] < 5000)
+                  lastThirtyAverage = milliRemaining;
+                setTimeRemaining(lastThirtyAverage);
+              }
             }
           }
           return progressArray;
