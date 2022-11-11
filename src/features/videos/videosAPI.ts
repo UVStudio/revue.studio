@@ -187,8 +187,12 @@ export const uploadMultipartFile = async (
                 sumTotal = sumTotal + latestArray[latestArray.length - i];
                 let lastThirtyAverage = sumTotal / 30;
                 //if almost done, revert back to milliRemaining to make sure we hit 0
-                if (latestArray[latestArray.length - i] < 5000)
+                if (latestArray[latestArray.length - i] < 4000) {
                   lastThirtyAverage = milliRemaining;
+                }
+                if (milliRemaining < 200) {
+                  lastThirtyAverage = 0;
+                }
                 setTimeRemaining(lastThirtyAverage);
               }
             }

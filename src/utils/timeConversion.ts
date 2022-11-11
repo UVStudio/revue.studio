@@ -39,6 +39,12 @@ export const timeStampConverter = (timeStamp: number) => {
     hour: dateObj.getHours(),
     minute: dateObj.getMinutes(),
   };
+
+  const minString =
+    dateInfo.minute.toString().length < 2
+      ? '0' + dateInfo.minute.toString()
+      : dateInfo.minute.toString();
+
   const dateString =
     dateInfo.month +
     ' ' +
@@ -48,6 +54,6 @@ export const timeStampConverter = (timeStamp: number) => {
     ' - ' +
     dateInfo.hour +
     ':' +
-    dateInfo.minute;
+    minString;
   return dateString;
 };
