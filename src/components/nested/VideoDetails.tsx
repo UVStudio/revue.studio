@@ -19,7 +19,10 @@ import { VideoObject } from '../ProjectDetails';
 import { ProjectObject } from '../../features/projects/projectsSlice';
 import { CommentObject } from './CommentBox';
 import { dynamoDBGetProjectByProjectId } from '../../features/projects/projectsAPI';
-import { dynamoDBGetVideoByVideoId } from '../../features/videos/videosAPI';
+import {
+  dynamoDBGetVideoByVideoId,
+  s3DownloadVideoById,
+} from '../../features/videos/videosAPI';
 import {
   postComment,
   deleteCommentById,
@@ -194,6 +197,11 @@ const VideoDetails = () => {
     }
   };
 
+  const downloadVideoHandler = async () => {
+    console.log('video slice: ', videoSlice);
+    await s3DownloadVideoById(videoSlice!);
+  };
+
   if (loading) {
     return (
       <Box className="background" sx={{ height: '100vh' }}>
@@ -221,6 +229,12 @@ const VideoDetails = () => {
                   Project Name: {projectSlice!.projectName}
                 </Button>
               </Box>
+              <Button
+                sx={{ alignSelf: 'flex-end' }}
+                onClick={downloadVideoHandler}
+              >
+                Download
+              </Button>
               <Box className="video-player-container">
                 <Box className="video-player">
                   <ReactPlayer
