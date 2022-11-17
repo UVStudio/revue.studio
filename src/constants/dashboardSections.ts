@@ -4,6 +4,7 @@ export const dashboardSectionsArray = [
   'Account',
   'Notifications',
   'Storage',
+  'File Transfer',
 ];
 
 export const dashboardSections = {
@@ -12,4 +13,5 @@ export const dashboardSections = {
   account: dashboardSectionsArray[2],
   notifications: dashboardSectionsArray[3],
   storage: dashboardSectionsArray[4],
+  transfer: dashboardSectionsArray[5],
 };

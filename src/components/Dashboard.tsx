@@ -5,6 +5,7 @@ import ProjectsSection from './nested/ProjectsSection';
 import Account from './nested/Account';
 import Notifications from './nested/Notifications';
 import Storage from './nested/Storage';
+import FileTransfer from './nested/FileTransfer';
 import { Box } from '@mui/material';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useAppSelector } from '../app/hooks';
@@ -48,6 +49,9 @@ const Dashboard = () => {
           ) : null}
           {section === dashboardSections.storage ? (
             <Storage userState={userState} />
+          ) : null}
+          {section === dashboardSections.transfer ? (
+            <FileTransfer userState={userState} />
           ) : null}
         </Box>
       </Box>

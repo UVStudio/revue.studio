@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Card,
   Paper,
+  Link,
   FormControl,
 } from '@mui/material';
 import ReactPlayer from 'react-player/lazy';
@@ -198,7 +199,6 @@ const VideoDetails = () => {
   };
 
   const downloadVideoHandler = async () => {
-    console.log('video slice: ', videoSlice);
     await s3DownloadVideoById(videoSlice!);
   };
 
@@ -235,6 +235,9 @@ const VideoDetails = () => {
               >
                 Download
               </Button>
+              <Link href={`${awsS3Url}/${videoSlice!.s3Url}`}>
+                Simple Download
+              </Link>
               <Box className="video-player-container">
                 <Box className="video-player">
                   <ReactPlayer
