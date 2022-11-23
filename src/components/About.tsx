@@ -6,7 +6,7 @@ import picThree from '../assets/about-3.jpg';
 
 const About = () => {
   return (
-    <Box>
+    <Box data-testid="about-page">
       <Box className="section" sx={{ backgroundColor: 'white' }}>
         <Typography className="text-overlay" fontSize={'4vw'}>
           App for video content producers

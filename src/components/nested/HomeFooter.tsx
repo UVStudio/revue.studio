@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Grid, Typography, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +15,11 @@ const HomeFooter = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }} className="home-footer-section">
+    <Box
+      sx={{ flexGrow: 1 }}
+      className="home-footer-section"
+      data-testid="home-footer-box"
+    >
       <Grid
         container
         columnSpacing={2}
