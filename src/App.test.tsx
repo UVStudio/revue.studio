@@ -28,7 +28,7 @@ test('renders components of the app', () => {
   });
 });
 
-test('defines localStorage.getItem', () => {
-  const mockGetItem = jest.fn(localStorage.getItem);
-  expect(mockGetItem).toBeDefined();
-});
+// test('defines localStorage.getItem', () => {
+//   const mockGetItem = jest.fn(localStorage.getItem);
+//   expect(mockGetItem).toBeDefined();
+// });

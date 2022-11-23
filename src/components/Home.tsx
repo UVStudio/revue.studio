@@ -13,6 +13,7 @@ const Home = () => {
           Manage all your cloud assets on one platform
         </Typography>
         <ReactPlayer
+          data-testid="react-player"
           url="revue-hero.mp4"
           playing={true}
           loop={true}
@@ -31,11 +32,13 @@ const Home = () => {
             overhead by shrinking the number of subscription services.
           </Typography>
         </Box>
-        <Box className="section" sx={{ my: 3 }}>
+        <Box data-testid="home-accordion" className="section" sx={{ my: 3 }}>
           <HomeAccordion />
         </Box>
       </Box>
-      <HomeFooter />
+      <Box data-testid="home-footer">
+        <HomeFooter />
+      </Box>
     </Box>
   );
 };
