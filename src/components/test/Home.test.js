@@ -1,53 +1,36 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen } from '../../test-utils/test-utils';
 import Home from '../Home';
 
 describe('Home Page loads', () => {
   test('Page title loads with correct texts', () => {
-    render(
-      <Router>
-        <Home />
-      </Router>
-    );
+    render(<Home />);
     const title = screen.getByText(
       'Manage all your cloud assets on one platform'
     );
-    expect(title).toBeTruthy();
+    expect(title).toBeInTheDocument();
 
     const mainTextSample = screen.getByText(/serious video production/i);
-    expect(mainTextSample).toBeTruthy();
+    expect(mainTextSample).toBeInTheDocument();
   });
 
   test('Video player renders', () => {
-    render(
-      <Router>
-        <Home />
-      </Router>
-    );
+    render(<Home />);
 
     const reactPlayer = screen.getByTestId('react-player');
-    expect(reactPlayer).toBeTruthy();
+    expect(reactPlayer).toBeInTheDocument();
   });
 
   test('Home accordion renders', () => {
-    render(
-      <Router>
-        <Home />
-      </Router>
-    );
+    render(<Home />);
 
     const homeAccordion = screen.getByTestId('home-accordion');
-    expect(homeAccordion).toBeTruthy();
+    expect(homeAccordion).toBeInTheDocument();
   });
 
-  test('Home afooter renders', () => {
-    render(
-      <Router>
-        <Home />
-      </Router>
-    );
+  test('Home footer renders', () => {
+    render(<Home />);
 
     const homeFooter = screen.getByTestId('home-footer');
-    expect(homeFooter).toBeTruthy();
+    expect(homeFooter).toBeInTheDocument();
   });
 });

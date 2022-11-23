@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import HomeAccordion from './nested/HomeAccordion';
 import HomeFooter from './nested/HomeFooter';
-
 import ReactPlayer from 'react-player';
 
 const Home = () => {
