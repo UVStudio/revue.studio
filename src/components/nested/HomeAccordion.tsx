@@ -24,6 +24,7 @@ export const HomeAccordion = () => {
         padding: 2.5,
         borderRadius: '15px',
       }}
+      data-testid="accordion-box"
     >
       <Accordion
         expanded={expanded === 'panel1'}
@@ -34,7 +35,11 @@ export const HomeAccordion = () => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ width: '100%', flexShrink: 0 }}
+            data-testid="accordion-question1"
+          >
             What is Revue.Studio?
           </Typography>
         </AccordionSummary>
@@ -55,7 +60,11 @@ export const HomeAccordion = () => {
           aria-controls="panel2bh-content"
           id="panel2bh-header"
         >
-          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ width: '100%', flexShrink: 0 }}
+            data-testid="accordion-question2"
+          >
             Why should I use Revue when I already have other similar services?
           </Typography>
         </AccordionSummary>
@@ -77,7 +86,11 @@ export const HomeAccordion = () => {
           aria-controls="panel3bh-content"
           id="panel3bh-header"
         >
-          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ width: '100%', flexShrink: 0 }}
+            data-testid="accordion-question3"
+          >
             When will Revue.Studio will ready?
           </Typography>
         </AccordionSummary>
@@ -99,7 +112,11 @@ export const HomeAccordion = () => {
           aria-controls="panel4bh-content"
           id="panel4bh-header"
         >
-          <Typography variant="subtitle1" sx={{ width: '100%', flexShrink: 0 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ width: '100%', flexShrink: 0 }}
+            data-testid="accordion-question4"
+          >
             What is Revue.Studio trying to accomplish?
           </Typography>
         </AccordionSummary>
