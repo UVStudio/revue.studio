@@ -1,4 +1,5 @@
-import { render, screen } from '../../../test-utils/test-utils';
+import { Typography } from '@mui/material';
+import { render, screen, fireEvent } from '../../../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import HomeFooter from '../HomeFooter';
 import About from '../../About';
@@ -37,5 +38,25 @@ describe('Home footer tests', () => {
 
     const aboutText = await screen.findByText(/be one of the first to join/i);
     expect(aboutText).toBeVisible();
+  });
+  test('Dreamsoft link has href attr of dreamsoft website', () => {
+    render(<HomeFooter />);
+
+    const dreamsoft = screen.getByRole('link', {
+      name: 'Dreamsoft Productions',
+    });
+    expect(dreamsoft).toHaveAttribute(
+      'href',
+      'http://www.dreamsoftproductions.com'
+    );
+  });
+
+  test('Email us triggers email function', async () => {
+    const mockEmail = jest.fn();
+    render(<Typography onClick={mockEmail}>Email us</Typography>);
+
+    const emailUs = screen.getByText('Email us');
+    fireEvent.click(emailUs);
+    expect(mockEmail).toHaveBeenCalledTimes(1);
   });
 });
