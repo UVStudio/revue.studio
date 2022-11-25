@@ -1,8 +1,14 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from '../app/store';
 
 const AllTheProviders = ({ children }) => {
-  return <MemoryRouter>{children}</MemoryRouter>;
+  return (
+    <Provider store={store}>
+      <MemoryRouter>{children}</MemoryRouter>
+    </Provider>
+  );
 };
 
 const renderWithRouter = (ui, options) =>
