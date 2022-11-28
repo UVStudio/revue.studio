@@ -29,6 +29,10 @@ const initialConfirmData = {
   confirmCode: '',
 };
 
+export const emailValidation = (input: string) => {
+  return input.includes('@');
+};
+
 const Login = () => {
   //OBTAIN USER FORM INPUTS & COMPONENT HOOKS
   const [formData, setFormData] = useState(initialFormData);
@@ -226,6 +230,7 @@ const Login = () => {
                     type="password"
                     autoComplete="current-password"
                     value={password}
+                    data-testid="passwordLogin"
                     onChange={(e) => onChangeForm(e)}
                   />
                   <Button variant="contained" onClick={loginUserHandler}>

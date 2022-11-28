@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { render, screen } from '../../test-utils/test-utils';
 import NavBar from '../Navbar';
 import Login from '../Login';
+import About from '../About';
 
 describe('Navbar tests', () => {
   test('Revue.Studio logo text is loaded.', () => {
@@ -33,5 +34,18 @@ describe('Navbar tests', () => {
     userEvent.click(login[0]);
     const loginText = await screen.findByText(/i already have an account/i);
     expect(loginText).toBeVisible();
+  });
+  test('Clicking About goes to about page', async () => {
+    render(
+      <Routes>
+        <Route path="*" element={<NavBar />} />
+        <Route path="/About" element={<About />} />
+      </Routes>
+    );
+
+    const login = screen.getAllByText(/about/i);
+    userEvent.click(login[0]);
+    const aboutText = await screen.findByText(/be one of the first to join/i);
+    expect(aboutText).toBeVisible();
   });
 });
